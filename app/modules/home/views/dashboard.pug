@@ -1,0 +1,87 @@
+include ../../../templates/head
+append head
+  style.
+    h3 span{
+      margin-right:10px;
+    }
+
+block main
+   section#main-content
+       section.wrapper.site-min-height
+          .row
+            .col-lg-9.main-chart
+              .row.mtbox
+                .col-md-2.col-sm-2.box0.col-md-offset-2
+                  a(href='')
+                    .box1
+                      span.li_heart
+                      h3 210
+                    p 210 Active Members
+                .col-md-2.col-sm-2.box0
+                  a(href='')
+                    .box1
+                      span.li_calendar
+                      h3 25
+                    p 25 Active Trainers
+                .col-md-2.col-sm-2.box0
+                  a(href='')
+                    .box1
+                      span.li_vynil
+                      h3 3
+                    p 3 Active Classes
+                .col-md-2.col-sm-2.box0
+                  a
+                    .box1
+                      span.li_bubble
+                      h3 0
+                    p 0 Messages
+      
+              .row
+                section.wrapper
+                  aside.col-lg-12.mt
+                    section.panel
+                      .panel-body
+                        #calendar.has-toolbar
+            .col-lg-3.ds
+              h3 
+                span.li_heart 
+                |  Membership
+              .desc
+                .thumb
+                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                .details
+                  h6  Gold Membership
+              .desc
+                .thumb
+                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                .details
+                  h6  Silver Membership
+              .desc
+                .thumb
+                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                .details
+                  h6  Bronze Membership
+              h3 
+                span.li_calendar 
+                |  Class List
+              .desc
+                .thumb
+                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                .details
+                  h6  Body Building
+              .desc
+                .thumb
+                  img.img-circle(src='assets/img/ui-sherman.jpg', width='35px', height='35px', align='')
+                .details
+                  h6 Aerobics
+              .desc
+                .thumb
+                  img.img-circle(src='assets/img/ui-danro.jpg', width='35px', height='35px', align='')
+                .details
+                  h6 General Training
+
+
+include ../../../templates/foot.pug
+
+ 
+

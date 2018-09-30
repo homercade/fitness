@@ -1,0 +1,191 @@
+include ../../../../templates/head
+
+block main      
+	section#main-content
+		section.wrapper.site-min-height
+			.row.mt
+				.col-md-12
+					.content-panel
+						.container-fluid
+							table.table.table-striped.table-advance.table-hover
+								h4
+									| Billing and Payment
+								thead
+									tr
+										th
+											i.fa.fa-user
+											|  Name
+										th
+											i.fa.fa-phone
+											|  Contact
+										th
+											i.fa.fa-coins
+											|  Amount (Peso)
+										th
+											i.fa.fa-calendar
+											|  Due Date
+										th
+											i.fa.fa-info-circle
+											|  Membership
+										th
+											i.fa.fa-edit
+											|  Action
+								tbody
+									each pa in pays
+										tr
+											td.hidden-phone #{pa.userfname} #{pa.userlname}
+											td #{pa.usermobile}
+											td #{pa.memfee}
+											td #{pa.expiry}
+											td #{pa.memclassname}-#{pa.membershipname}
+											td
+												button.btn.btn-primary.btn-xs(data-toggle='modal', data-target='.view-modal' data-fname=pa.fname)
+													i.fa.fa-search
+												button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.pay-modal', data-id=pa.userid data-memid=pa.memrateid)
+													i.fa.fa-coins
+												button.btn.btn-warning.btn-xs(data-toggle='modal', data-target='')
+													i.fa.fa-exclamation-circle
+												button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='')
+													i.fa.fa-trash
+
+		.view-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+			.modal-dialog.modal-lg
+				.modal-content
+					.modal-header
+						button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+						h4.modal-title Bill Breakdown
+					form(action='POST', method='')
+						.modal-body
+							.container-fluid
+								.row
+									.col-xs-12
+										.pull-left
+											h1 A-TEAM FITNESS
+											address
+												strong A-Team Fitness Inc.
+												br
+												| 4408 Old. Sta. Mesa St, Newton Plaza
+												br
+												| Sta. Mesa Manila
+												br
+												abbr(title='Phone') P:
+												|  0933 412 7526
+										// /pull-left
+										.pull-right
+											h1
+												img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+										// --/pull-right --
+										.clearfix
+										br
+										br
+										.row
+											.col-md-9
+												h4 [NAME OF MEMBER]
+												address
+													strong [MEMBERSHIP TYPE] - [MEMBERSHIP CATEG]
+													br
+													| [ADDRESS]
+													br
+													| [EMAIL]
+													br
+													abbr(title='Phone') P:
+													| [PHONE NUMBER]
+											.col-md-3
+												div
+													.pull-left  INVOICE DATE : 
+													.pull-right  [DATE]
+													.clearfix
+												div
+													.pull-left  DUE DATE : 
+													.pull-right  [DATE]
+													.clearfix
+												br
+												div
+												div(style='background-color:#ffbb00;color:white;padding:10px;')
+													.pull-left  Total Due : 
+													.pull-right  [TOTAL] 
+													.clearfix
+										table.table
+											thead
+												tr
+													th.text-center(style='width:60px') QTY
+													th.text-left DESCRIPTION
+													th.text-right(style='width:140px') PRICE
+													th.text-right(style='width:90px') TOTAL
+											tbody
+												tr
+													td.text-center -
+													td gold - interbranch
+													td.text-right 5000
+													td.text-right 5000
+												tr
+													td.text-center 20
+													td training session
+													td.text-right 200
+													td.text-right 4000
+												tr
+													td(colspan='2' rowspan='4')
+													td.text-right
+														strong Subtotal
+													td.text-right 4000
+
+												tr
+													td.text-right.no-border
+														div(style='background-color:#ffbb00;color:white;padding:10px;')
+															strong Total
+													td.text-right
+														strong 9000
+
+					.modal-footer
+						button.btn.btn-default(type='button', data-dismiss='modal') Close
+						button.btn.btn-primary(type='button') Print
+
+					//- MODAL PAYMENT
+		.pay-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+			.modal-dialog.modal-sm
+				form(action='/payment', method='POST')
+					.modal-content
+						.modal-header
+							button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+							h4.modal-title 	Payment
+						.modal-body
+							.container-fluid
+								.row
+									p You are about to pay a member of his bills. Do you wish to proceed?
+								br
+								input.hidden.id(type='text' name='id' )
+								input.memid(type='text' name='memrateid' )
+						.modal-footer
+							button.btn.btn-default(type='button', data-dismiss='modal') Close
+							button.btn.btn-primary(type='submit') Pay
+
+include ../../../../templates/foot
+
+script.
+	$(document).ready(function(){
+	$('#transactionDrop').addClass('active');
+	$('#payment').addClass('active');
+	});
+
+
+script.
+	$('.pay-modal').on('show.bs.modal', function(event){
+			var button = $(event.relatedTarget);
+			var id = button.data('id');
+			var memid = button.data('memid');
+			let modal = $(this);
+
+
+			modal.find('.modal-body .id').val(`${id}`);
+			modal.find('.modal-body .memid').val(`${memid}`);
+		})
+
+script.
+	$('.view-modal').on('show.bs.modal', function(event){
+			var button = $(event.relatedTarget);
+			var fname = button.data('fname');
+			let modal = $(this);
+
+			modal.find('.modal-body .fname').text(`${fname}`);
+		})
+	
