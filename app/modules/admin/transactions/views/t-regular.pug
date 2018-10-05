@@ -43,12 +43,12 @@ block main
                         td  #{re.memclassname}-#{re.membershipname}  
                         td  #{re.expiry}
                         td  
-                          if re.statusfront == 'Active'
+                          if re.status == 'Paid'
                             span.label.label-success
-                              | #{re.statusfront}
-                          else if re.statusfront == 'Inactive'
+                              | #{re.status}
+                          else if re.status == 'Suspended'
                             span.label.label-danger
-                              | #{re.statusfront}                     
+                              | #{re.status}                     
                         td
                           button.freeze.btn.btn-primary.btn-xs(data-toggle='modal', data-target='.freeze-modal', data-id=re.userid)
                             i.fa.fa-snowflake
@@ -322,7 +322,7 @@ block main
     // MODAL ADD MEMBER
 .freeze-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog
-    .modal-content
+    .modal-content 
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Freeze Account
@@ -461,7 +461,7 @@ block main
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Assign Member to a Trainer
-      form(action='/assign', method='POST')
+      form(method='POST' action='/assign')
         .modal-body
           .container-fluid
             content-panel
@@ -486,17 +486,16 @@ block main
                       |  Action
                 tbody
                   each as in ass
-                    each re in regs
                       tr
-                        td #{as.trainerfname} #{as.trainerlname}
-                        td #{as.trainergender}
-                        td #{as.trainerschedule}
-                        //- td A-team Marikina
-                        td
-                          form(method='POST' action='/assign')
-                            input.hidden#id(type='text' name='memberid')
-                            input.hidden(type='text' name='trainerid' value=as.trainerid)
-                            button.btn.btn-primary(type='submit') Assign
+                      td #{as.trainerfname} #{as.trainerlname}
+                      td #{as.trainergender}
+                      td #{as.trainerschedule}
+                      //- td A-team Marikina
+                      td
+                        form(method='POST' action='/assign')
+                          input.hidden#id(type='text' name='memberid')
+                          input.hidden(type='text' name='trainerid' value=as.trainerid)
+                          button.btn.btn-primary(type='submit') Assign
 
 //IMAGE + DESCRIPTION
 .showImgModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true', style='overflow: auto;')

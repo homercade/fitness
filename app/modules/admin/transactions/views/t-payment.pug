@@ -35,15 +35,15 @@ block main
 										tr
 											td.hidden-phone #{pa.userfname} #{pa.userlname}
 											td #{pa.usermobile}
-											td #{pa.memfee}
-											td #{pa.expiry}
+											td ₱ #{pa.memfee}.00
+											td #{pa.expirydate}
 											td #{pa.memclassname}-#{pa.membershipname}
 											td
-												button.btn.btn-primary.btn-xs(data-toggle='modal', data-target='.view-modal' data-fname=pa.fname)
+												button.btn.btn-primary.btn-xs(data-toggle='modal', data-target='.view-modal' data-fname=pa.userfname + " " + pa.userlname data-fee=pa.memfee data-mem=pa.memclassname + " " + pa.membershipname data-addr=pa.useraddress data-em=pa.useremail data-mob=pa.usermobile)
 													i.fa.fa-search
 												button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.pay-modal', data-id=pa.userid data-memid=pa.memrateid)
 													i.fa.fa-coins
-												button.btn.btn-warning.btn-xs(data-toggle='modal', data-target='')
+												button.btn.btn-warning.btn-xs(data-toggle='modal', data-target='.sorted.modal')
 													i.fa.fa-exclamation-circle
 												button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='')
 													i.fa.fa-trash
@@ -80,62 +80,47 @@ block main
 										br
 										.row
 											.col-md-9
-												h4 [NAME OF MEMBER]
+												h2#fname
 												address
-													strong [MEMBERSHIP TYPE] - [MEMBERSHIP CATEG]
+													strong#mem
 													br
-													| [ADDRESS]
+													strong#addr
 													br
-													| [EMAIL]
+													strong#em
 													br
-													abbr(title='Phone') P:
-													| [PHONE NUMBER]
+													strong#mob
 											.col-md-3
 												div
-													.pull-left  INVOICE DATE : 
-													.pull-right  [DATE]
-													.clearfix
-												div
-													.pull-left  DUE DATE : 
-													.pull-right  [DATE]
+													.pull-left DATE : 
+													.pull-right#date 
 													.clearfix
 												br
 												div
 												div(style='background-color:#ffbb00;color:white;padding:10px;')
-													.pull-left  Total Due : 
-													.pull-right  [TOTAL] 
+													.pull-left  Total Due :
+													.pull-right#fee
 													.clearfix
 										table.table
 											thead
 												tr
 													th.text-center(style='width:60px') QTY
 													th.text-left DESCRIPTION
-													th.text-right(style='width:140px') PRICE
 													th.text-right(style='width:90px') TOTAL
 											tbody
 												tr
 													td.text-center -
-													td gold - interbranch
-													td.text-right 5000
-													td.text-right 5000
-												tr
-													td.text-center 20
-													td training session
-													td.text-right 200
-													td.text-right 4000
+													td#mem
+													td.text-right#fee
 												tr
 													td(colspan='2' rowspan='4')
 													td.text-right
-														strong Subtotal
-													td.text-right 4000
 
 												tr
 													td.text-right.no-border
 														div(style='background-color:#ffbb00;color:white;padding:10px;')
 															strong Total
 													td.text-right
-														strong 9000
-
+														strong#fee
 					.modal-footer
 						button.btn.btn-default(type='button', data-dismiss='modal') Close
 						button.btn.btn-primary(type='button') Print
@@ -153,12 +138,36 @@ block main
 								.row
 									p You are about to pay a member of his bills. Do you wish to proceed?
 								br
-								input.hidden.id(type='text' name='id' )
+								input.id(type='text' name='id' )
 								input.memid(type='text' name='memrateid' )
 						.modal-footer
 							button.btn.btn-default(type='button', data-dismiss='modal') Close
 							button.btn.btn-primary(type='submit') Pay
-
+							//modal
+.sorted.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+	.modal-dialog.modal-lg
+		.modal-content
+			.modal-header
+				button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+				h4#myModalLabel.modal-title Payment History
+			form(method='POST' action='/assign')
+				.modal-body
+					.container-fluid
+						content-panel
+							table.table.table-striped.table-advance.table-hover
+								br
+								thead
+									tr
+										th
+											i.fa.fa-calendar
+											|  Payment Date 
+								tbody
+									each hs in history
+										tr
+										td #{hs.paymentdate}
+										input.form.control(value=hs.userid)
+				.modal-footer
+					button.btn.btn-default(type='button', data-dismiss='modal') Close
 include ../../../../templates/foot
 
 script.
@@ -184,8 +193,25 @@ script.
 	$('.view-modal').on('show.bs.modal', function(event){
 			var button = $(event.relatedTarget);
 			var fname = button.data('fname');
+			var fee = button.data('fee');
+			var mem = button.data('mem');
+			var addr = button.data('addr');
+			var em = button.data('em');
+			var mob = button.data('mob');
 			let modal = $(this);
 
-			modal.find('.modal-body .fname').text(`${fname}`);
+			modal.find('.modal-body #fname').text(`${fname}`);
+			modal.find('.modal-body #fee').text(`₱ ${fee}.00`);
+			modal.find('.modal-body #mem').text(`${mem}`);
+			modal.find('.modal-body #addr').text(`${addr}`);
+			modal.find('.modal-body #em').text(`${em}`);
+			modal.find('.modal-body #mob').text(`${mob}`);
 		})
 	
+script.
+	n = new Date();
+	y = n.getFullYear();
+	m = n.getMonth() + 1;
+	d = n.getDate();
+
+	document.getElementById("date").innerHTML =m +"-" +d+"-"+y;

@@ -335,14 +335,14 @@ router.post('/branch/delete', (req, res) => {
   });
 });
 
-//view staff dropdowns
-function viewStaffDropdown(req, res, next) {
-  db.query('SELECT * FROM tbluser WHERE usertype=4 AND statusfront="Inactive"', function (err, results, fields) {
-    if (err) return res.send(err);
-    req.viewStaffDropdown = results;
-    return next();
-  })
-}
+// //view staff dropdowns
+// function viewStaffDropdown(req, res, next) {
+//   db.query('SELECT * FROM tbluser WHERE usertype=4 AND statusfront="Inactive"', function (err, results, fields) {
+//     if (err) return res.send(err);
+//     req.viewStaffDropdown = results;
+//     return next();
+//   })
+// }
 
 
 //view branch
@@ -698,25 +698,23 @@ function viewHie(req, res, next) {
   })
 }
 
-//Transactions
+//Transactions..... 
 
 //view pending
 function viewPend(req, res, next) {
-  db.query('SELECT u.*,m.*,cl.*,ct.*  FROM tbluser u inner join tblmemrates m ON u.memrateid=m.memrateid inner join tblmemclass cl ON m.memclass=cl.memclassid inner join tblcat ct ON m.memcat=ct.membershipID WHERE usertype=8 or usertype=9', function (err, results, fields) {
+  db.query('select u.* , r.* , cl.* , ct.* , m.* from tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID where m.status = "Pending" ', function (err, results, fields) {
     if (err) return res.send(err);
     req.viewPend = results;
-    return next();
+    return next(); 
   })
 }
 
 //view update interbranch
 function viewUpdate(req, res, next) {
-  db.query("UPDATE tbluser u join tblmemrates m ON u.memrateid=m.memrateid SET u.branch=NULL, u.usertype=9 where m.memcat=4 AND u.signdate IS NULL", (err, results, fields) => {
+  db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID SET u.branch=NULL where m.status = 'Pending' and ct.membershipname='Interbranch'  ", (err, results, fields) => {
     if (err)
       console.log(err);
-
     else {
-      console.log('AAAAAAAA')
       return next()
     };
   })
@@ -737,15 +735,17 @@ function useraddid(req, res, next) {
 //update of pending to regular
 
 router.post('/pending/update/:userId', useraddid, (req, res) => {
-    db.query("UPDATE tbluser SET statusfront='Active', signdate=CURDATE(),usertype=2,userpassword=12345 WHERE userid=?", [req.params.userId], (err, results, fields) => {
-      db.query("UPDATE tbluser u inner join tblmemrates mems ON u.memrateid=mems.memrateid inner join tblcat ct ON mems.memcat=ct.membershipID inner join tblmemclass cl ON mems.memclass= cl.memclassid SET u.expiry = case when cl.memclassid = mems.memclass then curdate() + interval mems.memperiod MONTH END where usertype=2 and userid=?", [req.params.userId], (err, results, fields) => {
-        if (err)
-          console.log(err);
-        else {
-          res.redirect('/pending');
-        }
+    db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.params.userId], (err, results, fields) => {
+      db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.params.userId], (err, results, fields) => {
+        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee, p.paymentdate=CURDATE(), p.classification='1' Where p.userid= ? ", [req.params.userId], (err, results, fields) => {  
+          if (err)
+            console.log(err);
+          else {
+            res.redirect('/pending');
+              }
       });
-    });
+          });
+      });
 
   // db.query('UPDATE tbluser SET usertype = 2 WHERE userid = ?', [req.params.userId], (err, results, fields) => {
   //   if(err) console.log(err)
@@ -758,7 +758,7 @@ router.post('/pending/update/:userId', useraddid, (req, res) => {
 
 //view of regular exclusive members
 function viewReg(req, res, next) {
-  db.query('SELECT u.*, bn.branchname, memrate.memclassname, memrate.membershipname FROM tbluser u INNER JOIN tblbranch AS bn ON bn.branchid = u.branch INNER JOIN (select mr.memrateid, mc.memclassname, tc.membershipname FROM tblmemrates mr INNER JOIN tblmemclass AS mc ON mc.memclassid = mr.memclass INNER JOIN tblcat AS tc ON tc.membershipid = mr.memcat Group by mr.memrateid ) AS MemRate WHERE u.memrateid=memrate.memrateid and usertype=2', function (err, results, fields) {
+  db.query("select u.* , r.*, ct.*, cl.* ,m.* from tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON r.memrateid=m.membershiprateid inner join tblmemclass cl on r.memclass=cl.memclassid inner join tblcat ct on ct.membershipID=r.memcat where m.status='Paid'and u.branch is not NULL", function (err, results, fields) {
     if (err) return res.send(err);
     req.viewReg = results;
     //moments expiration
@@ -770,19 +770,20 @@ function viewReg(req, res, next) {
 
 //view of regular interbranch members
 function viewInt(req, res, next) {
-  db.query('select u.* ,mems.memrateid,ct.membershipname,cl.memclassname from tbluser u inner join tblmemrates mems ON u.memrateid=mems.memrateid inner join tblcat ct ON mems.memcat=ct.membershipID inner join tblmemclass cl ON mems.memclass= cl.memclassid where usertype=2 and u.branch IS NULL', function (err, results, fields) {
+  db.query("select u.* , r.*, ct.*, cl.* ,m.* from tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON r.memrateid=m.membershiprateid inner join tblmemclass cl on r.memclass=cl.memclassid inner join tblcat ct on ct.membershipID=r.memcat where m.status='Paid' and u.branch is NULL", function (err, results, fields) {
     if (err) return res.send(err);
     req.viewInt = results;
     //moments expiration
     for (var i = 0; i < req.viewInt.length; i++) {
-      req.viewInt[i].expiry = moment(results[i].expiry).format("LL");}
+      req.viewInt[i].expirydate = moment(results[i].expirydate).format("LL");}
     return next();
   })
+
 }
 
 //view update regular to suspended
 function viewSusp(req, res, next) {
-  db.query("UPDATE tbluser SET statusfront='Inactive', userpassword=NULL where expiry= CURDATE()", (err, results, fields) => {
+  db.query("UPDATE tblmembership m join tbluser u on m.usersid=u.userid SET m.status='Suspended', u.userpassword=NULL where m.expirydate= CURDATE()", (err, results, fields) => {
     if (err)
       console.log(err);
     else {
@@ -793,56 +794,75 @@ function viewSusp(req, res, next) {
 
 //view to payment
 function viewPay(req, res, next) {
-  db.query('select u.* ,mems.*,ct.membershipname,cl.memclassname from tbluser u inner join tblmemrates mems ON u.memrateid=mems.memrateid inner join tblcat ct ON mems.memcat=ct.membershipID inner join tblmemclass cl ON mems.memclass= cl.memclassid where usertype=2', function (err, results, fields) {
+  db.query('select u.* , r.*, ct.*, cl.* ,m.* from tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON r.memrateid=m.membershiprateid inner join tblmemclass cl on r.memclass=cl.memclassid inner join tblcat ct on ct.membershipID=r.memcat where m.status="Paid" ', function (err, results, fields) {
     if (err) return res.send(err);
     req.viewPay = results;
     //moments expiration
     for (var i = 0; i < req.viewPay.length; i++) {
-      req.viewPay[i].expiry = moment(results[i].expiry).format("LL");
+      req.viewPay[i].expirydate = moment(results[i].expirydate).format("LL");
     }
-    return next();
+    req.this=[]
+    for (var i = 0; i < req.viewPay.length; i++) {
+      req.this.push(req.viewPay[i].userid)
+    }
+    console.log(req.this) 
+    db.query(`select u.* , r.*, ct.*, cl.* ,m.*,p.* from tbluser u join tblmembership m 
+      ON m.usersid=u.userid inner join tblmemrates r 
+      ON r.memrateid=m.membershiprateid inner join tblmemclass 
+      cl on r.memclass=cl.memclassid inner join tblcat ct on
+      ct.membershipID=r.memcat inner join tblpayment p on 
+      p.userid=m.usersid where m.status="Paid" and classification=1 
+      and (u.userid=? and u.userid=?) order by paymentdate desc`,[req.this] ,function (err, results, fields) {
+      if (err) return res.send(err);
+      req.viewHis = results;
+      //moments his
+    for (var i = 0; i < req.viewHis.length; i++) {
+      req.viewHis[i].paymentdate = moment(results[i].paymentdate).format("LL");
+      }
+        return next();
+  })
   })
 }
 
 //payment
 router.post('/payment',(req, res) => {
-    db.query("UPDATE tbluser u inner join tblmemrates mems ON u.memrateid=mems.memrateid inner join tblcat ct ON mems.memcat=ct.membershipID inner join tblmemclass cl ON mems.memclass= cl.memclassid SET u.expiry = case when cl.memclassid = mems.memclass then u.expiry + interval mems.memperiod MONTH END where usertype=2 and userid=?", [req.body.id], (err, results, fields) => {
-      db.query("UPDATE tbluser u inner join tblmemrates mems ON u.memrateid=mems.memrateid inner join tblcat ct ON mems.memcat=ct.membershipID inner join tblmemclass cl ON mems.memclass= cl.memclassid SET recentpay=CURDATE() where usertype=2 and userid=?", [req.body.id], (err, results, fields) => {
-        db.query("select u.userfname, u.userlname,u.useremail,u.recentpay,m.memfee from tbluser u join tblmemrates m ON u.memrateid=m.memrateid where usertype=2 and userid=?", [req.body.id], (err, results, fields) => {  
-          db.query("INSERT INTO tblmembershippayment (userid,membershipid,paymentdate)", [req.body.id, req.body.memrateid], (err, results, fields) => {  
-            fullname=(results[0].userfname + " " +results[0].userlname)
-              date=moment(results[0].recentpay).format("LL");
-              fee=results[0].memfee
-              if (err)
-                console.log(err);
-                else {
-                  mailer.sendMail({
-                  from: 'ateamsupmanila@gmail.com',
-                  to:results[0].useremail,
-                  subject:'Membership Payment Receipt ',
-                  html:
-                      " <table cellpadding='0' cellspacing='0' width='50%' style='margin:0 auto; box-shadow: 0 2px 10px -2px rgba(0, 0, 0, .2);'> <tr> <td bgcolor='gold' style='width:70%; margin:0 auto; box-shadow: 0 2px 10px -2px rgba(0, 0, 0, .2);'> <table cellpadding='0' cellspacing='0' width='100%' style='max-width: 500px;' class='wrapper'> <tr> <td valign='top' style='padding: 0 10px;' class='logo'><a href='http://litmus.com' target='_blank'> <img src='https://i.imgur.com/zeItuiJ.png' width='60' height='60' style='border:4px solid white; border-radius:50%;position:relative; top:15px;display: block; font-family: Helvetica, Arial, sans-serif; color: #ffffff; font-size: 16px;'> <span style='float:right; position:relative; color: white; top:-35px; left:-155px; font-size:28px; font-weight:bold;font-family:sans-serif;'> A - TEAM FITNESS</span></a></td></tr></table> </td></tr><tr> <td bgcolor='#333333'> <table cellpadding='0' cellspacing='0' width='100%' style='max-width: 500px;' class='wrapper'> <tr> <td style='padding: 20px 0;'></td></tr></table> </td></tr><tr> <td bgcolor='#ffffff' align='center' style='padding: 0 15px 10px 15px;' class='section-padding'> <table cellpadding='0' cellspacing='0' width='100%' style='max-width: 500px;' class='responsive-table'> <tr> <td> <table width='100%' cellspacing='0' cellpadding='0'> <tr> <td align='left' style='padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;' class='padding'><br>Hello <b> " +fullname+ " </b>, <br><br>You paid your membership fee recently<b> (" +date+ ").</b>Amounting to a total of <b>PHP "+fee+".00.</b> Regarding this, you will be billed depending on the membership type you are currently applied on. </b><br><br>Contact us if there have been any mistakes on our part.<br><br><br></td></tr></table> </td></tr></table> </td></tr><tr> </tr><tr> <td bgcolor='#333333' align='center' style='padding: 20px 0px;'> <table width='100%' cellspacing='0' cellpadding='0' align='center' style='max-width: 500px;' class='responsive-table'> <tr> <td align='center' style='font-size: 12px; line-height: 18px; font-family: Helvetica, Arial, sans-serif; color:#ffffff;'>Mobile: 0933 412 7526<br>Newton Plaza, 4408 Old. Sta. Mesa St. Sta. Mesa Manila, Philippines<br><a href='#' target='_blank' style='color: #ffffff; text-decoration: none;'>A-Team Fitness.com</a><span style='font-family: Arial, sans-serif; font-size: 12px; color: #444444;'>&nbsp;&nbsp;|&nbsp;&nbsp;</span><a style='color: #ffffff; text-decoration: none;'>by A-Team Fitness team</a></td></tr></table> </td></tr></table>",
-                  /*template: 'send', //name ng html file na irerender*/
-                  },
-                  function(err, response){
-                      if(err){
-                          console.log("BILL NOT SENT");
-                          console.log(err);
-                      }
-                      else{
-                          console.log("BILL SENT!");
-                          }
-                      }
-                      );
+    db.query("INSERT INTO tblpayment (userid)VALUES(?)", [req.body.id], (err, results, fields) => {
+      db.query("UPDATE tbluser u join tblpayment p on p.userid=u.userid inner join tblmembership m on m.usersid=u.userid inner join tblmemrates r on r.memrateid=m.membershiprateid SET p.paymentdate=CURDATE() ,amount=r.memfee , classification =1 where p.paymentdate is null and p.userid= ?", [req.body.id], (err, results, fields) => {
+        db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then m.expirydate + interval r.memperiod MONTH END where u.userid=?", [req.body.id], (err, results, fields) => {
+          // fullname=(results[0].userfname + " " +results[0].userlname)
+          //   date=moment(results[0].recentpay).format("LL");
+          //   fee=results[0].memfee
+            if (err)
+              console.log(err);
+              // else {
+              //   mailer.sendMail({
+              //   from: 'ateamsupmanila@gmail.com',
+              //   to:results[0].useremail,
+              //   subject:'Membership Payment Receipt ',
+              //   html:
+              //       " <table cellpadding='0' cellspacing='0' width='50%' style='margin:0 auto; box-shadow: 0 2px 10px -2px rgba(0, 0, 0, .2);'> <tr> <td bgcolor='gold' style='width:70%; margin:0 auto; box-shadow: 0 2px 10px -2px rgba(0, 0, 0, .2);'> <table cellpadding='0' cellspacing='0' width='100%' style='max-width: 500px;' class='wrapper'> <tr> <td valign='top' style='padding: 0 10px;' class='logo'><a href='http://litmus.com' target='_blank'> <img src='https://i.imgur.com/zeItuiJ.png' width='60' height='60' style='border:4px solid white; border-radius:50%;position:relative; top:15px;display: block; font-family: Helvetica, Arial, sans-serif; color: #ffffff; font-size: 16px;'> <span style='float:right; position:relative; color: white; top:-35px; left:-155px; font-size:28px; font-weight:bold;font-family:sans-serif;'> A - TEAM FITNESS</span></a></td></tr></table> </td></tr><tr> <td bgcolor='#333333'> <table cellpadding='0' cellspacing='0' width='100%' style='max-width: 500px;' class='wrapper'> <tr> <td style='padding: 20px 0;'></td></tr></table> </td></tr><tr> <td bgcolor='#ffffff' align='center' style='padding: 0 15px 10px 15px;' class='section-padding'> <table cellpadding='0' cellspacing='0' width='100%' style='max-width: 500px;' class='responsive-table'> <tr> <td> <table width='100%' cellspacing='0' cellpadding='0'> <tr> <td align='left' style='padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;' class='padding'><br>Hello <b> " +fullname+ " </b>, <br><br>You paid your membership fee recently<b> (" +date+ ").</b>Amounting to a total of <b>PHP "+fee+".00.</b> Regarding this, you will be billed depending on the membership type you are currently applied on. </b><br><br>Contact us if there have been any mistakes on our part.<br><br><br></td></tr></table> </td></tr></table> </td></tr><tr> </tr><tr> <td bgcolor='#333333' align='center' style='padding: 20px 0px;'> <table width='100%' cellspacing='0' cellpadding='0' align='center' style='max-width: 500px;' class='responsive-table'> <tr> <td align='center' style='font-size: 12px; line-height: 18px; font-family: Helvetica, Arial, sans-serif; color:#ffffff;'>Mobile: 0933 412 7526<br>Newton Plaza, 4408 Old. Sta. Mesa St. Sta. Mesa Manila, Philippines<br><a href='#' target='_blank' style='color: #ffffff; text-decoration: none;'>A-Team Fitness.com</a><span style='font-family: Arial, sans-serif; font-size: 12px; color: #444444;'>&nbsp;&nbsp;|&nbsp;&nbsp;</span><a style='color: #ffffff; text-decoration: none;'>by A-Team Fitness team</a></td></tr></table> </td></tr></table>",
+              //   /*template: 'send', //name ng html file na irerender*/
+              //   },
+              //   function(err, response){
+              //       if(err){
+              //           console.log("BILL NOT SENT");
+              //           console.log(err);
+              //       }
+              //       else{
+              //           console.log("BILL SENT!");
+              //           }
+              //       }
+              //       );
 
-                  res.redirect('/payment');
-                }
+              //   
+              // }
+            res.redirect('/payment');
           });
           });
           });
-        });
-      })
-  
+ 
+         });
+
 
 //freezing
 router.post('/freeze',(req, res) => {
@@ -1066,7 +1086,6 @@ function utils(req, res) {
 function branch(req, res) {
   res.render('admin/maintenance/views/m-branch', {
     branches: req.viewBranch,
-    drops: req.viewStaffDropdown
   });
 }
 
@@ -1157,7 +1176,8 @@ function income(req, res) {
 
 function payment(req, res) {
   res.render('admin/transactions/views/t-payment', {
-    pays: req.viewPay
+    pays: req.viewPay,
+    history: req.viewHis
   });
 }
 
@@ -1223,7 +1243,7 @@ router.get('/user', userd);
 router.get('/utilities', utils);
 
 //MAINTENANCE
-router.get('/branch', viewBranch, viewStaffDropdown, branch);
+router.get('/branch', viewBranch, branch);
 router.get('/category', viewCategory, category);
 router.get('/classes', viewClass, classes);
 router.get('/discount', viewDiscount, discount);
@@ -1244,7 +1264,7 @@ router.get('/payment', viewPay, payment);
 router.get('/pending', viewUpdate, viewPend, pending);
 router.get('/personal', viewPer,personal);
 router.get('/regular',viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
-router.get('/interregular',viewSp,viewExcB,viewExcc,viewAss, viewSusp, viewInt, Interregular);
+router.get('/interregular',viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
 router.get('/events',viewEve, Events);
 router.get('/walkins', walkins);
 router.get('/trainsessions', trainSessions);

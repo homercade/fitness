@@ -37,14 +37,14 @@ block main
                       tr
                         td.hidden-phone  #{br.userfname} #{br.userlname}
                         td #{br.memclassname}-#{br.membershipname} 
-                        td #{br.expiry}  
+                        td #{br.expirydate}  
                         td
-                          if br.statusfront == 'Active'
+                          if br.status == 'Paid'
                             span.label.label-success
-                              | #{br.statusfront}
-                          else if br.statusfront == 'Inactive'
+                              | #{br.status}
+                          else if br.status == 'Suspended'
                             span.label.label-danger
-                              | #{br.statusfront}     
+                              | #{br.status}     
                         td
                           button.freeze.btn.btn-primary.btn-xs(data-toggle='modal', data-target='.freeze-modal', data-id=br.userid)
                             i.fa.fa-snowflake
@@ -313,29 +313,33 @@ block main
             button.btn.btn-primary(type='button') Save
 
         // MODAL ADD MEMBER
-    .freeze-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-      .modal-dialog
-        .modal-content
-          .modal-header
-            button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-            h4#myModalLabel.modal-title Freeze Account
-          form(action='/freeze', method='POST')
-            .modal-body
-              .container-fluid
-                .row
-                p Note: Failing to unfreeze account within due date period Will result to termination of membership. Visit one of our branches to 
-                  span(style='color:orange;')
-                    |  unfreeze 
-                  | your account.
-                .row
-                  .col-md-12
-                    .form-group
-                      label.control-label Duration (months)
-                      input.form-control(type="number" name='freezevalue')
-                      input.hidden#id(type='text' name='id' )
-            .modal-footer
-              button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit') Freeze Account
+.freeze-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h4#myModalLabel.modal-title Freeze Account
+      form(action='/freeze', method='POST')
+        .modal-body
+          .container-fluid
+            .row
+            p Note: Failing to unfreeze account within due date period Will result to termination of membership. Visit one of our branches to 
+              span(style='color:orange;')
+                |  unfreeze 
+              | your account.
+            .row
+              .col-md-12
+                .form-group
+                  label.control-label Duration (months)
+                  input.form-control(type="number" name="freezevalue")
+                  input.hidden.id(type="text" name="id")
+              .col-md-12
+                .form-group
+                  label.control-label Date Effective
+                  input.form-control(type='date' required name='effect')
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal') Close
+          button.btn.btn-primary(type='submit') Freeze Account
 
       // MODAL ADD MEMBER
     .suspend-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

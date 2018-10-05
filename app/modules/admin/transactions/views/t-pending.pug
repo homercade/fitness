@@ -24,7 +24,7 @@ block main
 												td #{pe.userfname} #{pe.userlname}
 												form#form(method='POST')
 												td 
-													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='#viewmodal', data-gen=pe.usergender, data-bd=pe.userbday , data-add=pe.useraddress , data-ph=pe.usermobile, data-em=pe.useremail, data-cl=pe.memclassname, data-ct=pe.membershipname data-code=pe.paymentcode )
+													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='#viewmodal', data-gen=pe.usergender, data-bd=pe.userbday , data-add=pe.useraddress , data-ph=pe.usermobile, data-em=pe.useremail, data-cl=pe.memclassname, data-ct=pe.membershipname data-code=pe.paymentcode data-fee=pe.memfee )
 														i.fa.fa-search
 													button.edit.btn.btn-success.btn-xs(type='submit' value=`${pe.userid}`)
 														i.fa.fa-check
@@ -81,6 +81,8 @@ block main
 													span#clientCode
 													br
 													br
+													b Amount(₱): 
+													span#fee
 							//- 						b Interest: 
 							//- 						span Weight Loss
 							//- 						br
@@ -213,17 +215,19 @@ script.
 		var cl = button.data('cl')
 		var ct = button.data('ct')
 		var code = button.data('code')
+		var fee = button.data('fee')
 
 		let modal = $(this)     
 
-		modal.find('.modal-body #gen').text(` ${gen}`)
-		modal.find('.modal-body #bd').text(` ${bd}`)
-		modal.find('.modal-body #add').text(` ${add}`)
-		modal.find('.modal-body #ph').text(` ${ph}`)
-		modal.find('.modal-body #em').text(` ${em}`)	
-		modal.find('.modal-body #cl').text(` ${cl}`)
-		modal.find('.modal-body #ct').text(` ${ct}`)
-		modal.find('.modal-body #clientCode').text(` ${code}`)
+		modal.find('.modal-body #gen').text(`${gen}`)
+		modal.find('.modal-body #bd').text(`${bd}`)
+		modal.find('.modal-body #add').text(`${add}`)
+		modal.find('.modal-body #ph').text(`${ph}`)
+		modal.find('.modal-body #em').text(`${em}`)	
+		modal.find('.modal-body #cl').text(`${cl}`)
+		modal.find('.modal-body #ct').text(`${ct}`)
+		modal.find('.modal-body #clientCode').text(`${code}`)
+		modal.find('.modal-body #fee').text(`₱ ${fee}.00`)
 	})
 
 
