@@ -1,0 +1,283 @@
+section#main-content {
+	background-color: #F4F5FA;
+}
+
+header.header.black-bg {
+	box-shadow: 0 2px 50px -2px rgba(0, 0, 0, .2);
+	border: none;
+	text-decoration: none;
+}
+
+.content-panel {
+	padding: 30px;
+	border-radius: 0.35rem;
+	border: none;
+	box-shadow: 0px 1px 15px 1px rgba(62, 57, 107, 0.07);
+}
+
+h4 {
+	margin-left: 0 !important;
+}
+
+ul.sidebar-menu li ul.sub li.sub-menu a {
+	color: #aeb2b7;
+	background: transparent;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	display: block;
+}
+
+ul.sidebar-menu li ul.sub li.sub-menu a:hover {
+	color: white;
+	background: transparent;
+}
+
+ul.sidebar-menu li ul.sub li.sub-menu ul.sub li.active a,
+ul.sidebar-menu li ul.sub li.sub-menu a.active {
+	color: #ffbb00;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	display: block;
+}
+
+hr {
+	border-color: rgb(236, 231, 231);
+}
+
+.input-group-addon {
+	background: transparent;
+	border: none;
+}
+
+label.radio {
+	margin-left: 80px;
+}
+
+textarea {
+	resize: vertical;
+}
+
+.modal-content {
+	background-color: "white";
+}
+
+button {
+	margin-right: 5px;
+}
+
+.table>thead>tr>th,
+.table>tbody>tr>th,
+.table>tfoot>tr>th,
+.table>thead>tr>td,
+.table>tbody>tr>td,
+.table>tfoot>tr>td {
+	padding-left: 20px;
+}
+
+/*CHECKBOX*/
+
+.checkbox {
+	display: block;
+	position: relative;
+	padding-left: 35px;
+	padding-top: 5px;
+	margin-bottom: 12px;
+	cursor: pointer;
+	font-size: 13.5px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.checkbox input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.check {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 25px;
+	width: 25px;
+	background-color: #eee;
+	border-radius: 5px;
+}
+
+.checkbox:hover input~.check {
+	background-color: #ccc;
+}
+
+.checkbox input:checked~.check {
+	background-color: #ffbb00;
+}
+
+.check:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+.checkbox input:checked~.check:after {
+	display: block;
+}
+
+.checkbox .check:after {
+	left: 10px;
+	top: 6px;
+	width: 5px;
+	height: 10px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+/*RADIO BUTTON*/
+
+.radio {
+	display: block;
+	position: relative;
+	padding-top: 5px;
+	padding-left: 35px;
+	margin-bottom: 13.5px;
+	cursor: pointer;
+	font-size: 12px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.radio input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.dot {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 25px;
+	width: 25px;
+	background-color: #eee;
+	border-radius: 50%;
+}
+
+.radio:hover input~.dot {
+	background-color: #ccc;
+}
+
+.radio input:checked~.dot {
+	background-color: #ffbb00;
+}
+
+.dot:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+.radio input:checked~.dot:after {
+	display: block;
+}
+
+.radio .dot:after {
+	top: 8px;
+	left: 8px;
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background: white;
+}
+
+a {
+	cursor: pointer;
+}
+
+/* RETURN TO TOP BUTTON */
+
+#return-to-top {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background-color: rgb(44, 48, 59);
+	width: 50px;
+	height: 50px;
+	display: block;
+	text-decoration: none;
+	border-radius: 35px;
+	display: none;
+	transition: all 2 ease;
+}
+
+#return-to-top i {
+	color: #fff;
+	margin: 0;
+	position: relative;
+	left: 15px;
+	top: 5px;
+	font-size: 24pt;
+	font-weight: bold;
+	transition: all 0.3s ease;
+}
+
+#return-to-top:hover {
+	background-color: rgb(25, 27, 34);
+}
+
+#return-to-top:hover i {
+	color: #fff;
+	top: -5px;
+}
+
+/* Additional */
+
+#header_inbox_bar.dropdown a i {
+	font-size: 16pt;
+	color: white;
+}
+
+#header_inbox_bar.dropdown {
+	margin-right: 10px;
+	margin-left: 10px;
+	position: relative;
+	top: 19px;
+	left: 20px;
+}
+
+.dropdown-menu.extended.inbox {
+	top: 25px;
+}
+
+.badge.bg-theme {
+	background-color: #FF4961;
+	box-shadow: 0px 0px 10px #FF4961;
+	position: absolute;
+	top: -13px;
+	left: 14px;
+}
+
+label.error {
+	color: #ff6961;
+}
+
+input.form-control.error {
+	border: 1px solid #ff6961;
+}
+
+label.form-control.required:after {
+	color: #e32;
+	content: ' *';
+	display: inline;
+}

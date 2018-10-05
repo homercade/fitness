@@ -1,0 +1,23 @@
+include ../../../templates/mem-head
+
+block main   
+  .container
+    .content
+      .row.centered
+        br
+        br
+        br
+        h1(style="font-size:200px;")
+          i.fa.fa-exclamation-circle 
+        h3 Your Application is currently PENDING. PLease wait for a confirmation from the trainer you applied for. 
+        h3
+          a(type="button" data-toggle='modal', data-target='.prompt-modal')
+            | Cancel Application?
+        br
+        br
+        br
+        br
+        br
+        br
+
+include ../../../templates/foot

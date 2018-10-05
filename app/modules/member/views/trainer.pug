@@ -1,0 +1,130 @@
+include ../../../templates/mem-head
+
+block main   
+  .container
+    .content
+      .row.centered
+        h3
+          strong ACTIVE TRAINERS
+        br
+        .search-container
+          form(action='#')          
+            .container
+              .col-md-2(style="position:relative; left:450px;")  
+                input.form-control.t-search(type='text', name='search', placeholder='Search...' style="width:160px")
+              .col-md-1(style="position:relative; left:450px;")  
+                .form-control.btn-primary(style="width:40px; position:relative; left:-40px;")
+                  i.fa.fa-search
+        br
+        br
+        each trainer in trainers
+          .col-lg-4.col-md-4.col-sm-4.mb
+            .content-panel.pn(style="background-color:gray; padding:0; color:white; padding-top: 20px;")
+              h3 #{trainer.trainerfname} #{trainer.trainerlname}
+              h6(style="margin:0!important") #{trainer.specialname}
+              - var fullname = trainer.trainerfname +" "+ trainer.trainerlname
+              button.view.btn-block.btn-primary(
+                                      style         = "position:relative; top:45px; padding:5px; font-weight: bold; border:none" 
+                                      data-target   = '.apply-modal', 
+                                      data-toggle   = 'modal', 
+                                      data-id       = trainer.trainerid,
+                                      data-name     = fullname, 
+                                      data-gender   = trainer.trainergender,
+                                      data-branch   = trainer.branchname,
+                                      data-specs    = trainer.specialname,
+                                      data-workdays = trainer.trainerschedule
+                                    )
+                i.fa.fa-search(style="padding-right:10px;" )
+                | View
+              .content-panel(style="margin:0!important; height: 90px; color:#797979;padding:6px 10px; position:relative; width:100%;top:45px;box-shadow:none; border-radius:0;")
+                br
+                h6(style="margin:0!important;") 
+                  b Branch
+                | #{trainer.branchname}
+      br
+      br
+      br
+
+.apply-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true', style='overflow: auto;')
+  .modal-dialog.modal-md
+    .modal-content
+      .modal-header
+        button.close#return(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h4#myModalLabel.modal-title Trainer view Prompt
+      form
+        .modal-body
+          .container-fluid
+            .row 
+              .col-md-6
+                center
+                  img.img-fluid(src="/assets/img/ui-sherman.jpg", alt="img" width='100%')
+              .col-md-6
+                .form-group
+                  h5 
+                    b Name: 
+                      label#name
+                  h5 
+                    b Gender: 
+                      label#gender
+                  h5 
+                    b Branch: 
+                      label#branch
+                  h5 
+                    b Specialization: 
+                      label#specs
+                  h5 
+                    b Work Days: 
+                      label#workdays
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal') Close
+          button.btn.btn-primary.apply(type='button') Apply
+
+include ../../../templates/foot
+script.
+  $('.a').click(function(){
+    $('.apply-modal').modal('hide');
+  });
+
+  $('.apply').click(function(){
+    swal({
+      title: 'Are you sure?',
+      text: `A pending request will be sent to the trainer that you stating that you want to their trainee `,
+      type: 'info',
+      showCancelButton: true,
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+      if (result.value) {
+        $.post('/member/trainer/apply', { 
+        trainerId: $(this).val()
+        }).done(
+          swal(
+          'Success!',
+          'Your application has been sent',
+          'success'
+          ).then(()=>{
+              location.reload();
+            })
+        ) 
+      }
+    })
+  })
+
+  $('.apply-modal').on('show.bs.modal', function(event){
+
+    var button   =  $(event.relatedTarget)
+    var id       =  button.data('id')
+    var name     =  button.data('name')
+    var gender   =  button.data('gender') 
+    var branch   =  button.data('branch')  
+    var specs    =  button.data('specs')   
+    var workdays =  button.data('workdays')
+
+    var modal = $(this)
+    modal.find('.modal-body #name').text(name)
+    modal.find('.modal-body #gender').text(gender)
+    modal.find('.modal-body #branch').text(branch)
+    modal.find('.modal-body #specs').text(specs)
+    modal.find('.modal-body #workdays').text(workdays)
+    modal.find('.modal-footer .apply').val(id)
+  })
+ 

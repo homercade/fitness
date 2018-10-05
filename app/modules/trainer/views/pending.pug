@@ -1,0 +1,98 @@
+include ../../../templates/tr-head
+style.
+  button{
+    margin-left: 2px;
+  }
+  .content-panel{
+    margin-bottom: 200px!important;
+  }
+
+block main   
+  .container
+    .content
+      .row
+        .col-md-12
+          .content-panel
+            h4(style='margin-left:0;') Pending Requests
+            br
+            table.table.table-striped
+              thead
+                tr
+                  th Trainee Name
+                  th Gender
+                  th Membership
+                  th Action
+              tbody
+                each pe in pends
+                  tr
+                    td #{pe.userfname} #{pe.userlname}
+                    td #{pe.usergender}
+                    td #{pe.memclassname}-#{pe.membershipname}
+                    td
+                      button.view.btn.btn-primary.btn-xs(
+                        value               = pe.userid,
+                        data-fname          = pe.userfname,
+                        data-lname          = pe.userlname,
+                        data-gender         = pe.usergender,
+                        data-bday           = pe.userbday,
+                        data-spec           = pe.specialname,
+                        data-membershipname = pe.membershipname,
+                        data-memclassname   = pe.memclassname
+                        )
+                        i.fa.fa-search
+                      button.accept.btn.btn-success.btn-xs(value = pe.userid)
+                        i.fa.fa-check
+                      button.decline.btn.btn-danger.btn-xs(value = pe.userid)
+                        i.fa.fa-times
+
+include ../../../templates/foot
+
+script.
+
+  $(document).ready(function(){
+
+    $('.view').click(function(){
+      var bday = moment().diff($(this).data('bday'), 'years', false)
+      swal({
+      title: `Invitation from ${$(this).data('fname')}!`,
+      //- text: `To be your trainee `,
+      html: `
+      To be your trainee <br><br>
+      <b>Name:       </b>${$(this).data('fname')} ${$(this).data('lname')}<br>
+      <b>Age:        </b>${bday} years old<br>
+      <b>Gender:     </b>${$(this).data('gender')}<br>
+      <b>Membership: </b>${$(this).data('memclassname')} - ${$(this).data('membershipname')}<br>
+      <b>Focus:      </b>${$(this).data('spec')}<br>
+      `,
+      type: 'info'
+    })
+    })
+
+
+    $('.accept').click(function(){
+      swal({
+        title: 'Are you sure?',
+        text: 'to Accept this member as your trainee.',
+        type: 'warning',
+        showCancelButton: true,
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirm'
+      }).then((result) => {
+        if (result.value){
+          $.post('/trainer/trainee/accept',{
+            userId: $(this).val()
+          }).done(
+          swal(
+          'Success!',
+          "You have approved your client's application",
+          'success'
+          ).then(()=>{
+              location.reload();
+            })
+          ) 
+        } 
+      })
+    })
+  })
+
+  
