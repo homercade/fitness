@@ -135,7 +135,7 @@ block main
 										label.control-label Branch
 										select.form-control(name='branchid')
 											each br in bra
-												option.hidden(value='0' required) Unassign
+												option.hidden(value='0' required) Unassigned branch
 												option(value=''+br.branchID) #{br.branchname}
 										input.hidden#fullna(type='text' name='manager')
 										input.hidden#id(type='text' name='id')

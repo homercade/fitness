@@ -3,7 +3,7 @@ html(lang='en')
   head
     meta(charset='utf-8')
     title A-Team Fitness
-    link(rel='icon', type='image/png', href='../../../../landing/images/muscle.png')
+    link(rel='icon', type='image/png', href='../../../../assets/img/icon.png')
     link(rel='stylesheet', href='../../../../landing/css/bootstrap.min.css')
     link(rel='stylesheet', href='../../../../landing/css/animate.min.css')
     link(rel='stylesheet', href='../../../../landing/css/et-line-font.css')
@@ -189,7 +189,7 @@ html(lang='en')
                         select#membership.form-control.required(name='membership')
                           each ct in cat
                             option.hidden(value='') Select Membership... 
-                            option.membershipOption(value=`${ct.memrateid}` memName=`${ct.membershipname}`) #{ct.memclassname} - #{ct.membershipname} (#{ct.memperiod} MONTHS) - ₱ #{ct.memfee} 
+                            option.membershipOption(value=`${ct.memrateid}` memName=`${ct.membershipname}`) #{ct.memclassname} — #{ct.membershipname} (#{ct.memperiod} MONTHS) — ₱ #{ct.memfee} 
                   .row
                     .col-md-6#branchCol(style='display:none')
                       .form-group

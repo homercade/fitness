@@ -36,8 +36,13 @@ block main
                     each br in intb
                       tr
                         td.hidden-phone  #{br.userfname} #{br.userlname}
+<<<<<<< Updated upstream
                         td #{br.memclassname}-#{br.membershipname} 
                         td #{br.expiry}  
+=======
+                        td #{br.memclassname} — #{br.membershipname} 
+                        td #{br.expirydate}  
+>>>>>>> Stashed changes
                         td
                           if br.statusfront == 'Active'
                             span.label.label-success
