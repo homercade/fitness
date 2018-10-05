@@ -1,0 +1,30 @@
+include ../../../templates/mem-head
+
+block main   
+
+  .container
+    .content
+      .row.mt
+        .col-lg-12.mt
+          section.panel
+            .panel-body
+              #kalendaryo
+
+include ../../../templates/foot
+
+script.
+   $(document).ready(function() {
+
+    $('#kalendaryo').fullCalendar({
+      defaultDate: '2018-03-12',
+      editable: true,
+      eventLimit: true, // allow "more" link when too many events
+      events: [
+        {
+          title: 'All Day Event',
+          start: '2018-03-01'
+        }]
+    });
+
+  });
+  
