@@ -276,12 +276,37 @@ router.post('/buy', (req, res) => {
 
 
 //View Schedule
-router.post('/pt/schedule',(req,res)=>{
+router.post('/pt/schedule',(req, res)=>{
     const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid join tbltrainer on tbltrainer.trainerid = tbppt.trainid where userid = ?`
     db.query(query,[req.session.member.userid],(err,out)=>{
       res.send(out)
     })
   })
+
+router.post('/schedule/reject', (req, res) => {
+    const query = `
+    UPDATE tbppt SET 
+    scheduleStatus = 2, 
+    description = ? 
+    WHERE PTid = ?
+    `
+    db.query(query, [ req.body.desc, req.body.rejId ], (err) => {
+        if (err) console.error(err);
+    })
+})
+
+router.post('/schedule/reject/undo', (req, res) => {
+    const query = `
+    UPDATE tbppt SET 
+    scheduleStatus = 1, 
+    description = NULL
+    WHERE PTid = ?
+    `
+    db.query(query, [ req.body.rejId ], (err) => {
+        if (err) console.error(err);
+    })
+})
+
 
 function personalTrainer(req, res, next) {
     const query =  `

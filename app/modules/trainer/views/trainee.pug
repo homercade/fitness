@@ -206,7 +206,7 @@ script.
           start: start,
           end: end,
           eventSessionId: data[i].sessionID,
-          color: '#ffb347',
+          color: '#77dd77',
           overlap: false,
         }
         evs.push(desc)
@@ -216,12 +216,17 @@ script.
       var d = date.getDate();
       var m = date.getMonth();
       var y = date.getFullYear();
+      var now = moment().format('YYYY-MM-DD')
       
       var calendar = $('#kalendaryo').fullCalendar({
         header: {
           left: 'prev,next',
           center: 'title',
           right: 'month,agendaWeek,agendaDay'
+        },
+        defaultView: 'month',
+        validRange: {
+          start: now
         },
         allDaySlot: false,
         weekMode: 'liquid',
@@ -258,6 +263,43 @@ script.
                 )
               }
             })
+        },
+        eventDrop: function (event, delta, revertFunc) {
+
+          //- var newDate
+          var newDate = moment(event.start).format('YYYY-MM-DD')
+          var newTimeStart = moment(event.start).format('hh:mm a')
+          var newTimeEnd = moment(event.end).format('hh:mm a')
+
+          swal({
+            type: 'warning',
+            title: 'Reschedule?',
+            html: `Are you sure you want to move the Schedule to <br>${moment(newDate).format('MMM D')}, ${moment(newTimeStart, 'hh:mm a').format('h:mm')} - ${moment(newTimeEnd, 'hh:mm a').format('h:mm A')}?`,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirm'
+          }).then((result) =>{
+            if(result.value){
+              
+              $.post('/trainer/trainee/reschedule',{
+                reschedDate : newDate,
+                reschedTime : newTimeStart,
+                reschedId : delId
+              }).done(
+                swal({
+                  type: 'success',
+                  title: 'Rescheduling was succesful!',
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+              )
+            }
+          })
+          //- alert(event.title + " was dropped on " + event.start.format());
+          //- if (!confirm("Are you sure about this change?")) {
+          //-   revertFunc();
+          //- }
         },
         selectable: true,
         selectHelper: true,

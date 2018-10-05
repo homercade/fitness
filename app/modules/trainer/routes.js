@@ -99,6 +99,24 @@ router.post('/trainee/schedule/add', (req, res) => {
   })
 })
 
+//reschedule
+router.post('/trainee/reschedule', (req, res) => {
+  const query = `
+  UPDATE tbppt SET 
+  sessionDate = ?, 
+  sessionTime = ?, 
+  scheduleStatus = '1', 
+  description = NULL 
+  WHERE PTid = ?`
+
+  db.query(query, [ req.body.reschedDate, req.body.reschedTime, req.body.reschedId ], (err, results) => {
+    if(err){
+      console.log(err)
+      res.redirect('trainee')
+    }
+  })
+})
+
 //Delete Schedule
 router.post('/trainee/schedule/delete', (req, res) => {
   console.error(req.body.eventSessionId)
