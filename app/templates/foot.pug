@@ -7,98 +7,99 @@ footer.site-footer
   .text-center
     | 2018 - Team A-Fitness
 
-script(src='/assets/js/jquery.js')
+
+//- Jquery
+script(src='/assets/js/jquery.min.js')
+script(src='/assets/js/bootstrap.min.js')
 script(src='/assets/js/jquery-ui-1.9.2.custom.min.js')
-//- script(src='/assets/js/jquery-ui.min.js')
-script(src='/assets/js/jquery.dataTables.min.js')
 script.include(src='/assets/js/jquery.dcjqaccordion.2.7.js')
 script(src='/assets/js/jquery.scrollTo.min.js')
 script(src='/assets/js/jquery.nicescroll.js')
-script(src='/assets/js/jquery.timepicker.min.js')
-//- script(src='../../assets/js/jquery-1.8.3.min.js')
-script(src='/assets/js/bootstrap-datepicker.js')
-script(src='/assets/js/fullcalendar/fullcalendar.min.js')
-script(src='/assets/js/bootstrap.min.js')
-script(src='/assets/js/dataTables.bootstrap.min.js')
-script(src='/assets/js/common-scripts.js')
-//- script(src='/assets/js/calendar-conf-events.js')
-script(src='/assets/js/gritter/js/jquery.gritter.js')
-script(src='/assets/js/gritter-conf.js')
-script(src='/assets/js/bootstrap-switch.js')
-//- script(src='/assets/js/sparkline-chart.js')
-script(src='/assets/js/multiple-select.js')
-script(src='/assets/js/moment.js')
 script(src='/assets/js/jquery.validate.js')
+
+//- Data Table
+script(src='/assets/js/jquery.dataTables.min.js')
+script(src='/assets/js/dataTables.bootstrap.min.js')
+
+//- Plugins
+script(src='/assets/js/moment.min.js')
+script(src='/assets/js/fullcalendar/fullcalendar.min.js')
+script(src='/assets/js/bootstrap-datepicker.js')
 script(src='/assets/js/bootstrap-timepicker.js')
-script(src='/assets/js/moment.js')
 script(src='/assets/js/sweetalert2.all.min.js')
 
+//- Custom script
+script(src='/assets/js/common-scripts.js')
+script(src='/landing/js/custom.js')
 
-//- burogeso
+//- script(src='/assets/js/gritter/js/jquery.gritter.js')
+//- script(src='/assets/js/gritter-conf.js')
+//- script(src='/assets/js/sparkline-chart.js')
+//- script(src='/assets/js/multiple-select.js')
+
 script.
   $(document).ready(function () {
-  $('.table-striped').DataTable({
-    "language": {
-      "emptyTable": "No data available in table"
-    }
-  });
-  
-  $('[data-toggle="popover"]').popover();
 
-  $(".date").datepicker({
-  changeMonth: true,
-  changeYear: true,
-  todayHighlight: true,
-  maxViewMode: 2,
-  startView: 2,
-  autoclose: true
-  });
-
-  //- $('.time').timepicker({
-  //- 'minTime': '8:00am',
-  //- 'maxTime': '10:00pm',
-  //- });
-   $('.time').timepicker({
+    //- Datatable
+    $('.table-striped').DataTable({
+      "language": {
+        "emptyTable": "No data available in table"
+      }
+    });
+    
+    //Date picker
+    $(".date").datepicker({
+      changeMonth: true,
+      changeYear: true,
+      todayHighlight: true,
+      maxViewMode: 2,
+      startView: 2,
+      autoclose: true
+    });
+    //- Time picker
+    $('.time').timepicker({
       minuteStep: 5,
       showInputs: false,
       disableFocus: true
-  });
-
-  $('.ms').multipleSelect();
+    });
   });
 
 //- sticky navbar
-script. 
+script.
   window.onscroll = function () {
-  myFunction()
+    myFunction()
   };
   var navbar = document.getElementById("navbar");
   var sticky = navbar.offsetTop;
 
   function myFunction() {
-  if (window.pageYOffset >= sticky) {
-  navbar.classList.add("sticky")
-  } else {
-  navbar.classList.remove("sticky");
-  }
+    if (window.pageYOffset >= sticky) {
+      navbar.classList.add("sticky")
+    } else {
+      navbar.classList.remove("sticky");
+    }
   }
 
 //- return to top with animation
 script.
-  $(window).scroll(function () {
-    if ($(this).scrollTop() >= 50) {
-      $('#return-to-top').fadeIn(200);
-    } else {
-      $('#return-to-top').fadeOut(200);
-    }
-  });
-  $('#return-to-top').click(function () {
-    $('body,html').animate({
-      scrollTop: 0
-    }, 700);
-  });
+  $(document).ready(function () {
+    $(window).scroll(function () {
+      if ($(this).scrollTop() >= 50) {
+        $('#return-to-top').fadeIn(200)
+      } else {
+        $('#return-to-top').fadeOut(200)
+      }
+    })
+    $('#return-to-top').click(function () {
+      $('body,html').animate({
+        scrollTop: 0
+      }, 700)
+    });
+  })
+
+//- Slider
 script.
-    //- $(document).ready(function(){
-         
-    //- })
-  
+  $(window).on('load', function () {
+    $('.preloader').fadeOut(500); 
+  });
+

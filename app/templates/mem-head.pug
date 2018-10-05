@@ -26,7 +26,7 @@ block main
 				each pr in profs
 					span.sm(style='font-size: 12pt;')
 						| Hello, 
-						b #{pr.userfname} #{pr.userlname}
+						b #{pr.userfname} #{pr.userlname}!
 					span.dropdown
 						img.img-circle.dropdown-toggle(data-toggle='dropdown', src='/assets/img/ui-zac.jpg', alt='')
 						ul.dropdown-menu.extended.tasks-bar(style='z-index:2000; position:absolute; top:30px;')
@@ -59,7 +59,7 @@ block main
 				Events
 			a(href='/member/trainers')
 				span.li_user
-				| Trainers
+				| Personal Training
 			a(href='/member/billing')
 				span.li_news
 				| Billing

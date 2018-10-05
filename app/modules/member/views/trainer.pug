@@ -23,11 +23,11 @@ block main
               h3 #{trainer.trainerfname} #{trainer.trainerlname}
               h6(style="margin:0!important") #{trainer.specialname}
               - var fullname = trainer.trainerfname +" "+ trainer.trainerlname
-              button.btn-block.btn-primary(
-                                      style       = "position:relative; top:45px; padding:5px; font-weight: bold; border:none" 
-                                      data-target = '.apply-modal', 
-                                      data-toggle = 'modal', 
-                                      value       = trainer.trainerid
+              button.view.btn-block.btn-primary(
+                                      style         = "position:relative; top:45px; padding:5px; font-weight: bold; border:none" 
+                                      data-target   = '.apply-modal', 
+                                      data-toggle   = 'modal', 
+                                      data-id       = trainer.trainerid,
                                       data-name     = fullname, 
                                       data-gender   = trainer.trainergender,
                                       data-branch   = trainer.branchname,
@@ -51,7 +51,7 @@ block main
       .modal-header
         button.close#return(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Trainer view Prompt
-      form(action='POST', method='')
+      form
         .modal-body
           .container-fluid
             .row 
@@ -77,24 +77,7 @@ block main
                       label#workdays
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
-          a.btn.btn-primary.a(data-toggle='modal' data-target='.prompt-modal') Apply
-
-.prompt-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true', style='overflow: auto;')
-  .modal-dialog.modal-sm
-    .modal-content
-      .modal-header
-        button.close#return(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4#myModalLabel.modal-title Prompt
-      form(action='', method='')
-        .modal-body
-          .container-fluid
-            center
-              .row 
-                h5 Are you sure? 
-              .row 
-                button.btn.btn-primary#btn(type='submit') Yes
-                button.btn.btn-default(type='button' data-dismiss='modal') Close
-              
+          button.btn.btn-primary.apply(type='button') Apply
 
 include ../../../templates/foot
 script.
@@ -102,14 +85,39 @@ script.
     $('.apply-modal').modal('hide');
   });
 
+  $('.apply').click(function(){
+    swal({
+      title: 'Are you sure?',
+      text: `A pending request will be sent to the trainer that you stating that you want to their trainee `,
+      type: 'info',
+      showCancelButton: true,
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+      if (result.value) {
+        $.post('/member/trainer/apply', { 
+        trainerId: $(this).val()
+        }).done(
+          swal(
+          'Success!',
+          'Your application has been sent',
+          'success'
+          ).then(()=>{
+              location.reload();
+            })
+        ) 
+      }
+    })
+  })
+
   $('.apply-modal').on('show.bs.modal', function(event){
-    var button = $(event.relatedTarget)
-    var name    = button.data('name')
-    console.log(name)
-    var gender  = button.data('gender') 
-    var branch  = button.data('branch')  
-    var specs   = button.data('specs')   
-    var workdays = button.data('workdays')
+
+    var button   =  $(event.relatedTarget)
+    var id       =  button.data('id')
+    var name     =  button.data('name')
+    var gender   =  button.data('gender') 
+    var branch   =  button.data('branch')  
+    var specs    =  button.data('specs')   
+    var workdays =  button.data('workdays')
 
     var modal = $(this)
     modal.find('.modal-body #name').text(name)
@@ -117,5 +125,6 @@ script.
     modal.find('.modal-body #branch').text(branch)
     modal.find('.modal-body #specs').text(specs)
     modal.find('.modal-body #workdays').text(workdays)
+    modal.find('.modal-footer .apply').val(id)
   })
  

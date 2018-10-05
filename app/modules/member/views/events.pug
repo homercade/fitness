@@ -19,24 +19,14 @@ block main
             tbody(style="border:0!important;")
             each event in joinedEvents
               tr
-                - console.log(event)
                 td.text-left(style="border:0!important;") #{event.eventclassname}
                 td(style="border:0!important;")
                   button.resign.btn.btn-danger.btn-xs(value = event.eventclassid, data-id = event.intUCEID)
                     |  RESIGN
-             
-                
-        .col-md-3
+                  
+          input#eventIdsString.hidden(type="text" value = eventIds)
+          .col-md-3
         br
-        //- .col-md-12
-        //-   .search-container
-        //-     form(action='#')          
-        //-       .container
-        //-         .col-md-2(style="position:relative; left:450px;")  
-        //-           input.form-control.t-search(type='text', name='search', placeholder='Search...' style="width:160px")
-        //-         .col-md-1(style="position:relative; left:450px;")  
-        //-           .form-control.btn-primary(style="width:40px; position:relative; left:-40px;")
-        //-             i.fa.fa-search
         br
         .col-md-12
           h3
@@ -47,21 +37,25 @@ block main
             .col-lg-4.col-md-4.col-sm-4.mb
               .content-panel(style="background-color:gray; padding:0; color:white; padding-top: 20px;")
                 h3#slot(style='padding:0; margin:0; position:absolute;top:10px; left:20px;') #{eve.slot}
-                p(style='position:absolute;top:13px; left:50px;') - remaining slots
+                p(style='position:absolute;top:13px; left:60px;') - remaining slots
                 h3 #{eve.eventclassname}
-                h6(style="margin:0!important") SAT/SUN - 1:30PM-4:30PM
-                | TUE/FRI - 8:00AM-10:30AM
+                if eve.startdate == eve.enddate
+                  h6(style="margin:0!important") #{eve.startdate}
+                  | #{eve.starttime} - #{eve.endtime}
+                else if eve.startdate != eve.enddate
+                  h6(style="margin:0!important") #{eve.startdate} - #{eve.enddate}
+                  | #{eve.starttime} - #{eve.endtime}
                 br
                 br
                 br
                 button.btn-block.btn-primary.join(style=" padding:5px; font-weight: bold; border:none;", value = eve.eventclassid)
                     | Join
+                
                 .content-panel(style="margin:0!important; color:#797979;padding:5px 10px; width:100%;box-shadow:none; border-radius:0;")
                   br
                   h6(style="margin:0!important;") 
                     b Description:
                   | #{eve.desc}
-                  //- input(value = eve.eventclassid)
                   br 
                   br
               br
@@ -74,9 +68,28 @@ include ../../../templates/foot
 script.
 
   $(document).ready(function(){
+    let eventIds = JSON.parse($('#eventIdsString').val());
+    
     $('.join').click(function(){
-      
       let id = $(this).val()
+
+      for (i=0; i < eventIds.length; i++){
+        console.log("ID NG EVENT", id)
+        console.log("ID NG JOINED EVENT", eventIds)
+        console.log(eventIds[i])
+        if (id != eventIds[i]) {
+          continue
+        }  
+        else{
+          swal({
+            type: 'error',
+            title: 'Request prevented',
+            text: "You were already on the list of this event's participants",    
+          })
+          exit()
+        }
+      }
+      
       swal({
         title: 'Are you sure?',
         text: "Joining an event may cost you money",
@@ -134,27 +147,3 @@ script.
       })
      })
   })
-
-script.
-  $(document).ready(function(){
-    $.post('/member/event/view', {
-      eventid: eventid
-    })
-  })
-
-
-
-
-//-  $('.view').click(function() {
-//-     $(this).toggleClass('btn-primary');
-//-     $(this).toggleClass('btn-danger');
-//-     if ($(this).text() == "Join"){
-//-       $(this).text('Resign');
-//-       $('.join-prompt').modal();
-//-     }
-//-     else {
-//-       $(this).text('Join');
-//-       $('.resign-prompt').modal();
-//-     }
-//-   });
-

@@ -66,7 +66,6 @@ function viewSpecial(req, res, next){
 //view branch
 function viewBranch(req, res, next){
   db.query('SELECT * from tblbranch  ',function(err, results, fields){
-      console.log(results)
       if(err) return res.send(err);
       req.viewBranch = results;
       return next();
@@ -159,8 +158,6 @@ function useraddid(req, res, next){
   db.query('SELECT (userid+1)id FROM tbluser ORDER BY userid DESC LIMIT 1;',function(err, results, fields){
     if(err) return res.send(err)
     req.newuserid=results[0].id
-    console.log('puta')
-    console.log(req.newuserid)
     return next();
     })
 } 

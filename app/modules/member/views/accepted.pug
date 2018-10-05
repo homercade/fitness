@@ -1,23 +1,96 @@
 include ../../../templates/mem-head
-
 block main   
-  .container
-    .content
-      .row.centered
-        h1(style="font-size:200px;")
-          i.fa.fa-check 
-        h3 You are currently applied to <b>John Doe</b>.
-        h3
-          a(type="button" data-toggle='modal', data-target='.prompt')
-            | Change Personal Trainer?
 
+  .container
+    section.wrapper.site-min-height(style='margin-top:15px;')
+      .col-lg-12
+        .row.content-panel
+            .col-md-5.profile-text.mt.mb.centered
+              h3 #{pt[0].memclassname} - #{pt[0].membershipname}
+              h6 Membership
+              h3 #{pt[0].session_count}
+              h6 Sessions Bought
+              button#buySession.btn.btn-theme(value= pt[0].userid)
+                i.fa.fa-shopping-cart
+                |
+                | Buy Session
+              input#sessionID.hidden(type="text" value = pt[0].sessionID)
+              input#sessionStatus.hidden(type="text" value = pt[0].sessionStatus)
+                
+                
+            .col-md-4.profile-text(style='margin-top:20px!important;')
+              h4(style='margin-left:0') You are currently assigned to <br><b>#{pt[0].trainerfname} #{pt[0].trainerlname}</b>
+              h5 Trainer Details: 
+              h6 
+                .li #{pt[0].branchname}
+                .li #{pt[0].trainergender} - #{pt[0].trainerbday} yrs old
+                .li #{pt[0].traineremail}
+                .li #{pt[0].trainermobile}
+
+            .col-md-3.centered
+              .profile-pic
+                p
+                  img.img-circle.img-thumbnail(width=150 src='../../../assets/img/chip.png')
+                p
+                  button.btn.btn-theme(value= '', data-toggle='modal', data-target='.prompt')
+                    | Change Trainer
+      .col-lg-12.mt
+        .row.content-panel
+          .panel-heading
+            ul.nav.nav-tabs.nav-justified
+              li.active
+                a(data-toggle='tab', href='#manage') Manage Schedule
+              li
+                a(data-toggle='tab', href='#history') History of Sessions
+          .panel-body
+            .tab-content
+              #manage.tab-pane.active
+                .row                    
+                  .col-lg-9.mt(style='float:none; margin: 0 auto')
+                    .panel-body
+                        #kalendaryo
+              #history.tab-pane
+                .row
+                  .col-lg-12.mt
+                    table.table
+                      thead
+                        tr
+                          th Date & Time
+                          th Status
+                          th
+                      tbody
+                        tr
+                          td 01/01/18 (8:00-9:00PM)
+                          td Success
+                          td
+                            a(style='color:rgb(18, 35, 49); cursor:pointer;', data-toggle='modal', data-target='#remove')
+                              i.fa.fa-times
+
+.multiple-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h4#myModalLabel.modal-title Schedule a Session
+      form(action='', method='')
+        .modal-body
+          .container-fluid
+            .row
+              .col-md-12
+                .form-group
+                  #multiple 
+                  input.time.form-control(type="text")
+      .modal-footer
+        button.btn.btn-default(type='button' data-dismiss='modal') Cancel
+        button.btn.btn-theme(type='button') Save
+                
 .prompt.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog
     .modal-content
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Change Trainer
-      form(action='POST', method='')
+      form(action='/send', method='POST')
         .modal-body
           .container-fluid
             .row
@@ -26,7 +99,190 @@ block main
                   h4 Reason for Changing trainer:
                   textarea.form-control(rows='3')
       .modal-footer
-        //type submit dapat to
-        button.send.btn.btn-primary(type='button') Send
+        button.btn.btn-primary(type='submit') Save
+        
+#reason-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h4#myModalLabel.modal-title Change Trainer
+      form(action='/send', method='POST')
+        .modal-body
+          .container-fluid
+            .row
+              .col-md-12
+                .form-group
+                  h4 Reason for Changing trainer:
+                  textarea.form-control(rows='3')
+      .modal-footer
+        button.btn.btn-primary(type='submit') Save
 
 include ../../../templates/foot
+
+script.
+  $(document).ready(function () {
+    $('#buySession').click(function () {
+      let stat = $('#sessionStatus').val()
+      if (stat == '') {
+
+        swal({
+          title: 'How many Sessions?',
+          text: 'Current price per Session is ₱ 50.00',
+          input: 'number',
+          showCancelButton: true,
+          confirmButtonText: 'Confirm',
+          showLoaderOnConfirm: true,
+          allowOutsideClick: () => !swal.isLoading()
+        })
+        .then((result) => {
+          let sessionID = $('#sessionID').val()
+          if (result.value) {
+            let total = result.value * 50
+            let amount = result.value
+            
+              swal({
+                title: 'Are you sure?',
+                text: `This act is irreversible here. You must settle or cancel your balance of ₱ ${total}.00 on your chosen branch of us in-person`,
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirm'
+              }).then((result) => {
+                if (result.value) {
+                  $.post('/member/buy', {
+                    amount: amount,
+                    sessionID: sessionID
+                  })
+                  .done(
+                    swal({
+                        type: 'success',
+                        title: 'Success!',
+                        text: `You succesfully bought ${amount} session(s). Don't forget to settle your balance or this transaction will be void.` 
+                      }).then(()=>{
+                      location.reload();
+                    })
+                  )
+                }
+              })
+          }
+        })
+
+      } else {
+        swal({
+          type: 'error',
+          title: 'Sorry...',
+          text: 'You have already requested to buy a session. Please settle your last transaction before requesting buy more.',
+        })
+      }
+    })
+  })
+
+ 
+
+script.
+  $(document).ready(function(){
+    $.post('/member/pt/schedule').done(function (data) {
+
+      var evs = []
+      var delId
+
+      for (i = 0; i < data.length; i++) {
+        let name = `${data[i].trainerfname} ${data[i].trainerlname}`
+        let sessionDate = moment(data[i].sessionDate).format('YYYY-MM-DD')
+        let timeStart = moment(data[i].sessionTime, 'hh:mm a').format('HH:mm')
+        let timeEnd = moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('HH:mm')
+        let start = `${sessionDate} ${timeStart}`
+        let end = `${sessionDate} ${timeEnd}`
+        delId = data[i].PTid
+        //- console.log(delId, 'yogi')
+        console.log(name)
+        console.log(start)
+        console.log(end)
+        var desc = {
+          id: delId,
+          title: name,
+          start: start,
+          end: end,
+          eventSessionId: data[i].sessionID,
+          color: '#ffb347',
+          overlap: false,
+        }
+        evs.push(desc)
+      }
+      //- calendar.fullCalendar('renderEvents', evs)
+      var date = new Date();
+      var d = date.getDate();
+      var m = date.getMonth();
+      var y = date.getFullYear();
+      
+      var calendar = $('#kalendaryo').fullCalendar({
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
+        },
+        allDaySlot: false,
+        weekMode: 'liquid',
+        editable: false,
+        eventOverlap: false,
+        eventStartEditable: false,
+        eventDurationEditable: false,
+        minTime: '08:00',
+        maxTime: '21:00',
+        eventClick: function (event, jsEvent, view) {
+          swal({
+              title: 'Cancel Schedule?',
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Confirm'
+            })
+            .then((result) => {
+              if (result.dismiss != 'cancel') {
+                $.post('/trainer/trainee/schedule/delete', {
+                  delId: event.id,
+                  eventSessionId: event.eventSessionId
+                }).done(
+                  swal({
+                    type: 'success',
+                    title: 'You Succesfully Cancelled a Session',
+                    showConfirmButton: false,
+                    timer: 1500
+                  })
+                  .then(() => {
+                    location.reload();
+                  })
+                )
+              }
+            })
+        },
+        selectable: true,
+        selectHelper: true,
+        allowOutsideClick: false,
+        events: evs,
+        select: function (startDate, jsEvent, view) {
+
+          var schedCount = $('#sessionForSchedCount').val()
+          var idForSched = $('#idForSched').val()
+          var view = $('#kalendaryo').fullCalendar('getView')
+
+          if (view.name == 'month') {
+           
+              $('#kalendaryo').fullCalendar('changeView', 'agendaDay')
+              $('#kalendaryo').fullCalendar('gotoDate', startDate)
+              
+          } else {
+            return
+          }
+        }
+      })
+    })
+  })
+
+  
+  
+  
+  
+ 

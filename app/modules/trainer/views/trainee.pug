@@ -6,6 +6,7 @@ block main
       .col-lg-12
         .row.content-panel
           .col-md-4.profile-text.mt.mb.centered
+            -console.log(general)
             h3#membership #{general.memclassname} - #{general.membershipname}
             h6 Membership
             h3#session #{general.session_count}
@@ -18,9 +19,11 @@ block main
               #genderAge #{general.usergender} - #{general.userbday} yrs old 
               br
               #email #{general.useremail}
-              br
+              br  
               #mobile #{general.usermobile} 
-              input(type='hidden' value=`${general.userid}` id ='aydi')
+              input.hidden(type='text' value=`${general.userid}` id ='aydi')
+              input.hidden#sessionForSchedCount(type=text value = general.sessionForSched)
+              input.hidden#idForSched(type=text value = general.userid)
             h3 Other Trainees:
               #otherMember
               //- a(href='#')
@@ -39,9 +42,7 @@ block main
           .panel-heading
             ul.nav.nav-tabs.nav-justified
               li.active
-                a(data-toggle='tab', href='#manage') Manage Current Trainee's Schedule
-              li
-                a(data-toggle='tab', href='#sched') All Trainees' Schedules
+                a(data-toggle='tab', href='#manage') Manage Trainees Schedule
               li
                 a(data-toggle='tab', href='#history') History of Sessions
           .panel-body
@@ -55,13 +56,7 @@ block main
                     
                   .col-lg-9.mt
                       .panel-body
-                        #calendar
-              #sched.tab-pane
-                .row
-                  .col-lg-12.mt
-                    section.panel
-                      .panel-body
-                        #calendar2
+                        #kalendaryo
               #history.tab-pane
                 .row
                   .col-lg-12.mt
@@ -78,6 +73,24 @@ block main
                           td
                             a(style='color:rgb(18, 35, 49); cursor:pointer;', data-toggle='modal', data-target='#remove')
                               i.fa.fa-times
+
+.multiple-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h4#myModalLabel.modal-title Schedule a Session
+      form(action='', method='')
+        .modal-body
+          .container-fluid
+            .row
+              .col-md-12
+                .form-group
+                  #multiple 
+                  input.time.form-control(type="text")
+      .modal-footer
+        button.btn.btn-default(type='button' data-dismiss='modal') Cancel
+        button.btn.btn-theme(type='button') Save
                 
 .prompt.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog
@@ -96,7 +109,7 @@ block main
       .modal-footer
         button.btn.btn-primary(type='submit') Save
         
-#calendar-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+#reason-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog
     .modal-content
       .modal-header
@@ -124,7 +137,7 @@ script.
       for(var i=0;i<data.othermember.length;i++)
       {
         $('#otherMember').append(`
-        <button class='member btn-primary' style='border:none' value= ${data.othermember[i].userid}> ${data.othermember[i].userfname} </button>
+        <button class='member btn btn-theme01' style='border:none' value= ${data.othermember[i].userid}> ${data.othermember[i].userfname} </button>
         `)
       }
     })
@@ -141,22 +154,24 @@ script.
         }).done(function(data){
           
           data.newmember[0].userbday = moment().diff(data.newmember[0].userbday, 'years', false);
-
+          //- console.log(data.newmember[0])
           $('#membership').text(data.newmember[0].memclassname+" "+"-"+" "+data.newmember[0].membershipname)
           $('#session').text(data.newmember[0].session_count)
-          $('#fullname').text(data.newmember[0].userfname+" "+data.newmember[0].userl name)
+          $('#fullname').text(data.newmember[0].userfname+" "+data.newmember[0].userlname)
           $('#branch').text(data.newmember[0].memclassname+" "+"-"+" "+data.newmember[0].membershipname)
           $('#genderAge').text(data.newmember[0].usergender+" "+"-"+" "+data.newmember[0].userbday+" yrs old")
           $('#email').text(data.newmember[0].useremail)
           $('#mobile').text(data.newmember[0].usermobile)
           $('#sessionForSched').text(data.newmember[0].sessionForSched)
+          $('#sessionForSchedCount').val(data.newmember[0].sessionForSched)
+          $('#idForSched').val(data.newmember[0].userid)
           
           $('#otherMember').empty()
           $.post('/trainer/trainee/otherMember',{othermember}).done(function(data){
             for(var i=0;i<data.othermember.length;i++)
              {
             $('#otherMember').append(`
-            <button class='member btn-primary' style='border:none' value= ${data.othermember[i].userid}> ${data.othermember[i].userfname}</button>
+            <button class='member btn btn-theme01' style='border:none' value= ${data.othermember[i].userid}> ${data.othermember[i].userfname}</button>
             `)
              }
           })
@@ -166,146 +181,173 @@ script.
 
 //- INITIALIZE CALENDAR
 script.
-  $(document).ready(function(){
-    
-    var date = new Date();
-    var d = date.getDate();
-    var m = date.getMonth();
-    var y = date.getFullYear();
+  $(document).ready(function () {
 
-    $('#calendar').fullCalendar({
+    $.post('/trainer/trainee/viewSched').done(function (data) {
+
+      var evs = []
+      var delId
+
+      for (i = 0; i < data.length; i++) {
+        let name = `${data[i].userfname} ${data[i].userlname}`
+        let sessionDate = moment(data[i].sessionDate).format('YYYY-MM-DD')
+        let timeStart = moment(data[i].sessionTime, 'hh:mm a').format('HH:mm')
+        let timeEnd = moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('HH:mm')
+        let start = `${sessionDate} ${timeStart}`
+        let end = `${sessionDate} ${timeEnd}`
+        delId = data[i].PTid
+        //- console.log(delId, 'yogi')
+        console.log(name)
+        console.log(start)
+        console.log(end)
+        var desc = {
+          id: delId,
+          title: name,
+          start: start,
+          end: end,
+          eventSessionId: data[i].sessionID,
+          color: '#ffb347',
+          overlap: false,
+        }
+        evs.push(desc)
+      }
+      //- calendar.fullCalendar('renderEvents', evs)
+      var date = new Date();
+      var d = date.getDate();
+      var m = date.getMonth();
+      var y = date.getFullYear();
+      
+      var calendar = $('#kalendaryo').fullCalendar({
         header: {
-            left: 'prev,next',
-            center: 'title',
-            right: 'month,agendaWeek,agendaDay'
+          left: 'prev,next',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
         },
         allDaySlot: false,
         weekMode: 'liquid',
         editable: true,
-        eventOverlap:false,
-        eventResize: function(event, dayDelta, minuteDelta, revertFunc){
-          revertFunc()
-        },
-        //- dayClick: function(date) {
-        //-   let currDate = moment(date).format('YYYY-MM-DD')
-        //-   alert(currDate);
-        //- },
-        eventClick:  function(event, jsEvent, view) {
-          alert('Schedule Clicked!')
-        },
-        selectable: true,
-        selectHelper: true,
-        select: function(date, jsEvent, view){
-          //- if (moment().diff(start, 'days') > 0) {
-          //-   $('#calendar').fullCalendar('unselect');
-          //-   return false;
-          //- }
-          var view = $('#calendar').fullCalendar('getView')
-          if(view.name == 'agendaWeek'){
-            scheduleDate = moment(date).format('YYYY-MM-DD')
-            var scheduleDate2 = moment(scheduleDate, 'YYYY-MM-DD').format('MMM D YYYY')
-            timeStart = moment(date).format('hh:mm a')
-            timeEnd = moment(timeStart, 'hh:mm a').add(1,'h').format('hh:mm a')
-            console.log('DATA TO BE SAVED')
-            console.log(scheduleDate)
-            console.log(timeStart)
-            console.log(timeEnd)
-
-            swal({
-              title: 'Schedule a Personal Training Session on',
-              html: `<b>${scheduleDate2}</b></br><b>${timeStart} - ${timeEnd}</b>`,
-              type: 'info',
+        eventOverlap: false,
+        eventStartEditable: true,
+        eventDurationEditable: false,
+        minTime: '08:00',
+        maxTime: '21:00',
+        eventClick: function (event, jsEvent, view) {
+          swal({
+              title: 'Cancel Schedule?',
+              type: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
               cancelButtonColor: '#d33',
               confirmButtonText: 'Confirm'
-            }).then((result)=>{
-              console.log(result)
-              if (result.dismiss != 'cancel'){
-                $.post('/trainer/trainee/schedule/', {
-                  othermember: $('#aydi').val()
-                }).done(function(data){
-                  console.log(data);
-                  var memid = data[0].userid
-                  var sessionid = data[0].sessionID
-                  var sessionDate = scheduleDate
-                  var sessionTime = timeStart
-                  console.log(memid);
-                  console.log(sessionid);
-                  console.log(sessionDate);
-                  console.log(sessionTime);
-                  $.post('/trainer/trainee/schedule/add',{
-                    memid: memid,
-                    sessionid: sessionid,
-                    sessionDate: sessionDate,
-                    sessionTime: sessionTime, 
-                  }).done(
-                    swal({
+            })
+            .then((result) => {
+              if (result.dismiss != 'cancel') {
+                $.post('/trainer/trainee/schedule/delete', {
+                  delId: event.id,
+                  eventSessionId: event.eventSessionId
+                }).done(
+                  swal({
                     type: 'success',
-                    title: 'You Succesfully Scheduled a Session',
+                    title: 'You Succesfully Cancelled a Session',
                     showConfirmButton: false,
                     timer: 1500
-                    }).then(()=>{
-                      location.reload();
-                    })
-                  )
-                })
+                  })
+                  .then(() => {
+                    location.reload();
+                  })
+                )
               }
             })
+        },
+        selectable: true,
+        selectHelper: true,
+        allowOutsideClick: false,
+        events: evs,
+        select: function (startDate, jsEvent, view) {
 
-          
-            //- .then((result) => {
-            //- if (result.value) {
-            //-   $.post('/trainer/schedule/',{
-            //-     othermember: $('#aydi').val()
-            //-   }).done(function(data){
-            //-     console.log(data)
-            //-   })
-              
-            //- }
-            //-   //- .done(function(data){
-            //-   //-   console.log(data)
-            //-   //- }
+          var schedCount = $('#sessionForSchedCount').val()
+          var idForSched = $('#idForSched').val()
+          var view = $('#kalendaryo').fullCalendar('getView')
 
-              
-            //- //-     
-            //- //-     })
-                 
-            //- //-     )
-            //- //-   }
-            //- //- })
-          }
-          else if(view.name == 'month'){
-            $('#calendar').fullCalendar('changeView', 'agendaWeek')
-            $('#calendar').fullCalendar('gotoDate', date)
-          }
-          else{
+          if (view.name != 'month') {
+            if (schedCount > 0) {
+              var scheduleDate = moment(startDate).format('YYYY-MM-DD')
+              var scheduleDate2 = moment(scheduleDate, 'YYYY-MM-DD').format('MMM D YYYY')
+              timeStart = moment(startDate).format('hh:mm a')
+              timeEnd = moment(timeStart, 'hh:mm a').add(1, 'h').format('hh:mm a')
+              console.error('DATA TO BE SAVED')
+              console.log(scheduleDate, '<- Date')
+              console.log(timeStart, '<- Time Start')
+              console.log(timeEnd, '<- Time End')
+
+              swal({
+                  title: 'Schedule a Personal Training Session on',
+                  html: `<b>${scheduleDate2}</b></br><b>${timeStart} - ${timeEnd}</b>`,
+                  type: 'info',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Confirm'
+                })
+                .then((result) => {
+                  console.log(result)
+                  if (result.dismiss != 'cancel') {
+                    $.post('/trainer/trainee/schedule', {
+                        othermember: $('#aydi').val(),
+                        idForSched: idForSched
+                      })
+                      .done(function (data) {
+                        console.log(data);
+                        var memid = data[0].userid
+                        var sessionid = data[0].sessionID
+                        var sessionDate = scheduleDate
+                        var sessionTime = timeStart
+                        console.error(memid);
+                        console.log(sessionid);
+                        console.log(sessionDate);
+                        console.log(sessionTime);
+                        $.post('/trainer/trainee/schedule/add', {
+                            memid: memid,
+                            sessionid: sessionid,
+                            sessionDate: sessionDate,
+                            sessionTime: sessionTime,
+                          })
+                          .done(
+                            swal({
+                              type: 'success',
+                              title: 'You Succesfully Scheduled a Session',
+                              showConfirmButton: false,
+                              timer: 1500
+                            })
+                            .then(() => {
+                              location.reload();
+                            })
+                          )
+                      })
+                  }
+                })
+            } else {
+              swal({
+                type: 'error',
+                title: 'Oops...',
+                text: `This user haven't bought sessions to schedule yet.`,
+              })
+            }
+          } else if (view.name == 'month') {
+            if (schedCount > 0) {
+              $('#kalendaryo').fullCalendar('changeView', 'agendaDay')
+              $('#kalendaryo').fullCalendar('gotoDate', startDate)
+            } else {
+              swal({
+                type: 'error',
+                title: 'Oops...',
+                text: `This user haven't bought sessions to schedule yet.`,
+              })
+            }
+          } else {
             return
           }
         }
-      }) 
-
-    $.post('/trainer/trainee/viewSched').done(function(data){
-      var name = `${data[0].userfname} ${data[0].userlname}`
-      for (var i = 0; i < data.length; i++){
-        console.log(i)
-        var sessionDate = moment(data[i].sessionDate).format('MM/DD/YYYY')
-        data[i].sessionTime = moment(data[i].sessionTime, 'hh:mm a').format('hh:mm a')
-        var timeEnd = moment(data[i].sessionTime, 'hh:mm a').add(1,'hour').format('hh:mm a')
-
-        //- console.log(`${sessionDate} ${data[i].sessionTime}`);
-        var test = moment(`${sessionDate} ${data[i].sessionTime}`).format('YYYY-MM-DD HH:mm')
-        var test2 = moment(`${sessionDate} ${timeEnd}`).format('YYYY-MM-DD HH:mm')
-        console.log(test)
-        console.log(test2)
-        //- console.log(`${sessionDate} ${timeEnd}`);
-
-        $('#calendar').fullCalendar('renderEvent',{
-          title: name,
-          start: test,
-          end: test2,
-          eventStartEditable: true
-        })
-      }
+      })
     })
   })

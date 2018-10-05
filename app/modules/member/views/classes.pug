@@ -4,102 +4,121 @@ block main
   .container
     .content
       .row.centered
-        h3
-          strong ACTIVE CLASSES 
+        .col-md-3
+        .col-md-6
+          h3 
+            strong JOINED CLASSES  
+          table.table
+            thead
+              th
+                i.fa.fa-dumbbell
+                |  Class Name
+              th.text-center
+                i.fa.fa-edit
+                |  Action
+            tbody(style="border:0!important;")
+            each cl in joinedClasses
+              tr
+                td.text-left(style="border:0!important;") #{cl.eventclassname}
+                td(style="border:0!important;")
+                  button.resign.btn.btn-danger.btn-xs(value = cl.eventclassid, data-id = cl.intUCEID)
+                    |  RESIGN
+                  
+          input#classIdsString.hidden(type="text" value = classIds)
+          .col-md-3
         br
-        .search-container
-          form(action='#')          
-            .container
-              .col-md-2(style="position:relative; left:450px;")  
-                input.form-control.t-search(type='text', name='search', placeholder='Search...' style="width:160px")
-              .col-md-1(style="position:relative; left:450px;")  
-                .form-control.btn-primary(style="width:40px; position:relative; left:-40px;")
-                  i.fa.fa-search
         br
-        br
-        - console.log(classes)
-        each c in classes
-          .col-lg-4.col-md-4.col-sm-4.mb
-            .content-panel(style="background-color:gray; padding:0; color:white; padding-top: 20px;")
-              h3#slot(style='padding:0; margin:0; position:absolute;top:10px; left:20px;') #{c.slot}
-              p(style='position:absolute;top:13px; left:50px;') - remaining slots
-              h3 #{c.eventclassname}
-              h6(style="margin:0!important") SAT/SUN 
-              | #{c.starttime} - #{c.endtime}
+        .col-md-12
+          h3
+            strong ACTIVE CLASS
+               
+          each cl in classes
+           
+            - let daysString = `[${cl.days}]`  
+            - var array = JSON.parse(daysString)
+            - var result =''
+
+            - for(i=0; i<array.length;i++){
+            -   if (array[i] == 1){
+            -     result += 'Monday, '
+            -   }
+            -   else if (array[i] == 2){
+            -     result += 'Tuesday, '
+            -   }
+            -   else if (array[i] == 3){
+            -     result += 'Wednesday, '
+            -   }
+            -   else if (array[i] == 4){
+            -     result += 'Thursday, '
+            -   }
+            -   else if (array[i] == 5){
+            -     result += 'Friday, '
+            -   }
+            -   else if (array[i] == 6){
+            -     result += 'Saturday, '
+            -   }
+            -   else if (array[i] == 0){
+            -     result += 'Sunday, '
+            -   }
+            - }
+             
+            .col-lg-4.col-md-4.col-sm-4.mb
+              .content-panel(style="background-color:gray; padding:0; color:white; padding-top: 20px;")
+                h3#slot(style='padding:0; margin:0; position:absolute;top:10px; left:20px;') #{cl.slot}
+                p(style='position:absolute;top:13px; left:60px;') - remaining slots
+                h3 #{cl.eventclassname}
+                h6(style="margin:0!important") #{result}
+                | #{cl.starttime} - #{cl.endtime}
+                br
+                br
+                br
+                button.btn-block.btn-primary.join(style=" padding:5px; font-weight: bold; border:none;", value = cl.eventclassid)
+                    | Join
+                .content-panel(style="margin:0!important; color:#797979;padding:5px 10px; width:100%;box-shadow:none; border-radius:0;")
+                  br
+                  h6(style="margin:0!important;") 
+                    b Description:
+                  | #{cl.desc}
+                  br 
+                  br
               br
               br
               br
-              button.btn-block.btn-primary.join(style=" padding:5px; font-weight: bold; border:none" value = c.eventclassid)
-                  | Join
-              .content-panel(style="margin:0!important; color:#797979;padding:5px 10px; width:100%;box-shadow:none; border-radius:0;")
-                br
-                h6(style="margin:0!important;") 
-                  b Class Description:
-                | #{c.desc}
-                br
-                br
-      br
-      br
-      br
-
-.join-prompt.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true', style='overflow: auto;')
-  .modal-dialog.modal-sm
-    .modal-content
-      .modal-header
-        button.close#return(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4#myModalLabel.modal-title Join
-      form(action='POST', method='')
-        .modal-body
-          .container-fluid
-            .row(style='margin-top:15px; margin-bottom:15px;') 
-              .container-fluid
-                h4 Are you sure you would like to join?
-        .modal-footer
-          button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='submit') Yes
-
-.resign-prompt.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true', style='overflow: auto;')
-  .modal-dialog.modal-sm
-    .modal-content
-      .modal-header
-        button.close#return(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4#myModalLabel.modal-title Resign
-      form(action='POST', method='')
-        .modal-body
-          .container-fluid
-            .row(style='margin-top:15px; margin-bottom:15px;') 
-              .container-fluid
-                h4 Are you sure you want to resign?
-        .modal-footer
-          button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='submit') Yes
-
-//- #modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-//-   .modal-dialog.modal-sm
-//-     .modal-content
-//-       .modal-header
-//-         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-//-         h4.modal-title KICKBOXING
-//-       form(action='', method='post')
-//-       .modal-body  
-//-         .text-center
-//-           h3 SLOTS LEFT:
-//-           h1(style="font-size:72px") 31
-//-           button.btn.btn-primary#join(type='button') Join        
-
+              br
 
 include ../../../templates/foot
 
 script.
 
   $(document).ready(function(){
+
+    let classIds = JSON.parse($('#classIdsString').val());
+   
+    
+    
     $('.join').click(function(){
       let id = $(this).val()
+
+      for (i=0; i < classIds.length; i++){
+        if (id != classIds[i]) {
+          continue
+        }  
+        else{
+          swal({
+            type: 'error',
+            title: 'Request prevented',
+            text: "You were already on the list of this class' participants",
+          })
+          exit()
+        }
+      }
+      
       swal({
         title: 'Are you sure?',
-        text: "This will just inform the trainer in-charge of the possibility of you attending the class",
+        text: "Your name will be listed as a participant of the class",
         type: 'info',
         showCancelButton: true,
+        confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Confirm'
       }).then((result) => {
@@ -107,15 +126,47 @@ script.
           $.post('/member/class/join',{id:id}).done(
            swal({
               type: 'success',
-              title: 'You Succesfully joined a Class',
+              title: 'You Succesfully joined the Class',
               showConfirmButton: false,
               timer: 1500
             }).then(()=>{
               location.reload();
-            }).then(()=>{
             })
           )
         }
       })
     })
+  })
+
+script.
+  $(document).ready(function(){
+    $('.resign').click(function(){
+      let uceid = $(this).data('id');
+      let classid = $(this).val();
+       swal({
+        title: 'Are you sure?',
+        text: "You are about to resign an event",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirm'
+      }).then((result) => {
+        if (result.value) {
+          $.post('/member/class/resign',{
+            uceid: uceid,
+            classid: classid
+          }).done(
+           swal({
+              type: 'warning',
+              title: 'You are now resigned',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(()=>{
+              location.reload();
+            })
+          )
+        }
+      })
+     })
   })

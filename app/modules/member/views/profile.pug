@@ -3,44 +3,75 @@ block main
 
   .container
     section.wrapper(style='margin-top:15px;')
-      .col-md-5
-        .content-panel(style="padding:30px; height:470px!important;")
+      #info.col-md-5
+        .content-panel(style="padding:30px")
           center
             img(src="../../../../assets/img/ui-sherman.jpg", alt="")
             each pr in profs              
-              h4 #{pr.userfname} #{pr.userlname}
-              a
-                p(style="position:relative; bottom:10px;") Edit
+              h4(style='margin-bottom:18px') #{pr.userfname} #{pr.userlname}
+              a#edit.btn.btn-primary.btn-xs(style="position:relative; bottom:10px; cursor:pointer:") 
+                i.fa.fa-edit
+                |  Edit
+              a#save.btn.btn-success.btn-xs(style="position:relative; bottom:10px; cursor:pointer; display:none; margin-right:5px") 
+                |  Save Changes
+              a#cancel.btn.btn-default.btn-xs(style="position:relative; bottom:10px; cursor:pointer; display:none;") 
+                |  Cancel
+              
+              br
               br
               br
           h4 
             i.fa.fa-dumbbell(style="margin-right: 10px;")
             | Personal Information
           hr
-          .row
-            .col-md-6
-              h5 
-                b Address: 
-            .col-md-6
-            each pr in profs
-              h5 #{pr.useraddress} 
-          .row
-            .col-md-6
-              h5
-                b Gender:
-            .col-md-6
-            each pr in profs
-              h5 #{pr.usergender}
-          .row
-            .col-md-6
-              h5 
-                b Birthdate: 
-            .col-md-6
-            each pr in profs
-              h5 #{pr.userbday}
+          #fields
+            .row
+              .col-md-6
+                h5 
+                  b Address: 
+              .col-md-6
+              each pr in profs
+                h5 #{pr.useraddress} 
+            .row
+              .col-md-6
+                h5
+                  b Gender:
+              .col-md-6
+              each pr in profs
+                h5 #{pr.usergender}
+            .row
+              .col-md-6
+                h5 
+                  b Birthdate: 
+              .col-md-6
+              each pr in profs
+                h5 #{pr.userbday}
+                br
               
-      .col-md-7
-        .content-panel(style="height:470px!important;")
+          
+          #editFields(style='display:none')
+            form.form-inline
+            
+              .row(style='margin-bottom:5px;')
+              each pr in profs
+                .form-group
+                  label(style='margin-left:15px; font-weight:bold') Address: 
+                  input.form-control(type="text" value = pr.useraddress , name='address' style='position:relative; right:-130px')
+              .row(style='margin-bottom:5px;')
+              each pr in profs
+                .form-group
+                  label(style='margin-left:15px;font-weight:bold') Contact: 
+                  input.form-control(type="text" value = pr.usermobile , name='contact' style='position:relative; right:-130px')
+              .row(style='margin-bottom:5px;') 
+              each pr in profs
+                .form-group
+                  label(style=' margin-left:15px;font-weight:bold') Email: 
+                  input.form-control(type="email" value = pr.useremail , name='email' style='position:relative; right:-144px')
+              
+              
+              
+      #extra.col-md-7
+        .content-panel
           h4 
             i.fa.fa-dumbbell(style="margin-right: 10px;")
             | Membership Information
@@ -58,37 +89,80 @@ block main
                     br
                     br
               center
-                i
-                  h5 Last Paid on
-                    b 
-                      | Aug 1, 2018
-                button.btn.btn-success.btn-xs
-                  | Upgrade
-                button.btn.btn-primary.btn-xs
+                
+                h5 Last Paid on
+                  b 
+                    | Aug 1, 2018
+                button.btn.btn-primary.btn-xs(style='margin-right: 5px')
                   | Freeze
                 button.btn.btn-danger.btn-xs
-                  | Suspend
+                  | Change 
           br
           .row
             .col-md-6
               h5 
                 b Trainer Enrolled:
             .col-md-6
+              
               each pr in profs
-                h5 #{pr.trainerfname} #{pr.trainerlname}
+                if pr.trainerfname == undefined
+                  h5 Not yet applied to a trainer. 
+                    | 
+                    a(href='trainers', style='cursor: pointer') Apply now?
+                else 
+                  h5 #{pr.trainerfname} #{pr.trainerlname}
           .row
             .col-md-6
               h5 
                 b Member Since: 
             .col-md-6
               each pr in profs
-                h5 #{pr.signdate}
+                h5 #{pr.acceptdate}
           .row
             .col-md-6
               h5 
                 b Membership Expiry: 
             .col-md-6
               each pr in profs
-                h5 #{pr.expiry}
+                h5 #{pr.expirydate}
 
 include ../../../templates/foot
+script.
+  $('#edit').click(function(){
+    $('#extra').hide();
+    $('#edit').hide();
+    $('#cancel').show();
+    $('#save').show();
+    $('#fields').hide();
+    $('#editFields').show();
+
+    $('#info').animate({
+      'left':'28%'
+    })
+    
+  })
+  $('#cancel').click(function(){
+    $('#extra').show();
+    $('#edit').show();
+    $('#cancel').hide();
+    $('#save').hide();
+    $('#fields').show();
+    $('#editFields').hide();
+
+    $('#info').animate({
+      'left':'0%'
+    })
+  })
+
+  $('#save').click(function(){
+    $('#extra').show();
+    $('#edit').show();
+    $('#cancel').hide();
+    $('#save').hide();
+    $('#fields').show();
+    $('#editFields').hide();
+
+    $('#info').animate({
+      'left':'0%'
+    })
+  })
