@@ -41,6 +41,39 @@ block main
 											input.form-control(type='file')
 										.col-sm-3
 											p Acceptable file type (jpg., png)
+									.row.mb
+										.input-group
+											span.input-group-addon Work Days:
+											label.checkbox.u
+												| Monday
+												input#student(type='checkbox', name='sched[]', value='Monday')
+												span.check
+											label.checkbox.u
+												| Tuesday
+												input#student(type='checkbox', name='sched[]', value='Tuesday')
+												span.check
+											label.checkbox.u
+												| Wednesday
+												input#student(type='checkbox', name='sched[]', value='Wednesday')
+												span.check
+											span.input-group-addon
+											label.checkbox.u
+												| Thursday
+												input#student(type='checkbox', name='sched[]', value='Thursday')
+												span.check
+											label.checkbox.u
+												| Friday
+												input#student(type='checkbox', name='sched[]', value='Friday')
+												span.check
+											label.checkbox.u
+												| Saturday
+												input#student(type='checkbox', name='sched[]', value='Saturday')
+												span.check
+											span.input-group-addon
+											label.checkbox.u
+												| Sunday
+												input#student(type='checkbox', name='sched[]', value='Sunday')
+												span.check
 							
 							.container-fluid
 								br
