@@ -1,11 +1,106 @@
-include ../../../../templates/admin
+include ../../../../templates/head
 
 block main      
-    section#main-content
-        section.wrapper.site-min-height
-            h3
-                i.fa.fa-angle-right
-                |   Blank Page
-            .row.mt
-                .col-lg-12
-                    p Place your content here.
+	section#main-content
+		section.wrapper.site-min-height
+			.row.mt
+				.col-lg-12
+					section.panel
+						.panel-body
+							.container-fluid
+								h3 
+									i.fa.fa-wrench
+									|
+									| General Settings
+									hr
+							.container-fluid
+								h4 System Settings
+								br
+								form.form-horizontal.style-form
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Gym Name *
+										.col-sm-10
+											input.form-control(type='text')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Gym Address *
+										.col-sm-6
+											input.form-control(type='text', placeholder='St. Name / Ave...')
+										.col-sm-4
+											input.form-control(type='text', placeholder='City...')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Office Phone Number*
+										.col-sm-10
+											input.form-control(type='text')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Email*
+										.col-sm-10
+											input.form-control(type='text')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Gym Logo
+										.col-sm-7
+											input.form-control(type='file')
+										.col-sm-3
+											p Acceptable file type (jpg., png)
+							
+							.container-fluid
+								br
+								br
+								h4 Admin Account
+								br
+								form.form-horizontal.style-form
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Admin Name*
+										.col-sm-5
+											input.form-control(type='text' placeholder='First Name...')
+										.col-sm-5
+											input.form-control(type='text' placeholder='Last Name...')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Admin Username*
+										.col-sm-10
+											input.form-control(type='text')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Admin Password*
+										.col-sm-10
+											input.form-control(type='text')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Retype Password*
+										.col-sm-10
+											input.form-control(type='text')
+
+							.container-fluid
+								br
+								br
+								h4 Measurement & fees
+								br
+								form.form-horizontal.style-form
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Currency Symbol*
+										.col-sm-10
+											input.form-control(type='text')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Freezing Rate*
+										.col-sm-10
+											input.form-control(type='text')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Training Session Rate*
+										.col-sm-10
+											input.form-control(type='text')
+									
+
+							.container-fluid
+								br
+								br
+								h4 Header & Footer
+								br
+								form.form-horizontal.style-form
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Header Text*
+										.col-sm-10
+											input.form-control(type='text')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Footer Text*
+										.col-sm-10
+											input.form-control(type='text')
+										
+
+include ../../../../templates/foot
