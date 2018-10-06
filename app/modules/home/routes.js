@@ -1052,32 +1052,41 @@ function regid(req, res, next) {
 //add exlusive member manually
 
 router.post('/exclusive/add',regid,(req, res) => {
-  db.query("INSERT INTO tbluser(userfname,userlname,usergender,userbday,useraddress,usermobile,useremail,userusername,memrateid,branch,specialization,usertype,userpassword,statusfront,signdate)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, ?,'Active',CURDATE())", [req.body.fname, req.body.lname, req.body.gen, req.body.bday, req.body.addr, req.body.mobile, req.body.email, req.body.username, req.body.membership, req.body.branch, req.body.special, req.body.password], (err, results, fields) => {
-    db.query("UPDATE tbluser u inner join tblmemrates mems ON u.memrateid=mems.memrateid inner join tblcat ct ON mems.memcat=ct.membershipID inner join tblmemclass cl ON mems.memclass= cl.memclassid SET u.expiry = case when cl.memclassid = mems.memclass then curdate() + interval mems.memperiod MONTH END where usertype=2 and userid=?", [req.regid], (err, results, fields) => {
-      if (err)
-          console.log(err);
-        else {
-          res.redirect('/regular');
-        }
+  db.query("INSERT INTO tbluser(userfname,userlname,usergender,userbday,useraddress,usermobile,useremail,userusername,branch,usertype,userpassword)VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, ?)", [req.body.fname, req.body.lname, req.body.gen, req.body.bday, req.body.addr, req.body.mobile, req.body.email, req.body.username, req.body.branch, req.body.password], (err, results, fields) => {
+    db.query(`INSERT INTO tblmembership(usersid,membershiprateid,specialization)VALUES(?,?,?)`,[req.regid,req.body.membership,req.body.special],(err, results, fields) => {
+      db.query(`UPDATE tbluser u join tblmembership m on m.usersid=u.userid set signdate=CURDATE(), m.status='PAID' where u.userid=?`, [req.regid], (err, results, fields) => {
+        db.query(`UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END where usersid=?`, [req.regid], (err, results, fields) => {
+        if (err)
+            console.log(err);
+          else {
+            res.redirect('/regular');
+          }
 
+        });
       });
-    });
-})
+    })
+  })
+  })
 
 //add interbranch member manually
 
 router.post('/interbranch/add',regid,(req, res) => {
-  db.query("INSERT INTO tbluser(userfname,userlname,usergender,userbday,useraddress,usermobile,useremail,userusername,memrateid,specialization,usertype,userpassword,statusfront,signdate)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, ?,'Active',CURDATE())", [req.body.fname, req.body.lname, req.body.gen, req.body.bday, req.body.addr, req.body.mobile, req.body.email, req.body.username, req.body.membership, req.body.branch, req.body.special, req.body.password], (err, results, fields) => {
-    db.query("UPDATE tbluser u inner join tblmemrates mems ON u.memrateid=mems.memrateid inner join tblcat ct ON mems.memcat=ct.membershipID inner join tblmemclass cl ON mems.memclass= cl.memclassid SET u.expiry = case when cl.memclassid = mems.memclass then curdate() + interval mems.memperiod MONTH END where usertype=2 and userid=?", [req.regid], (err, results, fields) => {
-      if (err)
-          console.log(err);
-        else {
-          res.redirect('/regular');
-        }
+  db.query("INSERT INTO tbluser(userfname,userlname,usergender,userbday,useraddress,usermobile,useremail,userusername,usertype,userpassword)VALUES( ?, ?, ?, ?, ?, ?, ?, ?, 2, ?)", [req.body.fname, req.body.lname, req.body.gen, req.body.bday, req.body.addr, req.body.mobile, req.body.email, req.body.username, req.body.password], (err, results, fields) => {
+    db.query(`INSERT INTO tblmembership(usersid,membershiprateid,specialization)VALUES(?,?,?)`,[req.regid,req.body.membership,req.body.special],(err, results, fields) => {
+      db.query(`UPDATE tbluser u join tblmembership m on m.usersid=u.userid set signdate=CURDATE(), m.status='PAID' where u.userid=?`, [req.regid], (err, results, fields) => {
+        db.query(`UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END where usersid=?`, [req.regid], (err, results, fields) => {
+        if (err)
+            console.log(err);
+          else {
+            res.redirect('/regular');
+          }
 
+        });
       });
-    });
-})
+    })
+  })
+  })
+
 //view exclusinve membership dropdowns
 function viewExc(req, res, next){
   db.query('select mr.*,mc.*,ct.* from tblmemrates mr join tblmemclass mc on mc.memclassid = mr.memclass inner join tblcat ct on mr.memcat=ct.membershipID where ct.membershipname = "Exclusive"',function(err, results, fields){
