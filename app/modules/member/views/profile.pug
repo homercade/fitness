@@ -4,9 +4,9 @@ block main
   .container
     section.wrapper(style='margin-top:15px;')
       #info.col-md-5
-        .content-panel(style="padding:30px")
+        .content-panel
           center
-            img(src="../../../../assets/img/ui-sherman.jpg", alt="")
+            img(src="/assets/img/ui-zac.jpg", alt="" )
             each pr in profs              
               h4(style='margin-bottom:18px') #{pr.userfname} #{pr.userlname}
               a#edit.btn.btn-primary.btn-xs(style="position:relative; bottom:10px; cursor:pointer:") 
@@ -38,7 +38,7 @@ block main
                   b Gender:
               .col-md-6
               each pr in profs
-                h5 #{pr.usergender}
+                h5.ucwords #{pr.usergender}
             .row
               .col-md-6
                 h5 

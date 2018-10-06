@@ -30,7 +30,7 @@ block main
             .col-md-3.centered
               .profile-pic
                 p
-                  img.img-circle.img-thumbnail(width=150 src='../../../assets/img/chip.png')
+                  img.img-circle.img-thumbnail(width=150 src='/assets/img/ui-sherman.jpg')
                 p
                   button.btn.btn-theme(value= '', data-toggle='modal', data-target='.prompt')
                     | Change Trainer
@@ -218,6 +218,8 @@ script.
         }
         evs.push(desc)
       }
+      
+      console.log(evs, 'aasdfsdgds')
 
       var date = new Date();
       var d = date.getDate();

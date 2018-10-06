@@ -63,6 +63,14 @@ router.post('/trainee/viewSched',(req,res)=>{
   })
 })
 
+// //View Schedule Individual
+// router.post('/trainee/viewSched/individual',(req,res)=>{
+//   const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid where userid = ?`
+//   db.query(query,[req.body.id],(err,out) => {
+//     res.send(out)
+//   })
+// })
+
 //Add Schedule
 router.post('/trainee/schedule',(req,res)=>{
   const query =`SELECT tbppt.*, tbluser.*, tbltrainer.*, tblmemclass.memclassname, tblcat.membershipname, tblsession.*

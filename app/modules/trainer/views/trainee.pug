@@ -187,6 +187,7 @@ script.
 
       var evs = []
       var delId
+      var schedStatus
 
       for (i = 0; i < data.length; i++) {
         let name = `${data[i].userfname} ${data[i].userlname}`
@@ -195,22 +196,23 @@ script.
         let timeEnd = moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('HH:mm')
         let start = `${sessionDate} ${timeStart}`
         let end = `${sessionDate} ${timeEnd}`
+        schedStatus = data[i].scheduleStatus
         delId = data[i].PTid
-        //- console.log(delId, 'yogi')
-        console.log(name)
-        console.log(start)
-        console.log(end)
+        
         var desc = {
           id: delId,
           title: name,
           start: start,
           end: end,
           eventSessionId: data[i].sessionID,
+          scheduleStatus: data[i].scheduleStatus,
           color: '#77dd77',
           overlap: false,
         }
         evs.push(desc)
       }
+      
+      console.log(evs, 'aasdfsdgds')
       //- calendar.fullCalendar('renderEvents', evs)
       var date = new Date();
       var d = date.getDate();
@@ -285,26 +287,35 @@ script.
               $.post('/trainer/trainee/reschedule',{
                 reschedDate : newDate,
                 reschedTime : newTimeStart,
-                reschedId : delId
+                reschedId : event.id
               }).done(
                 swal({
                   type: 'success',
                   title: 'Rescheduling was succesful!',
                   showConfirmButton: false,
                   timer: 1500
+                }).then(() => {
+                  location.reload();
                 })
               )
             }
+            else{
+              revertFunc();
+            }
           })
-          //- alert(event.title + " was dropped on " + event.start.format());
-          //- if (!confirm("Are you sure about this change?")) {
-          //-   revertFunc();
-          //- }
         },
         selectable: true,
         selectHelper: true,
         allowOutsideClick: false,
         events: evs,
+        eventRender: function(event, element) {
+          if (event.scheduleStatus == 2) {
+            element.css({
+                'background-color': '#ff6961',
+                'border-color': '#ff6961'
+            });
+          }
+        },
         select: function (startDate, jsEvent, view) {
 
           var schedCount = $('#sessionForSchedCount').val()

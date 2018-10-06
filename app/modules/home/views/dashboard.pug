@@ -38,27 +38,35 @@ block main
       
               .row
                 section.wrapper
-                  aside.col-lg-12.mt
-                    section.panel
-                      .panel-body
-                        #calendar.has-toolbar
+                  .col-md-4.col-sm-4.mb
+                    .darkblue-panel.pn
+                      .darkblue-header
+                        h5 REVENUE
+                      .chart.mt
+                        .sparkline(data-type='line', data-resize='true', data-height='75', data-width='90%', data-line-width='1', data-line-color='#fff', data-spot-color='#fff', data-fill-color='', data-highlight-line-color='#fff', data-spot-radius='4', data-data='[200,135,667,333,526,996,564,123,890,464,655]')
+                          canvas(style='display: inline-block; width: 233px; height: 75px; vertical-align: top;', width='233', height='75')
+                      p.mt
+                        b $ 17,980
+                        br
+                        | Month Income
+
             .col-lg-3.ds
               h3 
                 span.li_heart 
                 |  Membership
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
                 .details
                   h6  Gold Membership
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
                 .details
                   h6  Silver Membership
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
                 .details
                   h6  Bronze Membership
               h3 
@@ -66,17 +74,17 @@ block main
                 |  Class List
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
                 .details
                   h6  Body Building
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-sherman.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
                 .details
                   h6 Aerobics
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-danro.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
                 .details
                   h6 General Training
 

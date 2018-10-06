@@ -8,6 +8,33 @@ router.use(authMiddleware.memberHasAuth);
 var indexController = require('./controllers/index');
 router.get('/dashboard', indexController);
 
+
+
+
+//******************************************************* */
+//                    DASHBOARD
+//******************************************************* */
+
+router.post('/event/view', (req, res)=>{
+    db.query('select * from tbleventclass', (err, out) => {
+        res.send(out)
+    })
+})
+
+// function viewClass(req, res, next) {
+//     db.query('select * from tbleventclass where type = 1', function (err, results, fields) {
+//         if (err) return res.send(err);
+//         results.forEach((results) => {
+//             results.starttime = moment(results.starttime,'HH:mm:ss').format('hh:mm A');
+//         })
+//         results.forEach((results) => {
+//             results.endtime = moment(results.endtime,'HH:mm:ss').format('hh:mm A');
+//         })
+//         req.viewClass = results;
+//         return next();
+//     })
+// }
+
 //******************************************************* */
 //                      PROFILE
 //******************************************************* */
@@ -100,12 +127,12 @@ function init(req, res, next) {
 function viewClass(req, res, next) {
     db.query('select * from tbleventclass where type = 1', function (err, results, fields) {
         if (err) return res.send(err);
-        results.forEach((results) => {
-            results.starttime = moment(results.starttime,'HH:mm:ss').format('hh:mm A');
-        })
-        results.forEach((results) => {
-            results.endtime = moment(results.endtime,'HH:mm:ss').format('hh:mm A');
-        })
+        // results.forEach((results) => {
+        //     results.starttime = moment(results.starttime,'HH:mm:ss').format('hh:mm A');
+        // })
+        // results.forEach((results) => {
+        //     results.endtime = moment(results.endtime,'HH:mm:ss').format('hh:mm A');
+        // })
         req.viewClass = results;
         return next();
     })
@@ -161,8 +188,8 @@ function viewEvent(req, res, next) {
         results.forEach((results) => {
             results.startdate = moment(results.startdate,'MM/DD/YYYY').format('MMM DD, YYYY');
             results.enddate = moment(results.enddate,'MM/DD/YYYY').format('MMM DD, YYYY');
-            results.starttime = moment(results.starttime,'HH:mm:ss').format('hh:mm A');
-            results.endtime = moment(results.endtime,'HH:mm:ss').format('hh:mm A');
+            // results.starttime = moment(results.starttime,'hh:mm A').format('hh:mm A');
+            // results.endtime = moment(results.endtime,'hh:mm A').format('hh:mm A');
         })
         
         req.viewEvent = results;
@@ -331,10 +358,15 @@ function personalTrainer(req, res, next) {
 
 
 
+
+
+
 // ---------- F U N C T I O N S ---------- //
 function dashboard(req, res, next) {
     res.render('member/views/dashboard', {
-        profs: req.initial
+        profs: req.initial,
+        // classes: req.viewClass,
+        // eves: req.viewEvent
     })
     return next();
 }
