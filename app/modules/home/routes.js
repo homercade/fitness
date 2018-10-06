@@ -1122,21 +1122,30 @@ function viewSp(req, res, next){
   })
 }
 
-//add interbranch regular
-router.post('/interbranch/add',regid,(req, res) => {
-  db.query("INSERT INTO tbluser(userfname,userlname,usergender,userbday,useraddress,usermobile,useremail,userusername,memrateid,specialization,usertype,userpassword,statusfront,signdate)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, ?,'Active',CURDATE())", [req.body.fname, req.body.lname, req.body.gen, req.body.bday, req.body.addr, req.body.mobile, req.body.email, req.body.username, req.body.membership, req.body.branch, req.body.special, req.body.password], (err, results, fields) => {
-    db.query("UPDATE tbluser u inner join tblmemrates mems ON u.memrateid=mems.memrateid inner join tblcat ct ON mems.memcat=ct.membershipID inner join tblmemclass cl ON mems.memclass= cl.memclassid SET u.expiry = case when cl.memclassid = mems.memclass then curdate() + interval mems.memperiod MONTH END where usertype=2 and userid=?", [req.regid], (err, results, fields) => {
+//addwalkin
+router.post('/walkin',regid,(req, res) => {
+  db.query("INSERT INTO tbluser(userfname,userlname,usermobile)VALUES(?, ?, ?)", [req.body.fname, req.body.lname,req.body.mobile], (err, results, fields) => {
+    db.query("INSERT INTO tblpayment(userid,classification,amount)VALUES(?, 3,50)", [req.regid], (err, results, fields) => {
       if (err)
           console.log(err);
         else {
-          res.redirect('/regular');
+          res.redirect('/walkins');
         }
 
-      });
+    });
     });
 })
-//
 
+//view walkin
+function viewWal(req, res, next){
+  db.query(`select u.*,p.* from tbluser u join tblpayment p on p.userid=u.userid 
+    where u.usertype is 
+    null and paymentdate is null`,function(err, results, fields){
+    if(err) return res.send(err);
+    req.viewWal = results;
+    return next();
+  })
+}
 
 
 //A-TEAM FITNESS FUNCTIONS
@@ -1293,6 +1302,7 @@ function Events(req, res) {
 
 function walkins(req, res) {
   res.render('admin/transactions/views/t-walkins',{
+    walk:req.viewWal
   });
 }
 
@@ -1342,7 +1352,7 @@ router.get('/personal', viewPer,personal);
 router.get('/regular',Nulling,viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
 router.get('/interregular',Nulling,viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
 router.get('/events',viewEve, Events);
-router.get('/walkins', walkins);
+router.get('/walkins',viewWal, walkins);
 router.get('/trainsessions', trainSessions);
 router.get('/t/classes',viewGt,viewGcl, GClasses);
 /**

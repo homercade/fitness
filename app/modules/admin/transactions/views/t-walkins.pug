@@ -24,17 +24,16 @@ block main
                       th
                         i.fa.fa-edit
                         | Action
-                  tbody      
-                    tr
-                      td NAME
-                      td CONTACT
-                      td
-                        button#facility.btn.btn-info.btn-xs(data-toggle='modal', data-target='.add-facility-modal')
-                          i.fa.fa-shower
-                        button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.edit-walkins-modal')
-                          i.fa.fa-edit
-                        button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='')
-                          i.fa.fa-trash-alt
+                  tbody 
+                    each wa in walk     
+                      tr
+                        td #{wa.userfname} #{wa.userfname}
+                        td #{wa.usermobile}
+                        td
+                          button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.start-modal')
+                            | PAY
+                          button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.view-modal.modal')
+                            i.fa.fa-search
               
 
 .add-walkins-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -43,23 +42,23 @@ block main
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Add Walk-ins used
-      form(action='/freeze', method='POST')
+      form(action='/walkin', method='POST')
         .modal-body
           .container-fluid
             .row
               .col-md-6
                 .form-group
-                  label.control-label Full Name
+                  label.control-label Fullname
                   input.form-control(type="text" name="fname" placeholder='First Name')
               .col-md-6
                 .form-group
-                  label.control-labe(style="color:white") Full Name
+                  label.control-labe(style="color:white") Lastname
                   input.form-control(type="text" name="lname" placeholder='Last Name')
             .row
               .col-md-12
                 .form-group
                   label.control-label Contact
-                  input.form-control(type="text" name="contact")
+                  input.form-control(type="text" name="mobile")
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
           button.btn.btn-primary(type='submit') Add Walkins
@@ -123,6 +122,82 @@ block main
         button.btn.btn-primary(type='submit') Save
 
       
+.view-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h4.modal-title Bill Breakdown
+      form(action='POST', method='')
+        .modal-body
+          .container-fluid
+            .row
+              .col-xs-12
+                .pull-left
+                  h1 A-TEAM FITNESS
+                  address
+                    strong A-Team Fitness Inc.
+                    br
+                    | 4408 Old. Sta. Mesa St, Newton Plaza
+                    br
+                    | Sta. Mesa Manila
+                    br
+                    abbr(title='Phone') P:
+                    |  0933 412 7526
+                // /pull-left
+                .pull-right
+                  h1
+                    img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+                // --/pull-right --
+                .clearfix
+                br
+                br
+                .row
+                  .col-md-9
+                    h2#fname
+                    address
+                      strong#mem
+                      br
+                      strong#addr
+                      br
+                      strong#em
+                      br
+                      strong#mob
+                  .col-md-3
+                    div
+                      .pull-left DATE : 
+                      .pull-right#date 
+                      .clearfix
+                    br
+                    div
+                    div(style='background-color:#ffbb00;color:white;padding:10px;')
+                      .pull-left  Total Due :
+                      .pull-right#fee
+                      .clearfix
+                table.table
+                  thead
+                    tr
+                      th.text-center(style='width:60px') QTY
+                      th.text-left DESCRIPTION
+                      th.text-right(style='width:90px') TOTAL
+                  tbody
+                    tr
+                      td.text-center -
+                      td#mem
+                      td.text-right#fee
+                    tr
+                      td(colspan='2' rowspan='4')
+                      td.text-right
+
+                    tr
+                      td.text-right.no-border
+                        div(style='background-color:#ffbb00;color:white;padding:10px;')
+                          strong Total
+                      td.text-right
+                        strong#fee
+      .modal-footer
+        button.btn.btn-default(type='button', data-dismiss='modal') Close
+        button.btn.btn-primary(type='button') Print
 include ../../../../templates/foot
 
 
