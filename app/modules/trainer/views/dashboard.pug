@@ -4,11 +4,42 @@ block main
 
   .container
     .content
-      .row.mt
-        .col-lg-12.mt
+      .row
+        //- .col-lg-4.col-sm-4.mb
+        //-   .row.mb
+        //-     .darkblue-panel.pn
+        //-       .darkblue-header
+        //-         h5 SITE STATICS
+        //-       h1.mt
+        //-         i.fa.fa-user.fa-3x
+        //-       p + 1,789 NEW VISITS
+        //-       footer
+        //-         .centered
+        //-           h5
+        //-             i.fa.fa-trophy
+        //-             |  17,988
+        //-   .row
+        //-     .darkblue-panel.pn
+        //-       .darkblue-header
+        //-         h5 SITE STATICS
+        //-       h1.mt
+        //-         i.fa.fa-user.fa-3x
+        //-       p + 1,789 NEW VISITS
+        //-       footer
+        //-         .centered
+        //-           h5
+        //-             i.fa.fa-trophy
+        //-             |  17,988
+          
+            
+        .col-lg-8(style='float:none!important; margin:0 auto!important') 
           section.panel
             .panel-body
               #kalendaryo
+     
+
+      
+        
 
 
 include ../../../templates/foot
@@ -21,7 +52,7 @@ script.
       eventLimit: true, // allow "more" link when too many events
       events: [
         {
-          title: 'All Day Event',
+          title: 'Zumba',
           start: '2018-03-01'
         }]
     });
