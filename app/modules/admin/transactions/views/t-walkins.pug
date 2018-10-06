@@ -30,9 +30,9 @@ block main
                         td #{wa.userfname} #{wa.userfname}
                         td #{wa.usermobile}
                         td
-                          button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.start-modal')
+                          button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.pay-modal' data-id=wa.userid)
                             | PAY
-                          button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.view-modal.modal')
+                          button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.view-modal.modal' data-fname=wa.userfname + " " + wa.userlname data-fee=wa.amount data-mob=wa.usermobile)
                             i.fa.fa-search
               
 
@@ -156,11 +156,11 @@ block main
                   .col-md-9
                     h2#fname
                     address
-                      strong#mem
-                      br
-                      strong#addr
-                      br
-                      strong#em
+                      //- strong#mem
+                      //- br
+                      //- strong#addr
+                      //- br
+                      //- strong#em
                       br
                       strong#mob
                   .col-md-3
@@ -183,7 +183,7 @@ block main
                   tbody
                     tr
                       td.text-center -
-                      td#mem
+                      td Walkin Fee
                       td.text-right#fee
                     tr
                       td(colspan='2' rowspan='4')
@@ -198,6 +198,24 @@ block main
       .modal-footer
         button.btn.btn-default(type='button', data-dismiss='modal') Close
         button.btn.btn-primary(type='button') Print
+
+.pay-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+  .modal-dialog.modal-sm
+    form(action='/payment', method='POST')
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+          h4.modal-title  Payment
+        .modal-body
+          .container-fluid
+            .row
+              p You are about to pay a member of his bills. Do you wish to proceed?
+            br
+            input.id(type='text' name='id' )
+            input.memid(type='text' name='memrateid' )
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal') Close
+          button.btn.btn-primary(type='submit') Pay
 include ../../../../templates/foot
 
 
@@ -206,3 +224,43 @@ script.
     $('#transactionDrop').addClass('active');
     $('#walkin').addClass('active');
     });
+
+script.
+  $('.view-modal.modal').on('show.bs.modal', function(event){
+      var button = $(event.relatedTarget);
+      var fname = button.data('fname');
+      var fee = button.data('fee');
+      var mem = button.data('mem');
+      var addr = button.data('addr');
+      var em = button.data('em');
+      var mob = button.data('mob');
+      let modal = $(this);
+
+      modal.find('.modal-body #fname').text(`${fname}`);
+      modal.find('.modal-body #fee').text(`₱ ${fee}.00`);
+      modal.find('.modal-body #mem').text(`${mem}`);
+      modal.find('.modal-body #addr').text(`${addr}`);
+      modal.find('.modal-body #em').text(`${em}`);
+      modal.find('.modal-body #mob').text(`${mob}`);
+    })
+
+  
+script.
+  n = new Date();
+  y = n.getFullYear();
+  m = n.getMonth() + 1;
+  d = n.getDate();
+
+  document.getElementById("date").innerHTML =m +"-" +d+"-"+y;
+
+script.
+  $('.pay-modal').on('show.bs.modal', function(event){
+      var button = $(event.relatedTarget);
+      var id = button.data('id');
+      var memid = button.data('memid');
+      let modal = $(this);
+
+
+      modal.find('.modal-body .id').val(`${id}`);
+      modal.find('.modal-body .memid').val(`${memid}`);
+    })
