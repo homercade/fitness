@@ -20,33 +20,19 @@ block main
                         i.fa.fa-user
                         |  Name
                       th
-                        i.fa.fa-dumbbell
-                        |  Trainer In-charge
-                      th
-                        i.fa.fa-home
-                        |  Branch
-                      th
                         i.fa.fa-clock
                         |  Time
                       th
                         i.fa.fa-calendar-alt
                         |  Schedule
                       th
-                        i.fa.fa-bookmark
-                        |  Status
-                      th
                         i.fa.fa-edit
                         |  Action
                   tbody
                     tr
                       td Zumba
-                      td John Paul
-                      td Sta. Mesa 
                       td 8:00AM - 9:00PM
-                      td M/W/F
-                      td
-                        .switch(style='width:50px;', data-on-label="<i class=' fa fa-check'></i>", data-off-label="<i class='fa fa-times'></i>")
-                          input(type='checkbox', checked='')
+                      td M/W/F)
                       td
                         button#edit.btn.btn-success.btn-xs(data-toggle='popover', data-trigger='hover', data-placement='top', data-content='Edit Account')
                           i.fa.fa-edit
@@ -60,7 +46,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Schedule a Class
-          form(action='POST', method='')
+          form(method='POST', action='/groupclass')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -68,78 +54,84 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Class Name
-                        select#branch.form-control
-                          option Select Class... 
-                          option Zumba
-                          option Strength Training
+                        select#branch.form-control(name='event')
+                          each cl in classes
+                            option.hidden(value='') Select Class... 
+                            option(value=`${cl.classname}`) #{cl.classname}
                   .row
                     .col-md-6
                       .form-group
                         label.control-label Start Time
-                        input.form-control.time(type='text')
+                        input.form-control.time(type='text' name='startt')
                     .col-md-6
                       .form-group
                         label.control-label End Time
-                        input.form-control.time(type='text')
+                        input.form-control.time(type='text' name='endt')
                   .row
                     .input-group
                       span.input-group-addon
                         | Schedule:
                       label.checkbox
                         | Monday
-                        input#student(type='checkbox', value='monday')
+                        input#student(type='checkbox', name='sched[]' ,value='0')
                         span.check
                       label.checkbox
                         | Tuesday
-                        input#student(type='checkbox', value='tuesday')
+                        input#student(type='checkbox', name='sched[]' ,value='1')
                         span.check
                       label.checkbox
                         | Wednesday
-                        input#student(type='checkbox', value='wednesday')
+                        input#student(type='checkbox', name='sched[]' ,value='2')
                         span.check
                       span.input-group-addon
                       label.checkbox
                         | Thursday
-                        input#student(type='checkbox', value='thursday')
+                        input#student(type='checkbox', name='sched[]' ,value='3')
                         span.check
                       label.checkbox
                         | Friday
-                        input#student(type='checkbox', value='friday')
+                        input#student(type='checkbox', name='sched[]' ,value='4')
                         span.check
                       label.checkbox
                         | Saturday
-                        input#student(type='checkbox', value='saturday')
+                        input#student(type='checkbox', name='sched[]' ,value='5')
                         span.check
                       span.input-group-addon
                       label.checkbox
                         | Sunday
-                        input#student(type='checkbox', value='sunday')
+                        input#student(type='checkbox', name='sched[]' ,value='6')
                         span.check
-                  .row
-                    .col-md-12
-                      .form-group
-                        label.control-label Trainer In-charge
-                        select#branch.form-control
-                          option Select Trainer... 
-                          option John Doe
-                          option Doe John
-                  .row
-                    .col-md-6
-                      .form-group
-                        label.control-label Branch
-                        select#branch.form-control
-                          option Select Branch... 
-                          option All 
-                          option Sta. Mesa
-                          option Marikina
-                    .col-md-6
+                  //- .row
+                  //-   .col-md-12
+                  //-     .form-group
+                  //-       label.control-label Trainer In-charge
+                  //-       select#branch.form-control
+                  //-         each tr in train
+                  //-           option.hidden(value='') Select Trainer... 
+                  //-           option(value=`${tr.trainerid}`) #{tr.trainerfname} #{tr.trainerlname}
+                  //- .row
+                  //-   .col-md-6
+                  //-     .form-group
+                  //-       label.control-label Branch
+                  //-       select#branch.form-control
+                  //-         option Select Branch... 
+                  //-         option All 
+                  //-         option Sta. Mesa
+                  //-         option Marikina
+                  .row  
+                    .col-md-
                       .form-group
                         label.control-label Slot
                         input.form-control(type='number' name='slot')
+                  .row
+                    .col-md-12
+                      label.control-label Description
+                      .form-group
+                        textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3')
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='button') Add Group Class
+              button.btn.btn-primary(type='submit' ) Add Group Class
 
 //MODAL
 #edit-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

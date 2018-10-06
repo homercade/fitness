@@ -763,7 +763,7 @@ function viewReg(req, res, next) {
     req.viewReg = results;
     //moments expiration
     for (var i = 0; i < req.viewReg.length; i++) {
-      req.viewReg[i].expiry = moment(results[i].expiry).format("LL");}
+      req.viewReg[i].expirydate = moment(results[i].expirydate).format("LL");}
     return next();
   })
 }
@@ -801,9 +801,9 @@ function viewPay(req, res, next) {
     for (var i = 0; i < req.viewPay.length; i++) {
       req.viewPay[i].expirydate = moment(results[i].expirydate).format("LL");
     }
-    req.this=[]
+    
     for (var i = 0; i < req.viewPay.length; i++) {
-      req.this.push(req.viewPay[i].userid)
+      req.this=(req.viewPay[i].userid)
     }
     console.log(req.this) 
     db.query(`select u.* , r.*, ct.*, cl.* ,m.*,p.* from tbluser u join tblmembership m 
@@ -812,7 +812,7 @@ function viewPay(req, res, next) {
       cl on r.memclass=cl.memclassid inner join tblcat ct on
       ct.membershipID=r.memcat inner join tblpayment p on 
       p.userid=m.usersid where m.status="Paid" and classification=1 
-      and (u.userid=? and u.userid=?) order by paymentdate desc`,[req.this] ,function (err, results, fields) {
+      and u.userid=? order by paymentdate desc`,[req.this] ,function (err, results, fields) {
       if (err) return res.send(err);
       req.viewHis = results;
       //moments his
@@ -866,24 +866,44 @@ router.post('/payment',(req, res) => {
 
 //freezing
 router.post('/freeze',(req, res) => {
-   db.query("UPDATE tbluser SET usertype=10, expiry=expiry + interval ? MONTH where userid=?", [req.body.freezevalue,req.body.id], (err, results, fields) => {
-      db.query("INSERT INTO tblfreeze (userfid, datefrozen, freezedmonths,genid) VALUES (?, ?, ?, 4)", [req.body.id, req.body.effective,req.body.freezevalue], (err, results, fields) => {
-        db.query("UPDATE tblfreeze f inner join tblgenera g ON f.genid=g.generalID inner join tbluser u ON u.userid=f.userfid set total = fee * freezedmonths Where userid=? ", [req.body.id], (err, results, fields) => {  
-          db.query("UPDATE tblfreeze f join tbluser u on f.userfid=u.userid SET freezeduntil=datefrozen + interval ? MONTH Where userid=? ", [req.body.freezevalue,req.body.id], (err, results, fields) => {  
-            if (err)
-              console.log(err);
-            else {
-              res.redirect('/freezed');
-            }
+   db.query("INSERT INTO tblfreeze(userfid,freezedmonths,datefrozen,genid) values(?,?,?,4)", [req.body.id,req.body.freezevalue,req.body.effect], (err, results, fields) => {
+      db.query("UPDATE tblfreeze f inner join tblgenera g ON f.genid=g.generalID inner join tbluser u ON u.userid=f.userfid set total = fee * freezedmonths Where minus is null and userid=?",[req.body.id], (err, results, fields) => {
+        db.query("UPDATE tblfreeze SET freezeduntil=datefrozen + interval ? MONTH,status='Unpaid' Where minus is null and userfid=? ", [req.body.freezevalue,req.body.id], (err, results, fields) => {  
+          db.query("INSERT INTO tblpayment(userid,classification)VALUES(?,2)",[req.body.id], (err, results, fields) => {   
+            db.query("UPDATE tblfreeze f join tblpayment p on f.userfid=p.userid SET amount=total where paymentdate is null and f.userfid=?", [req.body.id], (err, results, fields) => {  
+              if (err)
+                console.log(err);
+              else {
+                res.redirect('/freezed');
+              }
+            });
           });
-        });
-      });
     });
     })
+      })
+   })
+
+//freeze online account
+function Nulling(req, res, next) {
+  db.query('select * from tblfreeze where datefrozen=CURDATE()', function (err, results, fields) {
+    if (err) return res.send(err);
+    if(results[0])
+      db.query(`UPDATE tbluser u join tblfreeze f on u.userid =
+        f.userfid SET u.userpassword=NULL,usertype=10 where datefrozen=CURDATE()`
+        ,(err, results, fields) => {
+    })
+    return next();
+  })
+}
 
 //view freezed accounts
 function viewFre(req, res, next) {
-  db.query('select u.* ,mems.*,ct.membershipname,cl.memclassname,f.* from tbluser u inner join tblmemrates mems ON u.memrateid=mems.memrateid inner join tblcat ct ON mems.memcat=ct.membershipID inner join tblmemclass cl ON mems.memclass= cl.memclassid inner join tblfreeze f ON u.userid=f.userfid where usertype=10 and minus is NULL', function (err, results, fields) {
+  db.query(`select u.* , r.*, ct.*, cl.* ,m.* ,f.*,p.*,g.* from tbluser u join tblmembership m ON m.usersid=u.userid 
+inner join tblmemrates r ON r.memrateid=m.membershiprateid 
+inner join tblmemclass cl on r.memclass=cl.memclassid 
+inner join tblcat ct on ct.membershipID=r.memcat inner join tblfreeze f 
+on f.userfid=u.userid inner join tblgenera g on g.generalID =f.genid
+inner join tblpayment p on p.userid=u.userid where f.minus is null and classification=2`, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewFre = results;
     //moments datefrozen
@@ -898,10 +918,11 @@ function viewFre(req, res, next) {
   })
 }
 
-//unfreezing
-router.post('/unfreeze',(req, res) => {
-  db.query("UPDATE tblfreeze SET minus=DATEDIFF(freezeduntil,datefrozen) where userfid=?", [req.body.id], (err, results, fields) => {
-    db.query("UPDATE tblfreeze f join tbluser u on f.userfid=u.userid SET usertype=2, expiry=expiry - interval minus day where userid=?", [req.body.id], (err, results, fields) => {
+//payment freeze
+router.post('/payment/freeze',(req, res) => {
+  db.query("UPDATE tblfreeze SET status='Paid' where unfreezedate is NULL and userfid=?", [req.body.ids], (err, results, fields) => {
+    db.query(`UPDATE tblfreeze f join tblpayment p on p.userid=f.userfid Set paymentdate=CURDATE()
+where f.unfreezedate is null and classification = 2 and userfid=?`, [req.body.ids], (err, results, fields) => {
       if (err)
           console.log(err);
         else {
@@ -911,9 +932,62 @@ router.post('/unfreeze',(req, res) => {
     });
    })
 
+//unfreezing
+router.post('/unfreeze',(req, res) => {
+  db.query(`UPDATE tbluser u join tblfreeze f on f.userfid=u.userid 
+    inner join tblpayment p on p.userid=u.userid inner join tblmembership m on m.usersid=u.userid where u.userpassword is null and u.userid = ? and classification =2 SET minus=(DATEDIFF(freezeduntil,datefrozen)) + (DATEDIFF(CURDATE(),freezeduntil)) 
+    where u.userpassword is null and u.userid = ?`, [req.body.id], (err, results, fields) => {
+      db.query(`UPDATE tbluser u join tblfreeze f on f.userfid=u.userid 
+        inner join tblpayment p on p.userid=u.userid 
+        inner join tblmembership m on m.usersid=u.userid SET expirydate=expirydate + interval minus DAY where u.userpassword 
+        is null and u.userid = ? and classification =2`, [req.body.id], (err, results, fields) => {
+          db.query(`UPDATE tbluser u join tblfreeze f on f.userfid=u.userid 
+            inner join tblpayment p on p.userid=u.userid inner join tblmembership m on 
+            m.usersid=u.userid SET userpassword=12345,usertype=2 where u.userpassword is null 
+            and u.userid = ? and classification =2`, [req.body.id], (err, results, fields) => {
+            if (err)
+                console.log(err);
+              else {
+                res.redirect('/freezed');
+              }
+            });
+          });
+         })
+  })
+
+//class drops
+function viewGcl(req, res, next) {
+  db.query('select * from tblclass', function (err, results, fields) {
+    if (err) return res.send(err);
+    req.viewGcl = results;
+    return next();
+  })
+}
+
+//class trainerdrops
+function viewGt(req, res, next) {
+  db.query('select * from tbltrainer', function (err, results, fields) {
+    if (err) return res.send(err);
+    req.viewGt = results;
+    return next();
+  })
+}
+
+//creating groupclass
+router.post('/groupclass',(req, res) => {
+  db.query("INSERT INTO tbleventclass(eventclassname,starttime,endtime,slot,type,desc,days)VALUES(?, ?, ?, ?, 1, ?, ?)", [req.body.event, req.body.startt, req.body.endt, req.body.slot, req.body.desc, req.body.sched.toString()], (err, results, fields) => {
+    if (err)
+        console.log(err);
+      else {
+        res.redirect('/t/classes');
+      }
+
+    });
+   })
+
 //creating event
 router.post('/event',(req, res) => {
-  db.query("INSERT INTO tbleventclass(eventclassname,startdate,enddate,starttime,endtime,slot,type)VALUES(?, ?, ?, ?, ?, ?, 2)", [req.body.event, req.body.start, req.body.end, req.body.startt, req.body.endt, req.body.slot], (err, results, fields) => {
+  db.query("INSERT INTO tbleventclass(eventclassname,startdate,enddate,starttime,endtime,slot,type,desc)VALUES(?, ?, ?, ?, ?, ?, 2, ?)", [req.body.event, req.body.start, req.body.end, req.body.startt, req.body.endt, req.body.slot, req.body.desc], (err, results, fields) => {
     if (err)
         console.log(err);
       else {
@@ -945,17 +1019,6 @@ function viewAss(req, res, next){
   })
 }
 
-//creating event
-/*router.post('/event',(req, res) => {
-  db.query("INSERT INTO tbluce(eventclassname,startdate,enddate,starttime,endtime,slot)VALUES(?, ?, ?, ?, ?, ?)", [req.body.event, req.body.start, req.body.end, req.body.startt, req.body.endt, req.body.slot], (err, results, fields) => {
-    if (err)
-        console.log(err);
-      else {
-        res.redirect('/events');
-      }
-
-    });
-})*/
 
 //view trainer-client partners
 function viewPer(req, res, next){
@@ -968,7 +1031,7 @@ function viewPer(req, res, next){
 
 //assigning trainers
 router.post('/assign',(req, res) => {
-  db.query("INSERT INTO tbppt(memid,trainid,status,statusfront)VALUES(?, ?, 2,'Pending')", [req.body.memberid, req.body.trainerid], (err, results, fields) => {
+  db.query("INSERT INTO tbppt(memid,trainid,status)VALUES(?, ?, 2)", [req.body.memberid, req.body.trainerid], (err, results, fields) => {
     if (err)
         console.log(err);
       else {
@@ -1230,7 +1293,11 @@ function trainSessions(req, res) {
 }
 
 function GClasses(req, res) {
-  res.render('admin/transactions/views/t-classes')
+  res.render('admin/transactions/views/t-classes',{
+    classes: req.viewGcl,
+    train: req.viewGt
+  })
+
 }
 
 
@@ -1263,12 +1330,12 @@ router.get('/income', income);
 router.get('/payment', viewPay, payment);
 router.get('/pending', viewUpdate, viewPend, pending);
 router.get('/personal', viewPer,personal);
-router.get('/regular',viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
-router.get('/interregular',viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
+router.get('/regular',Nulling,viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
+router.get('/interregular',Nulling,viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
 router.get('/events',viewEve, Events);
 router.get('/walkins', walkins);
 router.get('/trainsessions', trainSessions);
-router.get('/t/classes', GClasses);
+router.get('/t/classes',viewGt,viewGcl, GClasses);
 /**
  * Here we just export said router on the 'index' property of this module.
  */

@@ -41,7 +41,7 @@ block main
                         td.hidden-phone #{re.userfname} #{re.userlname}
                         td  #{re.branchname}
                         td  #{re.memclassname}-#{re.membershipname}  
-                        td  #{re.expiry}
+                        td  #{re.expirydate}
                         td  
                           if re.status == 'Paid'
                             span.label.label-success
@@ -339,7 +339,7 @@ block main
                 .form-group
                   label.control-label Duration (months)
                   input.form-control(type="number" name="freezevalue")
-                  input.hidden.id(type="text" name="id")
+                  input.hidden#id(type="text" name="id")
               .col-md-12
                 .form-group
                   label.control-label Date Effective
@@ -569,7 +569,7 @@ script.
     var id = button.data('id');
     let modal = $(this);
 
-    modal.find('.modal-body .id').val(`${id}`);
+    modal.find('.modal-body #id').val(`${id}`);
   });
   
 script.
