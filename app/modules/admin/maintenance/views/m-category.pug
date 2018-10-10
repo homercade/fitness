@@ -54,7 +54,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Add Membership Category
-          form(action='/category', method='POST' autocomplete='off')
+          form(action='/category', method='POST' autocomplete='off' id='add-categ')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -70,7 +70,7 @@ block main
                         textarea#prog-desc.form-control(style='resize:none', name='catdesc', rows='3')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit') Add Category
+              button.btn.btn-primary(type='submit' id='btn-add-categ') Add Category
     //VIEW MODAL
     #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -101,7 +101,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Edit Category
-          form(action='/category/edit', method='POST')
+          form(action='/category/edit', method='POST' id='edit-categ')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -118,7 +118,7 @@ block main
                         textarea#desc.form-control(style='resize:none', name='catdesc', rows='3')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit') Save
+              button.btn.btn-primary(type='submit' id='btn-edit-categ') Save
 
     // MODAL DELETE
     #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -127,7 +127,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Remove Category
-          form(action='/category/delete', method='POST')
+          form(action='/category/delete', method='POST' id='del-categ')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -139,7 +139,7 @@ block main
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-default(type='submit') Delete
+              button.btn.btn-default(type='submit' id='btn-del-categ') Delete
 
 include ../../../../templates/foot
 
@@ -190,4 +190,65 @@ script.
 
         modal.find('.modal-body #id').val(` ${id}`)
     })
+
+        //sweet alert add cataegory
+      $(document).on('click', '#btn-add-categ', function(e) {
+      var form = $(this).parents('form');
+      e.preventDefault();
+
+      swal({
+        title: 'Add new Membership Category?',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          swal("Success!", "New Membership Category was added!", "success");
+          $('#add-categ').submit();
+        }                        
+      })
+    });
+
+        //sweet alert edit
+      $(document).on('click', '#btn-edit-categ', function(e) {
+      var form = $(this).parents('form');
+      e.preventDefault();
+
+      swal({
+        title: 'Save Changes?',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          swal("Success!", "Updated!", "success");
+          $('#edit-categ').submit();
+        }                        
+      })
+    });
+
+        //sweet alert delete category
+      $(document).on('click', '#btn-del-categ', function(e) {
+      var form = $(this).parents('form');
+      e.preventDefault();
+
+      swal({
+        title: 'Delete Membership Category?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          swal("Success!", "Membership Category Deleted!", "success");
+          $('#del-categ').submit();
+        }                        
+      })
+    });
+
 

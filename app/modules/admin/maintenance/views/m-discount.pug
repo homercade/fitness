@@ -73,7 +73,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Add Promo
-          form(action='/discount', method='POST' autocomplete='off')
+          form(action='/discount', method='POST' autocomplete='off' id='add-promo')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -119,7 +119,7 @@ block main
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit') Add Discount
+              button.btn.btn-primary(type='submit' id='btn-add-promo') Add Discount
     // MODAL EDIT
     #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -127,7 +127,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Add Promo
-          form(action='/discount/edit', method='POST')
+          form(action='/discount/edit', method='POST' id='edit-promo')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -160,7 +160,7 @@ block main
                           option(value='Inactive') Inactive
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit') Save
+              button.btn.btn-primary(type='submit' id='btn-edit-promo') Save
 
     // MODAL DELETE
     #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -169,7 +169,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Remove Promo
-          form(action='/discount/delete', method='POST')
+          form(action='/discount/delete', method='POST' id='del-promo')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -181,7 +181,7 @@ block main
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-default(type='submit') Delete
+              button.btn.btn-default(type='submit' id='btn-del-promo') Delete
 
 include ../../../../templates/foot
 
@@ -234,3 +234,65 @@ script.
     autoclose: true,
     startDate: "today"
     });
+
+    //sweet alert add promo
+      $(document).on('click', '#btn-add-promo', function(e) {
+      var form = $(this).parents('form');
+      e.preventDefault();
+
+      swal({
+        title: 'Add new Promo?',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          swal("Success!", "New Promo was added!", "success");
+          $('#add-promo').submit();
+        }                        
+      })
+    });
+
+        //sweet alert edit promo
+      $(document).on('click', '#btn-edit-promo', function(e) {
+      var form = $(this).parents('form');
+      e.preventDefault();
+
+      swal({
+        title: 'Save Changes?',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          swal("Success!", "Updated!", "success");
+          $('#edit-promo').submit();
+        }                        
+      })
+    });
+
+        //sweet alert del promo
+      $(document).on('click', '#btn-del-promo', function(e) {
+      var form = $(this).parents('form');
+      e.preventDefault();
+
+      swal({
+        title: 'Delete Promo?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          swal("Success!", "Promo Deleted!", "success");
+          $('#del-promo').submit();
+        }                        
+      })
+    });
+
+

@@ -308,7 +308,7 @@ router.post('/branch', addid, (req, res) => {
 //edit branch
 
 router.post('/branch/edit', (req, res) => {
-  db.query(`UPDATE tblbranch SET branchname=?,branchstreetname=?,branchcity=?,user= ${req.body.user} WHERE branchID=${req.body.id}`, [req.body.branch, req.body.street, req.body.city], (err, results, fields) => {
+  db.query(`UPDATE tblbranch SET branchname=?,branchstreetname=?,branchcity=? WHERE branchID=${req.body.id}`, [req.body.branch, req.body.street, req.body.city], (err, results, fields) => {
     if (err)
       console.log(err);
     else {
@@ -320,20 +320,16 @@ router.post('/branch/edit', (req, res) => {
 //delete branch
 
 router.post('/branch/delete', (req, res) => {
-
-  db.query("UPDATE tbluser SET branch=NULL, statusfront='Inactive' WHERE userid=?", [req.body.oldid], (err, results, fields) => {
-    db.query(`UPDATE tblbranch SET user= NULL WHERE branchID=?`, [req.body.id], (err, results, fields) => {
-      db.query(`DELETE FROM tblbranch WHERE branchID=?`, [req.body.id], (err, results, fields) => {
-        if (err)
-          console.log(err);
-        else {
-          res.redirect('/branch');
-        }
-      });
-
-    });
+  db.query(`DELETE FROM tblbranch WHERE branchID=?`, [req.body.id], (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      res.redirect('/branch');
+    }
   });
+
 });
+
 
 // //view staff dropdowns
 // function viewStaffDropdown(req, res, next) {
@@ -453,7 +449,7 @@ function viewspecialdrop(req, res, next) {
 //edit trainer
 
 router.post('/trains/edit', (req, res) => {
-  db.query("UPDATE tbltrainer SET trainerfname=?, trainerlname=?,trainerbday=?,trainergender=?,traineraddress=?,trainermobile=?,traineremail=?,trainerschedule=?,trainerbranch=?,trainerspecialization=?,trainerpassword=?,trainerusername=? WHERE trainerid=?", [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.sched.toString(), req.body.branchid, req.body.specialid, req.body.pass, req.body.username, req.body.id], (err, results, fields) => {
+  db.query("UPDATE tbltrainer SET trainerfname=?, trainerlname=?,trainerbday=?,trainergender=?,traineraddress=?,trainermobile=?,traineremail=?,trainerbranch=?,trainerspecialization=?,trainerpassword=?,trainerusername=? WHERE trainerid=?", [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.branchid, req.body.specialid, req.body.pass, req.body.username, req.body.id], (err, results, fields) => {
     if (err)
       console.log(err);
     else {
@@ -476,7 +472,8 @@ router.post('/trains/delete', (req, res) => {
 
 //view Trainers
 function viewTrainer(req, res, next) {
-  db.query('SELECT u.*, b.*,s.* FROM tbltrainer u inner JOIN tblbranch b on u.trainerbranch=b.branchID JOIN tblspecial s ON s.specialID =u.trainerspecialization', function (err, results, fields) {
+  db.query(`SELECT u.*,s.* FROM tbltrainer u 
+JOIN tblspecial s ON s.specialID =u.trainerspecialization`, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewTrainer = results;
       //moments time
@@ -758,7 +755,11 @@ router.post('/pending/update/:userId', useraddid, (req, res) => {
 
 //view of regular exclusive members
 function viewReg(req, res, next) {
-  db.query("select u.* , r.*, ct.*, cl.* ,m.* from tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON r.memrateid=m.membershiprateid inner join tblmemclass cl on r.memclass=cl.memclassid inner join tblcat ct on ct.membershipID=r.memcat where m.status='Paid'and u.branch is not NULL", function (err, results, fields) {
+  db.query(`select u.* , r.*, ct.*, cl.* ,m.*,b.* from tbluser u join tblmembership m ON m.usersid=u.userid 
+inner join tblmemrates r ON r.memrateid=m.membershiprateid 
+inner join tblmemclass cl on r.memclass=cl.memclassid
+ inner join tblcat ct on ct.membershipID=r.memcat inner join tblbranch b 
+ on b.branchID=u.branch where m.status='Paid'`, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewReg = results;
     //moments expiration

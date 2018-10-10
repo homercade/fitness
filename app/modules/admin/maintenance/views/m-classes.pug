@@ -61,7 +61,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Remove Class
-          form(action='/classes/delete', method='POST')
+          form(action='/classes/delete', method='POST' id='del-class')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -73,16 +73,16 @@ block main
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-default(type='submit') Delete
+              button.btn.btn-default(type='submit' id='btn-del-class') Delete
 
-    // MODAL ADD MEMBER
+    // MODAL ADD CLASS
     #add.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
         .modal-content
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Add Class
-          form(action='/classes', method='POST' autocomplete='off' )
+          form(action='/classes', method='POST' autocomplete='off' id='add-class')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -98,15 +98,15 @@ block main
                         textarea#prog-desc.form-control(style='resize:none', name='classdesc', rows='3')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit') Add Class
-    // MODAL EDIT   MEMBER
+              button.btn.btn-primary(type='submit' id='btn-add-class') Add Class
+    // MODAL EDIT CLASS
     #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
         .modal-content
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Edit Class
-          form(action='/classes/edit', method='POST')
+          form(action='/classes/edit', method='POST' id='edit-class')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -123,7 +123,7 @@ block main
                         textarea#desc.form-control(style='resize:none', name='classdesc', rows='3')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit') Save
+              button.btn.btn-primary(type='submit' id='btn-edit-class') Save
     // MODAL VIEW
     #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -205,4 +205,64 @@ script.
       let modal = $(this)       
       modal.find('.modal-body #id').val(`${id}`)
     })
+
+    	//sweet alert add class
+      $(document).on('click', '#btn-add-class', function(e) {
+      var form = $(this).parents('form');
+      e.preventDefault();
+
+      swal({
+        title: 'Add new Class?',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          swal("Success!", "New Class was Added!", "success");
+          $('#add-class').submit();
+        }                        
+      })
+    });
+
+    //sweet alert edit class
+      $(document).on('click', '#btn-edit-class', function(e) {
+      var form = $(this).parents('form');
+      e.preventDefault();
+
+      swal({
+        title: 'Save Changes?',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          swal("Success!", "Updated!", "success");
+          $('#edit-class').submit();
+        }                        
+      })
+    });
+
+        //sweet alert delete class
+      $(document).on('click', '#btn-del-class', function(e) {
+      var form = $(this).parents('form');
+      e.preventDefault();
+
+      swal({
+        title: 'Delete Class?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          swal("Success!", "Class Deleted!", "success");
+          $('#del-class').submit();
+        }                        
+      })
+    });
  
