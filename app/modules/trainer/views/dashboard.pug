@@ -4,34 +4,7 @@ block main
 
   .container
     .content
-      .row
-        //- .col-lg-4.col-sm-4.mb
-        //-   .row.mb
-        //-     .darkblue-panel.pn
-        //-       .darkblue-header
-        //-         h5 SITE STATICS
-        //-       h1.mt
-        //-         i.fa.fa-user.fa-3x
-        //-       p + 1,789 NEW VISITS
-        //-       footer
-        //-         .centered
-        //-           h5
-        //-             i.fa.fa-trophy
-        //-             |  17,988
-        //-   .row
-        //-     .darkblue-panel.pn
-        //-       .darkblue-header
-        //-         h5 SITE STATICS
-        //-       h1.mt
-        //-         i.fa.fa-user.fa-3x
-        //-       p + 1,789 NEW VISITS
-        //-       footer
-        //-         .centered
-        //-           h5
-        //-             i.fa.fa-trophy
-        //-             |  17,988
-          
-            
+      .row    
         .col-lg-8(style='float:none!important; margin:0 auto!important') 
           section.panel
             .panel-body
@@ -46,16 +19,102 @@ include ../../../templates/foot
 
 script.
   $(document).ready(function() {
-    $('#kalendaryo').fullCalendar({
-      defaultDate: '2018-03-12',
-      editable: true,
-      eventLimit: true, // allow "more" link when too many events
-      events: [
-        {
-          title: 'Zumba',
-          start: '2018-03-01'
-        }]
-    });
 
-  });
+    var now = moment().format('YYYY-MM-DD')
+
+    $.post('/trainer/trainee/viewSched/all').done(function(data){
+
+      //- variables
+      var evs = []
+      var schedStatus
+      var date = new Date();
+
+      //- getting all events
+      for (i = 0; i < data.length; i++) {
+        let name = `${data[i].userfname} ${data[i].userlname}`
+        let sessionDate = moment(data[i].sessionDate).format('YYYY-MM-DD')
+        let timeStart = moment(data[i].sessionTime, 'hh:mm a').format('HH:mm')
+        let timeEnd = moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('HH:mm')
+        let start = `${sessionDate} ${timeStart}`
+        let end = `${sessionDate} ${timeEnd}`
+        let content = data[i].description
+        schedStatus = data[i].scheduleStatus
+             
+        var desc = {
+          id: data[i].userid,
+          title: name,
+          start: start,
+          end: end,
+          color: '#77dd77',
+          overlap: false,
+
+          eventSessionId: data[i].sessionID,
+          scheduleStatus: data[i].scheduleStatus,
+          schedule: `${moment(data[i].sessionDate).format('MMM DD, YYYY')} (${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')})`
+        }
+        evs.push(desc) //- pushing events to event array
+      }
+
+    $('#kalendaryo').fullCalendar({
+     
+      editable: true,
+      eventLimit: true, 
+      events: evs,
+      header: {
+        left: 'prev,next',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+      },
+      defaultView: 'month',
+      validRange: {
+        start: now
+      },
+      allDaySlot: false,
+      weekMode: 'liquid',
+      editable: false,
+      eventOverlap: false,
+      eventStartEditable: false,
+      eventDurationEditable: false,
+      minTime: '08:00',
+      maxTime: '21:00',
+      selectable: true,
+      eventLimit: true,
+      eventRender: function(event, element) {
+        if (event.scheduleStatus == 2) {
+          element.css ({
+            'background-color': '#ff6961',
+            'border-color': '#ff6961'
+          })
+          element.popover ({
+          title: `${event.title} - Rejects`,
+          trigger: 'hover',
+          placement: 'top',
+          content: event.content,
+          container: 'body'
+          })
+        }
+        element.popover ({
+          title: event.title,
+          trigger: 'hover',
+          placement: 'top',
+          content: event.schedule,
+          container: 'body'
+        })
+      },
+      select: function (startDate, jsEvent, view) {
+
+        var view = $('#kalendaryo').fullCalendar('getView')
+        if (view.name == 'month') {
+          $('#kalendaryo').fullCalendar('changeView', 'agendaDay')
+          $('#kalendaryo').fullCalendar('gotoDate', startDate)
+        } 
+        else {
+          return
+        }
+      }
+
+
+    }) //- calendar
+    }) //- done
+  }) //- document ready
   

@@ -9,7 +9,20 @@ router.get('/dashboard', indexController);
 
 
 //******************************************************* */
-//                     GENERAL
+//                     DASHBOARD.
+//******************************************************* */
+
+router.post('/trainee/viewSched/all',( req,res ) => {
+  const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid join tblsession on tblsession.sessionID = tbppt.sessionID
+  where trainid = ?`
+  db.query( query, [ req.session.trainer.trainerid ], ( err,out ) => {
+    res.send(out)
+  })
+})
+
+
+//******************************************************* */
+//                     GENERAL.
 //******************************************************* */
 
 function hello(req, res, next){
@@ -26,21 +39,22 @@ function hello(req, res, next){
 }
 
 //******************************************************* */
-//                     TRAINEE
+//                     TRAINEE.
 //******************************************************* */
 
-//View Trainee
-function general(req, res, next){
+function allTrainees(req, res, next){
   const query = `
   select * from tbluser
   join tbppt on tbppt.memid = tbluser.userid
   join tbltrainer on tbltrainer.trainerid = tbppt.trainid
   join tblsession on tblsession.sessionID = tbppt.sessionID
   join tblmembership on tblmembership.usersid = tbluser.userid
+  join tblspecial on tblspecial.specialID = tblmembership.specializationid
   join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
   join tblcat on tblcat.membershipID = tblmemrates.memcat
   join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass
   where tbppt.trainid  = ?
+  group by userid
   `;
   db.query(query, [req.session.trainer.trainerid], function(err, results, fields){
     if(err) return res.send(err);
@@ -48,17 +62,40 @@ function general(req, res, next){
       res.redirect('no-trainee')
     }
     else{
-      req.general = results[0];
-      req.general.userbday = moment().diff(req.general.userbday, 'years', false);
+      req.viewTrainee = results
       return next();
     }
+  })
+}
+//View Trainee
+function individualTrainee(req, res, next){
+  const query = `
+  select * from tbluser
+  join tbppt on tbppt.memid = tbluser.userid
+  join tbltrainer on tbltrainer.trainerid = tbppt.trainid
+  join tblsession on tblsession.sessionID = tbppt.sessionID
+  join tblmembership on tblmembership.usersid = tbluser.userid
+  join tblspecial on tblspecial.specialID = tblmembership.specializationid
+  join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
+  join tblcat on tblcat.membershipID = tblmemrates.memcat
+  join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass
+  where tbppt.trainid  = ? and userid = ?
+  group by userid
+ 
+  `
+  db.query(query, [req.session.trainer.trainerid, req.query.id], function(err, results, fields){
+    if(err) return res.send(err);
+    req.general = results[0];
+    req.general.userbday = moment().diff(req.general.userbday, 'years', false);
+    return next();
   })
 }
 
 //View Schedule
 router.post('/trainee/viewSched',(req,res)=>{
-  const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid`
-  db.query(query,(err,out)=>{
+  const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid join tblsession on tblsession.sessionID = tbppt.sessionID
+  where userid = ?`
+  db.query(query,[ req.query.id ],(err,out)=>{
     res.send(out)
   })
 })
@@ -138,48 +175,62 @@ router.post('/trainee/schedule/delete', (req, res) => {
   })
 })
 
+//Update Schedule
+router.post('/schedule/update', (req, res) => {
+  if (req.body.status == 1){  
+    db.query(`UPDATE tblsession SET session_count = session_count - 1 where sessionID = ?`, [ req.body.id ], (err, out) => {
+      db.query(`UPDATE tbppt SET scheduleStatus = 0 where PTid = ?`, [ req.body.ptid ], (err, out) => {
+      })
+    })
+  }
+  else { 
+    db.query(`UPDATE tbppt SET scheduleStatus = 0 where PTid = ?`, [ req.body.ptid ], (err, out) => {
+    })
+  }
+})
+
 
 //View other member button and is clickable
-router.post('/trainee/OtherMember',(req,res)=>{
-  const query =`SELECT tbppt.*, tbluser.*, tbltrainer.*, tblmemclass.memclassname, tblcat.membershipname, tblsession.*
-  FROM tbppt 
-  JOIN tbluser ON tbluser.userid = tbppt.memid 
-  JOIN tbltrainer ON tbltrainer.trainerid = tbppt.trainid
-  join tblmembership on tblmembership.usersid = tbluser.userid
-  join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
-  JOIN tblcat ON tblcat.membershipID = tblmemrates.memcat
-  JOIN tblmemclass ON tblmemclass.memclassid = tblmemrates.memclass
-  JOIN tblsession ON tblsession.sessionID = tbppt.sessionID
-  where tbluser.userid != ${req.body.othermember} AND tbppt.trainid=${req.session.trainer.trainerid}
-  GROUP BY tbluser.userid`
+// router.post('/trainee/OtherMember',(req,res)=>{
+//   const query =`SELECT tbppt.*, tbluser.*, tbltrainer.*, tblmemclass.memclassname, tblcat.membershipname, tblsession.*
+//   FROM tbppt 
+//   JOIN tbluser ON tbluser.userid = tbppt.memid 
+//   JOIN tbltrainer ON tbltrainer.trainerid = tbppt.trainid
+//   join tblmembership on tblmembership.usersid = tbluser.userid
+//   join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
+//   JOIN tblcat ON tblcat.membershipID = tblmemrates.memcat
+//   JOIN tblmemclass ON tblmemclass.memclassid = tblmemrates.memclass
+//   JOIN tblsession ON tblsession.sessionID = tbppt.sessionID
+//   where tbluser.userid != ${req.body.othermember} AND tbppt.trainid=${req.session.trainer.trainerid}
+//   GROUP BY tbluser.userid`
 
-  db.query(query,(err,out)=>{
-    res.send({othermember:out})
-  })
-})
+//   db.query(query,(err,out)=>{
+//     res.send({othermember:out})
+//   })
+// })
 
 //View other member detais
-router.post('/trainee/OtherMember/view',(req,res)=>{
-  const query =`SELECT tbppt.*, tbluser.*, tbltrainer.*, tblmemclass.memclassname, tblcat.membershipname, tblsession.*
-  FROM tbppt 
-  JOIN tbluser ON tbluser.userid = tbppt.memid 
-  JOIN tbltrainer ON tbltrainer.trainerid = tbppt.trainid
-  join tblmembership on tblmembership.usersid = tbluser.userid
-  join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
-  JOIN tblcat ON tblcat.membershipID = tblmemrates.memcat
-  JOIN tblmemclass ON tblmemclass.memclassid = tblmemrates.memclass
-  JOIN tblsession ON tblsession.sessionID = tbppt.sessionID
-  where tbluser.userid = ${req.body.newmember} AND tbppt.trainid=${req.session.trainer.trainerid}
-  GROUP BY tbluser.userid`
+// router.post('/trainee/OtherMember/view',(req,res)=>{
+//   const query =`SELECT tbppt.*, tbluser.*, tbltrainer.*, tblmemclass.memclassname, tblcat.membershipname, tblsession.*
+//   FROM tbppt 
+//   JOIN tbluser ON tbluser.userid = tbppt.memid 
+//   JOIN tbltrainer ON tbltrainer.trainerid = tbppt.trainid
+//   join tblmembership on tblmembership.usersid = tbluser.userid
+//   join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
+//   JOIN tblcat ON tblcat.membershipID = tblmemrates.memcat
+//   JOIN tblmemclass ON tblmemclass.memclassid = tblmemrates.memclass
+//   JOIN tblsession ON tblsession.sessionID = tbppt.sessionID
+//   where tbluser.userid = ${req.body.newmember} AND tbppt.trainid=${req.session.trainer.trainerid}
+//   GROUP BY tbluser.userid`
 
-  db.query(query,(err,out)=>{
-    if (err) return res.send(err)
-    res.send({newmember:out})
-  })
-})
+//   db.query(query,(err,out)=>{
+//     if (err) return res.send(err)
+//     res.send({newmember:out})
+//   })
+// })
 
 //******************************************************* */
-//                     PENDING
+//                     PENDING.
 //******************************************************* */
 
 //View Pending Request 
@@ -196,7 +247,7 @@ function viewPend(req, res, next){
   JOIN tblspecial on tblspecial.specialID = tblmembership.specializationid
   WHERE trainid = ? and tbppt.status = 2
   `
-  db.query(query,[req.session.trainer.trainerid], function(err, results, fields){
+  db.query(query,[req.session.trainer.trainerid], function (err, results, fields) {
     if(err) return res.send(err);
     req.viewPend = results;
     return next();
@@ -217,7 +268,7 @@ function viewPend(req, res, next){
 //accept pending
 router.post('/trainee/accept', (req, res) => {
   db.query(`INSERT INTO tblsession (session_count, sessionForSched) VALUES (1, 1)`,(err,results, fields) => {
-    db.query('update tbppt set status = 1, sessionID = ? WHERE trainid = ? and memid=?',[
+    db.query('update tbppt set status = 1, sessionID = ? WHERE trainid = ? and memid=?',[      
       results.insertId, 
       req.session.trainer.trainerid,
       req.body.userId
@@ -226,6 +277,10 @@ router.post('/trainee/accept', (req, res) => {
     })
   })
 });
+
+
+
+
 
 
 // ---------- F U N C T I O N S ---------- //
@@ -240,9 +295,8 @@ function dashboard(req, res, next){
 
 function trainee(req, res, next){
     res.render('trainer/views/trainee',{
+      trainee: req.viewTrainee,
       hello: req.trainer,
-      general: req.general,
-      otherMembers: req.otherMembers
     });
     return next();
 }
@@ -260,12 +314,22 @@ function notrainee(req, res, next){
   return next();
 }
 
+function traineeSched(req, res, next){
+  res.render('trainer/views/trainee-sched',{
+    trainee: req.viewTrainee,
+    hello: req.trainer,
+    general: req.general        
+  })
+  return next();
+}
+
 
 //    ROUTER
 router.get('/', hello, dashboard);
-router.get('/trainee', hello, general, trainee);
+router.get('/trainee', hello, allTrainees, trainee);
 router.get('/pending', hello, viewPend, pending);
 router.get('/no-trainee', hello, notrainee);
+router.get('/trainee-sched', hello, individualTrainee, traineeSched);
 
 
 exports.trainer = router;

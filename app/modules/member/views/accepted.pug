@@ -199,6 +199,7 @@ script.
         let timeEnd = moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('HH:mm')
         let start = `${sessionDate} ${timeStart}`
         let end = `${sessionDate} ${timeEnd}`
+        let content = data[i].description
         schedStatus = data[i].scheduleStatus
         delId = data[i].PTid
        
@@ -215,6 +216,8 @@ script.
           scheduleStatus: data[i].scheduleStatus,
           color: '#77dd77',
           overlap: false,
+          date: `${moment(data[i].sessionDate).format('MMM DD, YYYY')}`,
+          schedule: `${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')}`
         }
         evs.push(desc)
       }
@@ -354,12 +357,26 @@ script.
         allowOutsideClick: false,
         events: evs,
         eventRender: function(event, element) {
-          if (event.scheduleStatus == 2) {
+            if (event.scheduleStatus == 2) {
             element.css({
-                'background-color': '#ff6961',
-                'border-color': '#ff6961'
-            });
+              'background-color': '#ff6961',
+              'border-color': '#ff6961'
+            })
+              element.popover({
+              title: `You Rejected`,
+              trigger: 'hover',
+              placement: 'top',
+              content: event.content,
+              container: 'body'
+            })
           }
+          element.popover({
+            title: event.date,
+            trigger: 'hover',
+            placement: 'top',
+            content: event.schedule,
+            container: 'body'
+          })
         },
         select: function (startDate, jsEvent, view) {
 
