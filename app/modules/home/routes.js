@@ -730,8 +730,25 @@ function useraddid(req, res, next) {
 
 
 //update of pending to regular
-
 router.post('/pending/update/:userId', useraddid, (req, res) => {
+  db.query(`select * from tblpromo 
+    where CURDATE() > startdate and 
+    CURDATE() < enddate and status='Active'`, (err, results, fields) => {
+    if(results[0]){
+    var a= results[0].discount / 100
+    db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.params.userId], (err, results, fields) => {
+      db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.params.userId], (err, results, fields) => {
+        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee - (r.memfee * ?), p.paymentdate=CURDATE(), p.classification='4' Where p.userid= ? ", [a,req.params.userId], (err, results, fields) => {  
+          if (err)
+            console.log(err);
+          else {
+            res.redirect('/pending');
+              }
+      });
+          });
+      });
+    }
+    else{
     db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.params.userId], (err, results, fields) => {
       db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.params.userId], (err, results, fields) => {
         db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee, p.paymentdate=CURDATE(), p.classification='1' Where p.userid= ? ", [req.params.userId], (err, results, fields) => {  
@@ -743,6 +760,23 @@ router.post('/pending/update/:userId', useraddid, (req, res) => {
       });
           });
       });
+  }
+});
+  });
+
+//check promo
+function check(req, res, next) {
+  db.query(`select * from tblpromo 
+    where CURDATE() > startdate and 
+    CURDATE() < enddate and status='Active'`, function (err, results, fields) {
+    if (results[0]){
+      console.log(results)
+      var a= results[0].discount / 100
+      console.log(a)
+    }
+    return next();
+  })
+}
 
   // db.query('UPDATE tbluser SET usertype = 2 WHERE userid = ?', [req.params.userId], (err, results, fields) => {
   //   if(err) console.log(err)
@@ -751,7 +785,7 @@ router.post('/pending/update/:userId', useraddid, (req, res) => {
   //     res.redirect('/pending')
   //   }
   // })
-});
+
 
 //view of regular exclusive members
 function viewReg(req, res, next) {
@@ -1405,7 +1439,7 @@ function pendingPtChange(req, res) {
 
 function paymentSession(req, res) {
   res.render('admin/transactions/views/t-payment-session',{
-    pays :req.paymentSession
+    paid :req.paymentSession
   })
 }
 
@@ -1437,7 +1471,7 @@ router.get('/t-event', t_event);
 router.get('/freezed',viewFre, freezed);
 router.get('/income', income);
 router.get('/payment', viewPay, payment);
-router.get('/pending', viewUpdate, viewPend, pending);
+router.get('/pending', check,viewUpdate, viewPend, pending);
 router.get('/personal', viewPer,personal);
 router.get('/regular',Nulling,viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
 router.get('/interregular',Nulling,viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
