@@ -1148,6 +1148,84 @@ function viewWal(req, res, next){
   })
 }
 
+// VIEW PENDING PT CHANGE
+function viewPendingChange ( req,res,next ) {
+  const query = `
+  SELECT * FROM tblchange
+  JOIN tbluser on tbluser.userid = tblchange.memid
+  JOIN tbltrainer on tbltrainer.trainerid = tblchange.trainid
+  `
+  db.query(query, ( err,results ) => {
+    if (err) console.log(err)
+    req.pendingChange = results
+    return next();
+  })
+}
+// ACCEPT PENDING PT CHANGE
+router.post('/pending/pt/accept', (req, res) => {
+  db.query(`DELETE from tblchange where changeID = ?`, [ req.body.changeid ], ( err,out ) => {
+    if(err) console.log(err)
+    db.query(`UPDATE tbppt SET status = 0 WHERE trainid = ? and memid = ?`, [ req.body.trainid, req.body.memid ], ( err,out ) => {
+      if(err) console.log(err)
+      db.query(`UPDATE tbppt SET scheduleStatus = 2 WHERE memid = ? and trainid = ? and scheduleStatus = 1`, [ req.body.memid, req.body.trainid ], ( err,out ) => {
+        if(err) console.log(err)
+      }) 
+    })
+  })
+})
+// REJECT PENDING PT CHANGE
+router.post('/pending/pt/reject', (req, res) => {
+  db.query(`DELETE from tblchange where changeID = ?`, [ req.body.changeid ], ( err,out ) => {
+    if(err) console.log(err)
+  })
+})
+
+
+
+// VIEW SESSION PAYMENT REQUEST
+function viewPaymentSession ( req,res,next ) {
+  const query = `
+  SELECT * FROM tblsession
+  JOIN tbppt on tblsession.sessionID = tbppt.sessionID
+  JOIN tbluser on tbluser.userid = tbppt.memid
+  where amount IS NOT NULL
+  group by tbluser.userid
+  `
+  db.query(query, ( err,results ) => {
+    if (err) console.log(err)
+    req.paymentSession = results
+    return next();
+  })
+}
+// PAY
+router.post('/payment/session/pay', (req, res) => {
+  const query = `
+  UPDATE tblsession SET 
+  session_count = session_count + amount,
+  sessionForSched = sessionForSched + amount,
+  sessionStatus = NULL, 
+  amount = NULL 
+  WHERE sessionID = ?
+  `
+  db.query(query, [ req.body.id ], ( err,out ) => {
+    if(err) console.log(err)
+    db.query(`INSERT INTO tblpayment (userid, paymentdate, amount, classification) VALUES (?, CURDATE(), ?, 5)`, [ req.body.userid, req.body.amount ], ( err,out ) => {
+      if(err) console.log(err)
+    })
+  })
+})
+// REJECT 
+router.post('/payment/session/reject', (req, res) => {
+  db.query(`UPDATE tblsession SET amount = NULL, sessionStatus = NULL WHERE sessionID = ?`, [ req.body.id ], ( err,out ) => {
+    if(err) console.log(err)
+  })
+})
+
+
+
+
+
+
 
 //A-TEAM FITNESS FUNCTIONS
 
@@ -1317,7 +1395,18 @@ function GClasses(req, res) {
     classes: req.viewGcl,
     train: req.viewGt
   })
+}
 
+function pendingPtChange(req, res) {
+  res.render('admin/transactions/views/t-pt-change',{
+    pends :req.pendingChange
+  })
+}
+
+function paymentSession(req, res) {
+  res.render('admin/transactions/views/t-payment-session',{
+    pays :req.paymentSession
+  })
 }
 
 
@@ -1356,6 +1445,8 @@ router.get('/events',viewEve, Events);
 router.get('/walkins',viewWal, walkins);
 router.get('/trainsessions', trainSessions);
 router.get('/t/classes',viewGt,viewGcl, GClasses);
+router.get('/pending/pt', viewPendingChange, pendingPtChange);
+router.get('/payment/session', viewPaymentSession, paymentSession);
 /**
  * Here we just export said router on the 'index' property of this module.
  */

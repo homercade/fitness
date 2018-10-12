@@ -53,7 +53,7 @@ function allTrainees(req, res, next){
   join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
   join tblcat on tblcat.membershipID = tblmemrates.memcat
   join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass
-  where tbppt.trainid  = ?
+  where tbppt.trainid  = ? AND tbppt.status = 1
   group by userid
   `;
   db.query(query, [req.session.trainer.trainerid], function(err, results, fields){
@@ -189,6 +189,45 @@ router.post('/schedule/update', (req, res) => {
   }
 })
 
+//Change trainee
+router.post('/change', ( req,res ) => {
+  const query = ` 
+  INSERT INTO tblchange (status, memid, trainid, sender, description) VALUES (2, ?, ?, 'Member', ?)
+  `
+  db.query(query, [
+      req.body.userid,
+      req.session.trainer.trainerid,
+      req.body.reason
+  ], (err, out) => {
+      if (err) console.log(err)
+  })
+})
+
+//Check
+router.post('/check', ( req,res ) => {
+  const query = ` 
+  SELECT * from tblchange 
+  join tbltrainer on tbltrainer.trainerid = tblchange.trainid 
+  join tbluser on tbluser.userid = tblchange.memid 
+  where trainerid = ? and userid = ?
+  `
+  db.query(query, [ req.session.trainer.trainerid, req.body.userid ], (err, out) => {
+      res.send(out)
+  })
+})
+
+// //Check for change
+// function checkForChange(req, res, next){
+//   const query = `SELECT * from tblchange join tbltrainer on tbltrainer.trainerid = tblchange.trainid where trainerid = ?`
+//   db.query(query, [ req.session.trainer.trainerid ], (err, results, fields) => {
+//       if (err) console.log(err)
+//       if (results.length != 0){
+//           res.redirect('change')
+//       }
+//       return next();
+//   })
+// }
+
 
 //View other member button and is clickable
 // router.post('/trainee/OtherMember',(req,res)=>{
@@ -279,10 +318,6 @@ router.post('/trainee/accept', (req, res) => {
 });
 
 
-
-
-
-
 // ---------- F U N C T I O N S ---------- //
 
 //    FUNCTION
@@ -323,6 +358,13 @@ function traineeSched(req, res, next){
   return next();
 }
 
+function change(req, res, next) {
+  res.render('trainer/views/change', {
+    hello: req.trainer
+  })
+  return next();
+}
+
 
 //    ROUTER
 router.get('/', hello, dashboard);
@@ -330,6 +372,7 @@ router.get('/trainee', hello, allTrainees, trainee);
 router.get('/pending', hello, viewPend, pending);
 router.get('/no-trainee', hello, notrainee);
 router.get('/trainee-sched', hello, individualTrainee, traineeSched);
+router.get('/change', hello, change);
 
 
 exports.trainer = router;

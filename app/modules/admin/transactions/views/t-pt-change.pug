@@ -1,0 +1,110 @@
+include ../../../../templates/head 
+
+block main
+	section#main-content
+		section.wrapper.site-min-height
+			.row.mt
+				.col-md-12
+					.content-panel
+						.container-fluid
+							table.table.table-striped.table-advance.table-hover
+								h4
+									| All Pending Personal Trainer Change Request or Trainee Unbound Request
+								thead
+									tr
+										th
+											i.fa.fa-user
+											|  Member
+										th
+											i.fa.fa-user-friends
+											|  Trainer
+										th
+											i.fa.fa-at
+											|  Sender
+										th
+											i.fa.fa-edit
+											|  Action
+									tbody 
+										each p in pends
+											tr 
+												td #{p.userfname} #{p.userlname} 
+												td #{p.trainerfname} #{p.trainerlname} 
+												td #{p.sender} 
+												td 
+													button.view.btn.btn-primary.btn-xs(type='button', value = p.changeID, data-desc = p.description)
+														i.fa.fa-search
+													button.accept.btn.btn-success.btn-xs(type ='button', value = p.changeID, data-memid = p.memid, data-trainid = p.trainid )
+														i.fa.fa-check
+													button.delete.btn.btn-danger.btn-xs(type='button', value = p.changeID)
+														i.fa.fa-trash-alt
+	
+
+
+include ../../../../templates/foot
+script.
+	$(document).ready(function(){
+
+		$('.view').click(function(){
+			swal({
+				title: 'Submitted Reason',
+				text: $(this).data('desc'),
+				type: 'info'
+			})
+		})
+
+		$('.accept').click(function(){
+			swal({
+				title: 'Accept Request?',
+				text: `Are you sure? This can't be undone once confirmed`,
+				type: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Confirm'
+			}).then(( result ) => {
+				if (result.value){
+					$.post('/pending/pt/accept',{
+						changeid: $(this).val(),
+						trainid: $(this).data('trainid'),
+						memid: $(this).data('memid')
+					}).done(
+						swal(
+							'Success',
+							'Request Accepted',
+							'success'
+						).then(( result) => {
+							if (result.value){
+								location.reload()
+							}
+						})
+					)
+				}
+			})
+		})
+
+		$('.delete').click(function(){
+			swal({
+				title: 'Delete Request?',
+				text: `Are you sure?`,
+				type: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Confirm'
+			}).then((result) => {
+				if (result.value){
+					$.post('/pending/pt/reject', {
+						changeid: $(this).val()
+					}).done(
+						swal(
+						'Success',
+						'Request Rejected',
+						'success'
+						).then(( result) => {
+							if (result.value){
+								location.reload()
+							}
+						})
+					)
+				}
+			})
+		})
+	})
+
+	

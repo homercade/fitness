@@ -10,7 +10,7 @@ block main
               h6 Membership
               h3 #{pt[0].session_count}
               h6 Sessions Bought
-              button#buySession.btn.btn-theme(value= pt[0].userid)
+              button#buySession.btn.btn-theme(value = pt[0].userid)
                 i.fa.fa-shopping-cart
                 |
                 | Buy Session
@@ -32,10 +32,10 @@ block main
                 p
                   img.img-circle.img-thumbnail(width=150 src='/assets/img/ui-sherman.jpg')
                 p
-                  button.btn.btn-theme(value= '', data-toggle='modal', data-target='.prompt')
+                  button#changeTrainer.btn.btn-theme(type='button', value = pt[0].trainerid)
                     | Change Trainer
       .col-lg-12.mt
-        .row.content-panel
+        .row.content-panel#content
           .panel-heading
             ul.nav.nav-tabs.nav-justified
               li.active
@@ -182,6 +182,7 @@ script.
 
 script.
   $(document).ready(function(){
+    
 
     $.post('/member/pt/schedule').done(function (data) {
 
@@ -217,6 +218,7 @@ script.
           color: '#77dd77',
           overlap: false,
           date: `${moment(data[i].sessionDate).format('MMM DD, YYYY')}`,
+          content: content,
           schedule: `${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')}`
         }
         evs.push(desc)
@@ -392,6 +394,36 @@ script.
           } else {
             return
           }
+        }
+      })
+    })
+
+
+    //- Change Trainer
+    $('#changeTrainer').click(function(){
+    const text = ''
+      swal({
+        type: 'question',
+        title: 'Feedback Needed',
+        text: 'Please write the reason why you wanted to change your current personal trainer.',
+        input: 'textarea',
+        inputPlaceholder: 'Type your message here...',
+        confirmButtonText: 'Submit',
+        showCancelButton: true
+      }).then((result)=>{
+        if (result.value) {
+          $.post('/member/change',{
+            reason: result.value,
+            trainerid: $(this).val(),
+          }).done(
+            swal(
+            'Submitted',
+            'Your request has been submitted. Please wait for the official decision.',
+            'info'
+            ).then(()=>{
+              location.href = '/member/change'
+            })
+          )
         }
       })
     })

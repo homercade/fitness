@@ -56,20 +56,23 @@ block main
               each pr in profs
                 .form-group
                   label(style='margin-left:15px; font-weight:bold') Address: 
-                  input.form-control(type="text" value = pr.useraddress , name='address' style='position:relative; right:-130px')
+                  input#address.form-control(type="text" value = pr.useraddress , name='address' style='position:relative; right:-130px')
               .row(style='margin-bottom:5px;')
               each pr in profs
                 .form-group
                   label(style='margin-left:15px;font-weight:bold') Contact: 
-                  input.form-control(type="text" value = pr.usermobile , name='contact' style='position:relative; right:-130px')
+                  input#contact.form-control(type="text" value = pr.usermobile , name='contact' style='position:relative; right:-130px')
               .row(style='margin-bottom:5px;') 
               each pr in profs
                 .form-group
                   label(style=' margin-left:15px;font-weight:bold') Email: 
-                  input.form-control(type="email" value = pr.useremail , name='email' style='position:relative; right:-144px')
-              
-              
-              
+                  input#email.form-control(type="email" value = pr.useremail , name='email' style='position:relative; right:-144px')
+              .row(style='margin-bottom:5px;')
+              each pr in profs
+                .form-group
+                  label(style=' margin-left:15px;font-weight:bold') Username: 
+                  input#username.form-control(type="text" value = pr.userusername , name='username' style='position:relative; right:-115px')
+                
       #extra.col-md-7
         .content-panel
           h4 
@@ -89,14 +92,19 @@ block main
                     br
                     br
               center
-                
-                h5 Last Paid on
-                  b 
-                    | Aug 1, 2018
+                each pr in profs  
+                  h5 Last Paid on
+                    b 
+                      | #{pr.paymentdate}
                 button.btn.btn-primary.btn-xs(style='margin-right: 5px')
+                  i.fa.fa-snowflake
+                  |
                   | Freeze
-                button.btn.btn-danger.btn-xs
-                  | Change 
+                button.btn.btn-success.btn-xs
+                  i.fa.fa-level-up-alt 
+                  |
+                  | Upgrade 
+                
           br
           .row
             .col-md-6
@@ -155,14 +163,31 @@ script.
   })
 
   $('#save').click(function(){
-    $('#extra').show();
-    $('#edit').show();
-    $('#cancel').hide();
-    $('#save').hide();
-    $('#fields').show();
-    $('#editFields').hide();
-
-    $('#info').animate({
-      'left':'0%'
-    })
+    
+    
+    
+    $.post('/member/profile/edit', {
+      address: $('#address').val(),
+      contact: $('#contact').val(),
+      email: $('#email').val(),
+      username: $('#username').val()
+    }).done(
+      swal(
+        'Succesful!',
+        'You succesfully edited your profile.',
+        'success'
+      ).then((result) => {
+        if (result.value){
+          $('#editFields').hide();
+          $('#fields').show();
+          $('#save').hide();
+          $('#cancel').hide();
+          $('#edit').show();
+          $('#extra').show();
+          $('#info').animate({
+            'left': '0%'
+          })
+        }
+      })
+    )
   })

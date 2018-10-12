@@ -1,0 +1,99 @@
+include ../../../../templates/head 
+
+block main
+	section#main-content
+		section.wrapper.site-min-height
+			.row.mt
+				.col-md-12
+					.content-panel
+						.container-fluid
+							table.table.table-striped.table-advance.table-hover
+								h4
+									| All Pending Session Purchases
+								thead
+									tr
+										th
+											i.fa.fa-user
+											|  Name
+										th
+											i.fa.fa-plus
+											|  Quantity
+										th
+											i.fa.fa-dollar-sign
+											|  Total Amount
+										th
+											i.fa.fa-edit
+											|  Action
+									tbody 
+										
+										each p in pays
+											- var total = p.amount * 50
+											tr 
+												td #{p.userfname} #{p.userlname}
+												td #{p.amount}
+												td #{total}
+												td 
+													button.pay.btn.btn-theme.btn-xs(type='button', value = p.sessionID, data-userid = p.userid, data-amount = total)
+														i.fa.fa-coins
+													button.delete.btn.btn-danger.btn-xs(type='button', value = p.sessionID)
+														i.fa.fa-trash-alt
+
+include ../../../../templates/foot
+
+script.
+		$(document).ready(function(){
+
+		$('.pay').click(function(){
+			swal({
+				title: 'Accept Payment.',
+				text: `Are you sure?`,
+				type: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Confirm'
+			}).then(( result ) => {
+				if (result.value){
+					$.post('/payment/session/pay',{
+						id: $(this).val(),
+						userid: $(this).data('userid'),
+						amount : $(this).data('amount')
+					}).done(
+						swal(
+							'Success',
+							'Payment Accepted',
+							'success'
+						).then(( result) => {
+							if (result.value){
+								location.reload()
+							}
+						})
+					)
+				}
+			})
+		})
+
+		$('.delete').click(function(){
+			swal({
+				title: 'Delete Request?',
+				text: `Are you sure?`,
+				type: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Confirm'
+			}).then((result) => {
+				if (result.value){
+					$.post('/payment/session/reject', {
+						id: $(this).val()
+					}).done(
+						swal(
+						'Success',
+						'Request Rejected',
+						'success'
+						).then(( result) => {
+							if (result.value){
+								location.reload()
+							}
+						})
+					)
+				}
+			})
+		})
+	})

@@ -62,7 +62,19 @@ script.
     })
 
     $('.sched').click(function () {
-      location.href = `/trainer/trainee-sched?id=${$(this).val()}`
+      var id = $(this).val()
+      var length
+      $.post('/trainer/check', {
+        userid: $(this).val()
+      }).done(function (data) {
+        length = data.length
+        if (length != 0) {
+        location.href = `/trainer/change`
+        } 
+        else {
+        location.href = `/trainer/trainee-sched?id=${id}`
+        }
+      })
     })
   })
 

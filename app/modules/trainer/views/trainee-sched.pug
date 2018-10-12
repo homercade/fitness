@@ -31,7 +31,7 @@ block main
               p
                 img.img-circle.img-thumbnail(width=150 src='../../../assets/img/chip.png')
               p
-                button.btn.btn-theme(value= general.memid, data-toggle='modal', data-target='.prompt')
+                button#giveup.btn.btn-theme(value= general.userid)
                   | Give Up Client
       .col-lg-12.mt
         .row.content-panel
@@ -107,7 +107,7 @@ script.
           end: end,
           color: '#77dd77',
           overlap: false,
-
+          content: content,
           eventSessionId: data[i].sessionID,
           scheduleStatus: data[i].scheduleStatus,
           schedule: `${moment(data[i].sessionDate).format('MMM DD, YYYY')} (${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')})`
@@ -321,6 +321,36 @@ script.
           }
         }
       })
-     
     })
+
+
+        //- Change Trainer
+    $('#giveup').click(function(){
+    const text = ''
+      swal({
+        type: 'question',
+        title: 'Feedback Needed',
+        text: 'Please write the reason why you wanted give up your current trainee.',
+        input: 'textarea',
+        inputPlaceholder: 'Type your message here...',
+        confirmButtonText: 'Submit',
+        showCancelButton: true
+      }).then((result)=>{
+        if (result.value) {
+          $.post('/trainer/change',{
+            reason: result.value,
+            userid: $(this).val()
+          }).done(
+            swal(
+            'Submitted',
+            'Your request has been submitted. Please wait for the official decision.',
+            'info'
+            ).then(()=>{
+              location.href = '/trainer/change'
+            })
+          )
+        }
+      })
+    })
+    
   })

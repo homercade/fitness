@@ -12,7 +12,7 @@ router.get('/dashboard', indexController);
 
 
 //******************************************************* */
-//                    DASHBOARD
+//                    DASHBOARD.
 //******************************************************* */
 
 router.post('/event/view', (req, res)=>{
@@ -21,22 +21,22 @@ router.post('/event/view', (req, res)=>{
     })
 })
 
-// function viewClass(req, res, next) {
-//     db.query('select * from tbleventclass where type = 1', function (err, results, fields) {
-//         if (err) return res.send(err);
-//         results.forEach((results) => {
-//             results.starttime = moment(results.starttime,'HH:mm:ss').format('hh:mm A');
-//         })
-//         results.forEach((results) => {
-//             results.endtime = moment(results.endtime,'HH:mm:ss').format('hh:mm A');
-//         })
-//         req.viewClass = results;
-//         return next();
-//     })
-// }
+function totalPayment (req, res, next) {
+    const query = `SELECT * from tblpayment join tbluser on tblpayment.userid = tbluser.userid where tbluser.userid = ?`
+    db.query(query, [ req.session.member.userid ], ( err, results, fields ) => {
+        if (err) console.log(err)
+        let total = 0
+        for ( i=0; i < results.length; i++ ){
+            total += results[i].amount
+        }
+        req.total = total
+        return next()
+        
+    })
+}
 
 //******************************************************* */
-//                      PROFILE
+//                      PROFILE.
 //******************************************************* */
 
 // VIEW
@@ -49,19 +49,22 @@ function initial(req, res, next) {
     join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
     join tblcat on tblcat.membershipID = tblmemrates.memcat
     join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass
+    join tblpayment on tblpayment.userid = tbluser.userid
     where usertype = 2  
-    AND userid = ?
-    group by userid
+    AND tbluser.userid = ?
+    group by tbluser.userid
     `
     db.query(query, [req.session.member.userid], function (err, results, fields) {
         if (err) return res.send(err);
-        
+        console.log(results, '<<<<<<<<<<<<<<<< initial')
         results.forEach(( results ) => {
             results.acceptdate = moment(results.acceptdate).format("LL");
             results.userbday = moment(results.userbday).format("MMM DD, YYYY");
         })
         results.forEach(( results ) => {
-            results.expirydate = moment(results.expirydate).format("LL");
+            results.expirydate = moment(results.expirydate).format("MMM DD, YYYY");
+            results.acceptdate = moment(results.acceptdate).format("MMM DD, YYYY");
+            results.paymentdate = moment(results.paymentdate).format("MMM DD, YYYY");
         })
 
         if (results.length == 0){
@@ -71,7 +74,8 @@ function initial(req, res, next) {
             join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
             join tblcat on tblcat.membershipID = tblmemrates.memcat
             join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass 
-            where usertype= 2 and userid = ?
+            join tblpayment on tblpayment.userid = tbluser.userid
+            where usertype= 2 and tbluser.userid = ?
             `,[req.session.member.userid], (err, results,fields) => {
                 if (err) return res.send(err)
                 results.forEach(( results ) => {
@@ -79,60 +83,67 @@ function initial(req, res, next) {
                     results.userbday = moment(results.userbday).format("MMM DD, YYYY");
                 })
                 results.forEach(( results ) => {
-                    results.expiry = moment(results.expiry).format("LL");
+                    results.expirydate = moment(results.expirydate).format("MMM DD, YYYY");
+                    results.acceptdate = moment(results.acceptdate).format("MMM DD, YYYY");
+                    results.paymentdate = moment(results.paymentdate).format("MMM DD, YYYY");
                 })
-                console.log(results, '2nd query')
                 req.initial = results;
                 return next()
             })
         }
         else {
-            console.log(results, '1st query')
             req.initial = results;
             return next()
         }
     })
 }
-function init(req, res, next) {
-    const query = `
-    select * from tbluser 
-    join tblmembership on tblmembership.usersid = tbluser.userid
-    join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
-    join tblcat on tblcat.membershipID = tblmemrates.memcat
-    join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass;
-    `
-    db.query(query, [req.session.member.userid], function (err, results, fields) {
-        if (err) return res.send(err);
+
+// function init(req, res, next) {
+//     const query = `
+//     select * from tbluser 
+//     join tblmembership on tblmembership.usersid = tbluser.userid
+//     join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
+//     join tblcat on tblcat.membershipID = tblmemrates.memcat
+//     join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass;
+//     `
+//     db.query(query, [req.session.member.userid], function (err, results, fields) {
+//         if (err) return res.send(err);
         
-        results.forEach(( results ) => {
-            results.signdate = moment(results.signdate).format("LL");
-            results.userbday = moment(results.userbday).format("MMM DD, YYYY");
-        })
-        results.forEach(( results ) => {
-            results.expiry = moment(results.expiry).format("LL");
-        })
+//         results.forEach(( results ) => {
+//             results.signdate = moment(results.signdate).format("LL");
+//             results.userbday = moment(results.userbday).format("MMM DD, YYYY");
+//         })
+//         results.forEach(( results ) => {
+//             results.expiry = moment(results.expiry).format("LL");
+//         })
 
-        req.init = results
-        return next()
+//         req.init = results
+//         return next()
+//     })
+// }
+
+router.post('/profile/edit', ( req,res ) => {
+    const query = `UPDATE tbluser SET useraddress = ?, usermobile = ?, useremail = ?, userusername = ? where userid = ?`
+    db.query(query, [
+        req.body.address,
+        req.body.contact,
+        req.body.email,
+        req.body.username,
+        req.session.member.userid
+    ], (err, out) => {
+        if (err) console.log(err)
     })
-}
-
+})
 
 
 //******************************************************* */
-//                     CLASSES
+//                     CLASSES.
 //******************************************************* */
 
 // VIEW
 function viewClass(req, res, next) {
     db.query('select * from tbleventclass where type = 1', function (err, results, fields) {
         if (err) return res.send(err);
-        // results.forEach((results) => {
-        //     results.starttime = moment(results.starttime,'HH:mm:ss').format('hh:mm A');
-        // })
-        // results.forEach((results) => {
-        //     results.endtime = moment(results.endtime,'HH:mm:ss').format('hh:mm A');
-        // })
         req.viewClass = results;
         return next();
     })
@@ -177,7 +188,7 @@ router.post('/class/resign', (req, res) => {
 
 
 //******************************************************* */
-//                     EVENT
+//                     EVENT.
 //******************************************************* */
 
 // VIEW
@@ -234,7 +245,7 @@ router.post('/event/resign', (req, res) => {
 })
 
 //******************************************************* */
-//                    TRAINER
+//                    TRAINER.
 //******************************************************* */
 
 // APPLY
@@ -289,9 +300,21 @@ function check(req, res, next){
     })
 }
 
+
+
 //******************************************************* */
-//                    Accepted
+//                    Accepted.
 //******************************************************* */
+
+function checkForChange(req, res, next){
+    const query = `SELECT * from tblchange join tbluser on tbluser.userid = tblchange.memid where userid = ?`
+    db.query(query, [ req.session.member.userid ], (err, results, fields) => {
+        if (results.length != 0){
+            res.redirect('change')
+        }
+        return next();
+    })
+}
 
 router.post('/buy', (req, res) => {
     db.query('UPDATE tblsession SET amount = ? where sessionID = ?', [ req.body.amount, req.body.sessionID ] , (err) => {
@@ -356,7 +379,18 @@ function personalTrainer(req, res, next) {
     })
 }
 
-
+router.post('/change', ( req,res ) => {
+    const query = ` 
+    INSERT INTO tblchange (status, memid, trainid, sender, description) VALUES (2, ?, ?, 'Member', ?)
+    `
+    db.query(query, [
+        req.session.member.userid,
+        req.body.trainerid,
+        req.body.reason
+    ], (err, out) => {
+        if (err) console.log(err)
+    })
+})
 
 
 
@@ -365,6 +399,7 @@ function personalTrainer(req, res, next) {
 function dashboard(req, res, next) {
     res.render('member/views/dashboard', {
         profs: req.initial,
+        total :req.total
         // classes: req.viewClass,
         // eves: req.viewEvent
     })
@@ -429,15 +464,15 @@ function accepted(req, res, next) {
     return next();
 }
 
-function changeTrainer(req, res, next) {
-    res.render('member/views/change-trainer', {
+function change(req, res, next) {
+    res.render('member/views/change', {
         profs: req.initial
     });
     return next();
 }
 
 // ------------- GET ---------------//
-router.get('/', initial, dashboard);
+router.get('/', initial, totalPayment, dashboard);
 router.get('/profile', initial, profile);
 router.get('/events', joinedEvents, viewEvent, initial, events);
 router.get('/trainers', initial, check, viewTrainers, trainer);
@@ -445,6 +480,6 @@ router.get('/classes', joinedClasses, viewClass, initial, classes);
 router.get('/billing', initial, billing);
 // trainer
 router.get('/pending', initial, pending);
-router.get('/accepted', personalTrainer, initial, accepted);
-router.get('/changeTrainer', initial, changeTrainer);
+router.get('/accepted', checkForChange, personalTrainer, initial, accepted);
+router.get('/change', initial, change);
 exports.member = router;
