@@ -24,7 +24,7 @@ block main
 												td #{pe.userfname} #{pe.userlname}
 												form#form(method='POST')
 												td 
-													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='#viewmodal', data-gen=pe.usergender, data-bd=pe.userbday , data-add=pe.useraddress , data-ph=pe.usermobile, data-em=pe.useremail, data-cl=pe.memclassname, data-ct=pe.membershipname data-code=pe.paymentcode data-fee=pe.memfee )
+													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='#viewmodal', data-gen=pe.usergender, data-bd=pe.userbday , data-add=pe.useraddress , data-ph=pe.usermobile, data-em=pe.useremail, data-cl=pe.memclassname, data-ct=pe.membershipname data-code=pe.paymentcode data-fee=pe.total )
 														i.fa.fa-search
 													button.edit.btn.btn-success.btn-xs(type='submit' value=`${pe.userid}`)
 														i.fa.fa-check
