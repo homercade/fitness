@@ -27,23 +27,140 @@ block main
 									tbody 
 										
 										each p in paid
+
 											- var total = p.amount * 50
+											- var fullname = `${p.userfname} ${p.userlname}` 
+											- var mebership = `${p.memclassname} - ${p.membershipname}`
+
 											tr 
 												td #{p.userfname} #{p.userlname}
 												td #{p.amount}
-												td #{total}
+												td #{total} #{p.useraddress}
 												td 
-													button.pay.btn.btn-theme.btn-xs(type='button', value = p.sessionID, data-userid = p.userid, data-amount = total)
+													button.pay.btn.btn-theme.btn-xs(	
+																													type='button', 	
+																													value = p.sessionID, 
+																													data-userid = p.userid, 
+																													data-amount = total,
+																													data-name = fullname,
+																													data-mem = mebership,
+																													data-address = p.useraddress,
+																													data-email = p.useremail,
+																													data-mobile = p.usermobile,
+																													data-quantity = p.amount
+																													)
 														i.fa.fa-coins
 													button.delete.btn.btn-danger.btn-xs(type='button', value = p.sessionID)
 														i.fa.fa-trash-alt
+
+.or.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+	.modal-dialog.modal-lg
+		.modal-content
+			.modal-header
+				button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+				h4.modal-title Official Receipt
+			.modal-body
+				.container-fluid
+					.row
+						.col-xs-12
+							.pull-left
+								h1 A-TEAM FITNESS
+								address
+									strong A-Team Fitness Inc.
+									br
+									| 4408 Old. Sta. Mesa St, Newton Plaza
+									br
+									| Sta. Mesa Manila
+									br
+									abbr(title='Phone') P:
+									|  0933 412 7526
+							// /pull-left
+							.pull-right
+								h1
+									img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+							// --/pull-right --
+							.clearfix
+							br
+							br
+						
+							.row
+								.col-md-9
+									h2
+										#name
+									address
+										strong 
+											#membership
+										strong 
+											#address
+										strong 
+											#email
+										strong 
+											#contact
+								.col-md-3
+									div
+										.pull-left DATE : 
+										.pull-right
+											#date
+										.clearfix
+									br
+									div
+									div(style='background-color:#ffbb00;color:white;padding:10px;')
+										.pull-left  Total Paid :
+										.pull-right 
+											.total
+										.clearfix
+							table.table
+								thead
+									tr
+										th.text-center(style='width:60px') QTY
+										th.text-left DESCRIPTION
+										th.text-right(style='width:90px') SUBTOTAL
+								tbody
+									tr
+										td.text-center 
+											#quantity
+										td
+											#desc
+										td.text-right 
+											.total
+									tr
+										td(colspan='2' rowspan='4')
+										td.text-right
+									tr
+										td.text-right.no-border
+											div(style='background-color:#ffbb00;color:white;padding:10px;')
+												strong Total
+										td.text-right
+											strong 
+												.total
+			.modal-footer
+				button.btn.btn-default(type='button', data-dismiss='modal') Close
+				button.btn.btn-primary(type='button') Print
+
 
 include ../../../../templates/foot
 
 script.
 		$(document).ready(function(){
 
+			var date = new Date()
+			date = moment(date).format('MMM DD, YYYY')
+
+
 		$('.pay').click(function(){
+
+			//- Initializing Modal
+			$('#name').text($(this).data('name'))
+			$('#membership').text($(this).data('mem'))
+			$('#address').text($(this).data('address'))
+			$('#email').text($(this).data('email'))
+			$('#contact').text($(this).data('mobile'))
+			$('#date').text(date)
+			$('#quantity').text($(this).data('quantity'))
+			$('#desc').text('Purchased Personal Training Session')
+			$('.total').text(`₱ ${$(this).data('amount')}.00`)
+
+			//- Paying process
 			swal({
 				title: 'Accept Payment.',
 				text: `Are you sure?`,
@@ -63,7 +180,10 @@ script.
 							'success'
 						).then(( result) => {
 							if (result.value){
-								location.reload()
+								$('.or').modal('show')
+								$('.or').on('hidden.bs.modal', function () {
+									location.reload()
+								})
 							}
 						})
 					)
@@ -97,3 +217,4 @@ script.
 			})
 		})
 	})
+

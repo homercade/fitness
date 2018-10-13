@@ -53,7 +53,7 @@ block main
 				.modal-content
 					.modal-header
 						button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-						h4.modal-title Bill Breakdown
+						h4.modal-title Official Receipt
 					form(action='POST', method='')
 						.modal-body
 							.container-fluid
@@ -97,7 +97,7 @@ block main
 												br
 												div
 												div(style='background-color:#ffbb00;color:white;padding:10px;')
-													.pull-left  Total Due :
+													.pull-left  Total Paid :
 													.pull-right#fee
 													.clearfix
 										table.table
@@ -168,6 +168,7 @@ block main
 										input.form.control(value=hs.userid)
 				.modal-footer
 					button.btn.btn-default(type='button', data-dismiss='modal') Close
+					
 include ../../../../templates/foot
 
 script.

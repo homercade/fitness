@@ -1,105 +1,102 @@
 include ../../../../templates/head
 
 block main
-
-    section#main-content
-      section.wrapper.site-min-height
-        .row.mt
-          .col-md-12
-            .content-panel
-              .container-fluid
-                table.table.table-striped.table-advance.table-hover
-                  thead
+  section#main-content
+    section.wrapper.site-min-height
+      .row.mt
+        .col-md-12
+          .content-panel
+            .container-fluid
+              table.table.table-striped.table-advance.table-hover
+                h4
+                  | All Training Sessions Today <b><span id='desc', style='margin-left: 15%'></span></b>
+                  
+                thead
+                  tr
+                    th
+                      i.fa.fa-user
+                      |  Member
+                    th
+                      i.fa.fa-phone
+                      |  Trainer
+                    th
+                      i.fa.fa-bookmark
+                      |  Action
+                tbody
+                  each s in sessions
                     tr
-                      th
-                        i.fa.fa-user
-                        |  Member
-                      th
-                        i.fa.fa-phone
-                        |  Trainer
-                      th
-                        i.fa.fa-bookmark
-                        |  Action
-                  tbody
-                    tr
-                      td [trainer]
-                      td [member]
+                      td #{s.userfname} #{s.userlname}
+                      td #{s.trainerfname} #{s.trainerlname}
                       td
-                        button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.start-modal')
-                          | START
-                        button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.cancel-modal')
-                          | CANCEL
-                          
-              
-// MODAL START
-.start-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-  .modal-dialog
-    .modal-content
-      .modal-header
-        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4.modal-title Starting Session Prompt
-      form(action='', method='')
-        .modal-body
-          .row
-            .col-md-12
-              center
-                input.id(type="text" name="id")
-                h4 Start the current <b>training session</b> now?
-                button.btn.btn-success(type='button') Yes
-                button.btn.btn-danger(type='button', data-dismiss='modal') No
-        .modal-footer
-          button.btn.btn-default(type='button', data-dismiss='modal') Close
-
-// MODAL CANCEL
-.cancel-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-  .modal-dialog
-    .modal-content
-      .modal-header
-        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4.modal-title Cancelation Prompt
-      form(action='', method='')
-        .modal-body
-          .row
-            .col-md-12
-              center
-                input.id(type="text" name="id")
-                h4 Cancel the current <b>training session</b> ? This means either one, or both of them is unable to attend the session.
-                button.btn.btn-success.cancel(type='button', data-toggle='modal', data-target='.absent-modal') Yes
-                button.btn.btn-danger(type='button', data-dismiss='modal') No
-        .modal-footer
-          button.btn.btn-default(type='button', data-dismiss='modal') Close
-
-// MODAL ABSENT
-.absent-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-  .modal-dialog
-    .modal-content
-      .modal-header
-        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4.modal-title Attendance Prompt
-      form(action='', method='')
-        .modal-body
-          .row
-            .col-md-12
-              center
-                input.id(type="text" name="id")
-                h4 Who's absent on today's training Session?
-                button.btn.btn-default(type='button') Trainer
-                button.btn.btn-default(type='button') Member
-                button.btn.btn-default(type='button') Both
-
-
-
+                        button.confirm.btn.btn-success.btn-xs( data-sessionid = s.sessionID, data-ptid = s.PTid )
+                          i.fa.fa-thumbs-up
+                        button.reject.btn.btn-danger.btn-xs( data-sessionid = s.sessionID, data-ptid = s.PTid )
+                          i.fa.fa-times   
+                        
 
 include ../../../../templates/foot
 
-
 script.
-  $(document).ready(function(){
-    $('#transactionDrop').addClass('active');
-    $('#trainSession').addClass('active');
-    });
 
-script.
-  $('.cancel').click(function(){
-    $('.cancel-modal').modal('hide');
+  $(document).ready(function () {
+
+    function now() {
+      let now = new Date()
+      now = moment(now).format('MMM DD, YYYY - hh:mm:ss A')
+      $('#desc').text(now)
+    }
+    setInterval(now, 1000)
+
+    $('.confirm').click(function () {
+      swal({
+        title: 'Set Session as Counted',
+        text: 'Are you sure? This action cannot be undone. By confirming, you set this session as counted.',
+        type: 'warning',
+        showCancelButton: true
+      }).then((result) => {
+        if (result.value) {
+          $.post('/session/confirm', {
+            sessionid: $(this).data('sessionid'),
+            ptid: $(this).data('ptid')
+          }).done(
+            swal(
+              'Success',
+              'Session Confirmed',
+              'success'
+            ).then((result) => {
+              if (result.value) {
+                location.reload()
+              }
+            })
+          )
+        }
+      })
+    })
+
+    $('.reject').click(function(){
+      swal({
+        title: 'Void Schedule',
+        text: "Are you sure? This action cannot be undone. By confirming, you set this schedule as void. This member's session count will remain unchange",
+        type: 'warning',
+        showCancelButton: true
+      }).then(( result ) => {
+        if(result.value){
+          $.post('/session/void', {
+            sessionid: $(this).data('sessionid'),
+            ptid: $(this).data('ptid')
+          }).done(
+            swal(
+              'Success',
+              'Schedule voided',
+              'success'
+            ).then((result) => {
+              if (result.value) {
+                location.reload()
+              }
+            })
+          )
+        }
+      })
+    })
   })
+

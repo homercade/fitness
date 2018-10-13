@@ -100,14 +100,6 @@ router.post('/trainee/viewSched',(req,res)=>{
   })
 })
 
-// //View Schedule Individual
-// router.post('/trainee/viewSched/individual',(req,res)=>{
-//   const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid where userid = ?`
-//   db.query(query,[req.body.id],(err,out) => {
-//     res.send(out)
-//   })
-// })
-
 //Add Schedule
 router.post('/trainee/schedule',(req,res)=>{
   const query =`SELECT tbppt.*, tbluser.*, tbltrainer.*, tblmemclass.memclassname, tblcat.membershipname, tblsession.*
@@ -216,57 +208,6 @@ router.post('/check', ( req,res ) => {
   })
 })
 
-// //Check for change
-// function checkForChange(req, res, next){
-//   const query = `SELECT * from tblchange join tbltrainer on tbltrainer.trainerid = tblchange.trainid where trainerid = ?`
-//   db.query(query, [ req.session.trainer.trainerid ], (err, results, fields) => {
-//       if (err) console.log(err)
-//       if (results.length != 0){
-//           res.redirect('change')
-//       }
-//       return next();
-//   })
-// }
-
-
-//View other member button and is clickable
-// router.post('/trainee/OtherMember',(req,res)=>{
-//   const query =`SELECT tbppt.*, tbluser.*, tbltrainer.*, tblmemclass.memclassname, tblcat.membershipname, tblsession.*
-//   FROM tbppt 
-//   JOIN tbluser ON tbluser.userid = tbppt.memid 
-//   JOIN tbltrainer ON tbltrainer.trainerid = tbppt.trainid
-//   join tblmembership on tblmembership.usersid = tbluser.userid
-//   join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
-//   JOIN tblcat ON tblcat.membershipID = tblmemrates.memcat
-//   JOIN tblmemclass ON tblmemclass.memclassid = tblmemrates.memclass
-//   JOIN tblsession ON tblsession.sessionID = tbppt.sessionID
-//   where tbluser.userid != ${req.body.othermember} AND tbppt.trainid=${req.session.trainer.trainerid}
-//   GROUP BY tbluser.userid`
-
-//   db.query(query,(err,out)=>{
-//     res.send({othermember:out})
-//   })
-// })
-
-//View other member detais
-// router.post('/trainee/OtherMember/view',(req,res)=>{
-//   const query =`SELECT tbppt.*, tbluser.*, tbltrainer.*, tblmemclass.memclassname, tblcat.membershipname, tblsession.*
-//   FROM tbppt 
-//   JOIN tbluser ON tbluser.userid = tbppt.memid 
-//   JOIN tbltrainer ON tbltrainer.trainerid = tbppt.trainid
-//   join tblmembership on tblmembership.usersid = tbluser.userid
-//   join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
-//   JOIN tblcat ON tblcat.membershipID = tblmemrates.memcat
-//   JOIN tblmemclass ON tblmemclass.memclassid = tblmemrates.memclass
-//   JOIN tblsession ON tblsession.sessionID = tbppt.sessionID
-//   where tbluser.userid = ${req.body.newmember} AND tbppt.trainid=${req.session.trainer.trainerid}
-//   GROUP BY tbluser.userid`
-
-//   db.query(query,(err,out)=>{
-//     if (err) return res.send(err)
-//     res.send({newmember:out})
-//   })
-// })
 
 //******************************************************* */
 //                     PENDING.
@@ -292,17 +233,6 @@ function viewPend(req, res, next){
     return next();
   })
 }
-
-//accept reason
-// router.post('/change', (req, res) => {
-//   db.query("", [], (err, results, fields) => {
-//     if (err)
-//       console.log(err);
-//     else {
-//       res.redirect('/trainee');
-//     }
-//   });
-// });
 
 //accept pending
 router.post('/trainee/accept', (req, res) => {

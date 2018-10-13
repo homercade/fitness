@@ -1222,6 +1222,10 @@ function viewPaymentSession ( req,res,next ) {
   SELECT * FROM tblsession
   JOIN tbppt on tblsession.sessionID = tbppt.sessionID
   JOIN tbluser on tbluser.userid = tbppt.memid
+  JOIN tblmembership on tblmembership.usersid = tbluser.userid
+  JOIN tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
+  JOIN tblmemclass on tblmemclass.memclassid = tblmemrates.memclass 
+  JOIN tblcat on tblcat.membershipID = tblmemrates.memcat
   where amount IS NOT NULL
   group by tbluser.userid
   `
@@ -1255,7 +1259,35 @@ router.post('/payment/session/reject', (req, res) => {
   })
 })
 
-
+// VIEW ALL SCHEDULES
+function sessionsToday ( req,res,next ) {
+  const query = `
+  SELECT * from tbppt 
+  JOIN tbluser on tbluser.userid = tbppt.memid
+  JOIN tbltrainer on tbltrainer.trainerid = tbppt.trainid
+  JOIN tblsession on tblsession.sessionID = tbppt.sessionID
+  WHERE sessionDate = CURDATE() AND scheduleStatus = 1
+  `
+  db.query(query, ( err,results ) => {
+    if (err) console.log(err)
+    req.sessionsToday = results
+    return next();
+  })
+}
+// ACCEPT SCHEDULE
+router.post('/session/confirm', (req, res) => {
+  db.query(`UPDATE tblsession SET session_count = session_count - 1 where sessionID = ?`, [ req.body.sessionid ], (err, out) => {
+    db.query(`UPDATE tbppt SET scheduleStatus = 0 where PTid = ?`, [ req.body.ptid ], (err, out) => {
+    })
+  })
+})
+// ACCEPT SCHEDULE
+router.post('/session/void', (req, res) => {
+  db.query(`UPDATE tblsession SET sessionForSched = sessionForSched + 1 where sessionID = ?`, [ req.body.sessionid ], (err, out) => {
+    db.query(`UPDATE tbppt SET scheduleStatus = 0, description = 'void' where PTid = ?`, [ req.body.ptid ], (err, out) => {
+    })
+  })
+})
 
 
 
@@ -1421,6 +1453,7 @@ function walkins(req, res) {
 
 function trainSessions(req, res) {
   res.render('admin/transactions/views/t-training-sessions',{
+    sessions: req.sessionsToday
   });
 }
 
@@ -1477,7 +1510,7 @@ router.get('/regular',Nulling,viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg
 router.get('/interregular',Nulling,viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
 router.get('/events',viewEve, Events);
 router.get('/walkins',viewWal, walkins);
-router.get('/trainsessions', trainSessions);
+router.get('/trainsessions', sessionsToday, trainSessions);
 router.get('/t/classes',viewGt,viewGcl, GClasses);
 router.get('/pending/pt', viewPendingChange, pendingPtChange);
 router.get('/payment/session', viewPaymentSession, paymentSession);
