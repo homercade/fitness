@@ -730,15 +730,15 @@ function useraddid(req, res, next) {
 
 
 //update of pending to regular
-router.post('/pending/update/:userId', useraddid, (req, res) => {
+router.post('/pending/update', useraddid, (req, res) => {
   db.query(`select * from tblpromo 
     where CURDATE() > startdate and 
     CURDATE() < enddate and status='Active'`, (err, results, fields) => {
     if(results[0]){
     var a= results[0].discount / 100
-    db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.params.userId], (err, results, fields) => {
-      db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.params.userId], (err, results, fields) => {
-        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee - (r.memfee * ?), p.paymentdate=CURDATE(), p.classification='4' Where p.userid= ? ", [a,req.params.userId], (err, results, fields) => {  
+    db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.body.id], (err, results, fields) => {
+      db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.body.id], (err, results, fields) => {
+        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee - (r.memfee * ?), p.paymentdate=CURDATE(), p.classification='4' Where p.userid= ? ", [a,req.body.id], (err, results, fields) => {  
           if (err)
             console.log(err);
           else {
@@ -749,9 +749,9 @@ router.post('/pending/update/:userId', useraddid, (req, res) => {
       });
     }
     else{
-    db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.params.userId], (err, results, fields) => {
-      db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.params.userId], (err, results, fields) => {
-        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee, p.paymentdate=CURDATE(), p.classification='1' Where p.userid= ? ", [req.params.userId], (err, results, fields) => {  
+    db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.body.id], (err, results, fields) => {
+      db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.body.id], (err, results, fields) => {
+        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee, p.paymentdate=CURDATE(), p.classification='1' Where p.userid= ? ", [req.body.id], (err, results, fields) => {  
           if (err)
             console.log(err);
           else {
