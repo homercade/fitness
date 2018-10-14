@@ -1319,6 +1319,19 @@ router.post('/users', (req, res) => {
   })
 })
 
+//change membership dropdowns
+function viewMemChange ( req,res,next ) {
+  const query = `
+  select r.*, cl.*,ct.* from tblmemrates r inner join tblmemclass cl on
+r.memclass=cl.memclassid inner join tblcat ct on 
+ct.membershipID=r.memcat
+  `
+  db.query(query, ( err,results ) => {
+    if (err) console.log(err)
+    req.MemChange = results
+    return next();
+  })
+}
 
 
 
@@ -1455,7 +1468,8 @@ function regular(req, res) {
     ass: req.viewAss,
     Exc: req.viewExc,
     ExcB: req.viewExcB,
-    Spes: req.viewSp
+    Spes: req.viewSp,
+    change: req.MemChange
   });
 }
 
@@ -1465,7 +1479,8 @@ function Interregular(req, res) {
     ass: req.viewAss,
     Excc: req.viewExcc,
     ExcB: req.viewExcB,
-    Spes: req.viewSp
+    Spes: req.viewSp,
+    change: req.MemChange
   });
 }
 
@@ -1536,8 +1551,8 @@ router.get('/income', income);
 router.get('/payment', viewPay, payment);
 router.get('/pending', check,viewUpdate, viewPend, pending);
 router.get('/personal', viewPer,personal);
-router.get('/regular',regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
-router.get('/interregular',Nulling,viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
+router.get('/regular',viewMemChange,regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
+router.get('/interregular',viewMemChange,Nulling,viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
 router.get('/events',viewEve, Events);
 router.get('/walkins',viewWal, walkins);
 router.get('/trainsessions', sessionsToday, trainSessions);

@@ -73,10 +73,12 @@ block main
                             i.fa.fa-edit
                           button.train.btn.btn-warning.btn-xs(data-toggle='modal', data-target='.sorted' data-id=re.userid)
                             i.fa.fa-dumbbell
-                          button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.suspend-modal')
-                            i.fa.fa-exclamation-circle
-                          button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.delete-modal')
-                            i.fa.fa-trash-alt 
+                          button.train.btn.btn-primary.btn-xs(data-toggle='modal', data-target='#viewmodal' data-usersid=re.userid)
+                            i.fa.fa-arrow-alt-circle-up
+                          //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.suspend-modal')
+                          //-   i.fa.fa-exclamation-circle
+                          //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.delete-modal')
+                          //-   i.fa.fa-trash-alt 
                           
           
 // MODAL ADD MEMBER
@@ -403,7 +405,27 @@ block main
                 button.btn.btn-primary(type='submit') Yes
                 button.btn.btn-default(type='button', data-dismiss='modal') No
                 
-          
+#viewmodal.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h4#myModalLabel.modal-title Assign to Branch
+      form(action='', method='POST')
+        .modal-body
+          .row
+            .col-md-12
+              .form-group
+              label.control-label Branch
+              select.form-control(name='branchid')
+                each ch in change
+                  option.hidden(value='0') Choose Membership...
+                  option(value='') #{ch.memclassname}-#{ch.membershipname}
+                input#usersid(type='text' name='id')
+        .modal-footer
+          button.btn.btn-primary(type='submit') Submit
+          button.btn.btn-default(type='button', data-dismiss='modal') Close
+                  
 
 
 
@@ -823,5 +845,13 @@ script.
     let modal = $(this);     
     modal.find('.modal-body #id').val(` ${id}`)
     modal.find('.modal-body #userid').val(`${userid}`)
+  })
+
+script.
+  $('#viewmodal').on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget)      
+    var usersid = button.data('usersid')
+    let modal = $(this);     
+    modal.find('.modal-body #usersid').val(`${usersid}`)
   })
 
