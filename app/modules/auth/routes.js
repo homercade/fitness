@@ -72,6 +72,15 @@ function viewBranch(req, res, next){
     })
 }
 
+SignupRouter.post('/users', (req, res) => {
+    db.query('SELECT * FROM tbluser', (err, out) => {
+        if(err) console.log(err)
+        if(out.length > 0){
+           res.send(out)
+        }
+    })
+})
+
 
 loginRouter.route('/')
     .get(authMiddleware.adminNoAuth, viewSpecial, viewBranch, viewHie,viewMembership, (req, res) => {
@@ -80,33 +89,24 @@ loginRouter.route('/')
                                             bras: req.viewBranch, 
                                             cat:req.viewMembership});
     })
-    // .get(authMiddleware.trainerNoAuth, (req, res) => {
-    //     res.render('auth/views/landing', req.query);
-    // })
-    // .get(authMiddleware.memberNoAuth, (req, res) => {
-    //     res.render('auth/views/landing', req.query);
-    // })
-    // .get(authMiddleware.staffHasAuth, (req, res) => {
-    //     res.render('auth/views/landing', req.query);
-    // })
     .post((req, res) => {
         var db = require('../../lib/database')();
 
+      
         db.query(`SELECT * FROM tbluser WHERE useremail="${req.body.userID}" OR userusername="${req.body.userID}"`, (err, results, fields) => {
             if (err) throw err;
             if (results.length === 0)
             {
             db.query(`SELECT * FROM tbltrainer WHERE traineremail="${req.body.userID}" OR trainerusername="${req.body.userID}"`, (err, results, fields) => {
             if (err) throw err;
-            if (results.length === 0) return res.redirect('/login?henlo');
-            var trainer = results[0];
+            if (results.length === 0) return res.redirect('/login?incorrect');
+            var trainer = results[0];   
             if (trainer.trainerpassword !== req.body.password) return res.redirect('/login?incorrect');
                 else{
                     delete trainer.password;
                     req.session.trainer = trainer;
                     return res.redirect('/trainer');
                 }
-
             }); 
             }
             else
@@ -119,13 +119,6 @@ loginRouter.route('/')
                 req.session.user = user;
                 return res.redirect('/');
             }
-/*            else if (user.usertype == 3)
-            {
-                delete user.password;
-                req.session.trainer = user;
-                console.log(req.session);
-                return res.redirect('/trainer');
-            }*/
             else if (user.usertype == 2)
             {
                 delete user.password;
@@ -173,6 +166,7 @@ SignupRouter.route('/')
             fullname =(req.body.fname +" "+ req.body.lname);
             addr=(req.body.str+" "+req.body.city)
             code = autogen;
+            console.log(req.body)
             db.query(`select * from tblpromo 
                 where CURDATE() > startdate and 
                 CURDATE() < enddate and status='Active'`, (err, results, fields) => {

@@ -12,6 +12,8 @@ html(lang='en')
     link(rel='stylesheet', href='../../../../landing/css/style.css')
     link(rel='stylesheet', href='../../../../assets/css/bootstrap-datepicker.css')
     link(href='https://fonts.googleapis.com/css?family=Rajdhani:400,500,700', rel='stylesheet', type='text/css')
+    link(rel='stylesheet', href='../../../../assets/css/sweetalert2.min.css')
+    link(href='../../../../assets/css/animate.css' rel='stylesheet')
 
   style.
     label.error{
@@ -114,7 +116,7 @@ html(lang='en')
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-label='Close')
               span(aria-hidden='true') ×
-          form.needs-validation(method='POST', action='/signup', autocomplete='off' novalidate)
+          form#form.needs-validation(method='POST', action='/signup', autocomplete='off' novalidate)
             h2(style='color:black; margin-left:30px;') Sign Up
             .modal-body
               .container-fluid
@@ -138,11 +140,11 @@ html(lang='en')
                         .input-group-addon Gender:
                         label.radio
                           | Male
-                          input(type='radio', checked='', name='gen' value='male')
+                          input(type='radio', checked='', name='gen' value='Male')
                           span.dot
                         label.radio
                           | Female
-                          input(type='radio', name='gen' value='female')
+                          input(type='radio', name='gen' value='Female')
                           span.dot
                     .col-md-6
                       .form-group
@@ -165,7 +167,8 @@ html(lang='en')
                     .col-md-6
                       .form-group
                         label.control-label Email
-                        input.form-control(type='email' name='email' required)
+                        input.email.form-control(type='email' name='email' required)
+                        #prompt2
                 .row
                   .col-md-12
                     h5 Login Information
@@ -176,7 +179,8 @@ html(lang='en')
                     .col-md-12
                       .form-group
                         label.control-label Username
-                        input.form-control(type='text' name='username' required)
+                        input.username.form-control(type='text' name='username' required)
+                        #prompt
                 .row
                   .col-md-12
                     h5 More Information
@@ -225,7 +229,7 @@ html(lang='en')
                         |  We will not accept your request until you are verified.
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Cancel
-              button#submit.btn.btn-primary( type='submit') Register
+              button#reg.btn.btn-primary(type='submit') Register
     // modal
     #login.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog.modal-sm
@@ -247,7 +251,7 @@ html(lang='en')
                       label.control-label Password
                       input.form-control(type='password', name='password')
                 center
-                  button#submit.btn.btn-primary(type='submit') Log in
+                  button.btn.btn-primary(type='submit') Log in
     #success.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog.modal-sm
         .modal-content.modal-popup
@@ -260,7 +264,7 @@ html(lang='en')
                       br
                       | Success! Your application has been sent for approval.
                 center
-                  button#submit.btn.btn-primary(type='button', data-dismiss='modal') Close
+                  button.btn.btn-primary(type='button', data-dismiss='modal') Close
     //- // Back top
     a.go-top(href='#back-top')
       i.fa.fa-angle-up
@@ -275,13 +279,91 @@ html(lang='en')
     script(src='../../../../landing/js/smoothscroll.js')
     script(src='../../../../landing/js/custom.js')
     script(src='../../../../assets/js/jquery.validate.js')
-
-    link(rel='stylesheet', type='text/css', href='../../../../landing/js/gritter/css/jquery.gritter.css')
-    script(type='text/javascript', src='../../../../landing/js/gritter/js/jquery.gritter.js')
-    script(type='text/javascript', src='../../../../landing/js/gritter-conf.js')
+    script(src='../../../../assets/js/sweetalert2.all.min.js')
 
     script.
-     $(document).ready(function(){
+      $(document).ready(function(){
+        
+        $('.username').keyup(function () {
+          var username = $(this).val()
+          if (username.length >= 4) {
+            $.post('/login/users').done(function (data) {
+              for (i = 0; i < data.length; i++) {
+                if (data[i].userusername != username) {
+                  $('#prompt').empty()
+                } else {
+                  $('.username').addClass('inv')
+                  $('.username.input.form-control').addClass('inv')
+                  $('#prompt').text('Username is already taken')
+                  $('#prompt').css({
+                    'color':'#ff6961',
+                    'font-weight':'bold'
+                  })
+                }
+              }
+            })
+          }
+          else{
+            $('#prompt').empty()
+          }
+        })
+
+        $('.email').keyup(function () {
+          var email = $(this).val()
+          if (email.length >= 4) {
+            $.post('/signup/users').done(function (data) {
+              for (i = 0; i < data.length; i++) {
+                if (data[i].useremail != email) {
+                } else {
+                  $('.email').addClass('inv')
+                  $('.email.input.form-control').addClass('inv')
+                  $('#prompt2').text('Username is already taken')
+                  $('#prompt2').css({
+                    'color':'#ff6961',
+                    'font-weight':'bold'
+                  })
+                }
+              }
+            })
+          }
+          $('#prompt2').empty()
+        })
+
+        
+        $(document).on("submit", "#form", function(e){
+          if ( $('.username').hasClass('inv') || $('.email').hasClass('inv')){
+            e.preventDefault()
+            return  false
+          }else{
+            continue
+          }
+        })
+
+      
+
+        //- var modals = [];
+        //- modals.push({title: 't1', text: 'text1', toast:true})
+        //- modals.push({title: 't2', text: 'text2', toast:true})
+        //- swal.queue(modals);
+
+      var getUrl = window.location
+      var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1]
+      if (`${baseUrl}?incorrect` == getUrl){
+
+        const toast = swal.mixin({
+          toast: true,
+          position: 'top',
+          showConfirmButton: false,
+          timer: 3000,
+          width: '1000px',
+        })
+        toast({
+          type: 'error',
+          title: 'Incorrect username or password'
+        })
+        $("#login").modal('show')
+      }
+
        $('#membership').on('change', function(){
          var selected = $('#membership').val()
          if($(`.membershipOption[value='${selected}']`).attr('memName') == 'Exclusive'){
@@ -298,6 +380,8 @@ html(lang='en')
          }
        })
      })
+
+      
 
     script.
       $(document).ready(function () {
