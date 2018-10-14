@@ -5,7 +5,7 @@ var SignupRouter = express.Router();
 var db = require('../../lib/database')();
 var nodemailer = require('nodemailer');
 var hbs = require('nodemailer-express-handlebars');
-
+var SuccessRouter = express.Router();
 var authMiddleware = require('./middlewares/auth');
 
 var mailer = nodemailer.createTransport({
@@ -155,6 +155,20 @@ function useraddid(req, res, next){
     })
 } 
 
+//viewbill
+function viewBill(req, res, next){
+  db.query(`select u.* , r.* , cl.* , ct.* , 
+    m.* from tbluser u join tblmembership m 
+    ON m.usersid=u.userid inner join 
+    tblmemrates r ON m.membershiprateid=r.memrateid inner join 
+    tblmemclass cl ON r.memclass= cl.memclassid 
+    Inner join tblcat ct on r.memcat = ct.membershipID where userid=(select max(userid) from tbluser)`,function(err, results, fields){
+    if(err) return res.send(err)
+    req.viewBill=results
+    return next();
+    })
+} 
+
 
 SignupRouter.route('/')
     .get(authMiddleware.noAuthed, (req, res) => {
@@ -228,7 +242,7 @@ SignupRouter.route('/')
                                 //     // });
                                 
                                 // }
-                                res.redirect('/login');
+                                res.redirect('/success');
                                 }
             });
 });
@@ -246,8 +260,7 @@ SignupRouter.route('/')
                         db.query(`INSERT INTO tblpayment (userid) 
                             VALUES (?)`, [req.newuserid], (err, results, fields) => {
                                 db.query(`UPDATE tbluser u join tblmembership m on m.usersid=u.userid
-                                    inner join tblpromo p on p.promoID=m.promoid inner join 
-                                    tblmemrates r on r.memrateid=m.membershiprateid
+                                    inner join tblmemrates r on r.memrateid=m.membershiprateid
                                     SET total=r.memfee where u.userid=?`, [req.newuserid], (err, results, fields) => {
                         if (err) console.log(err); 
                             else{
@@ -288,7 +301,7 @@ SignupRouter.route('/')
                                 //     // });
                                 
                                 // }
-                                res.redirect('/login');
+                                res.redirect('/success');
                                 }
             });
 });
@@ -309,13 +322,21 @@ SignupRouter.route('/')
      })
  })
 
+SuccessRouter.get('/',viewBill, (req, res,next) => {
+    res.render('auth/views/success',{
+        bill: req.viewBill
+    });
+});
+
+
 logoutRouter.get('/', (req, res) => {
     req.session.destroy(err => {
         if (err) throw err;
-        res.redirect('/login');
+        res.redirect('/login'); 
     });
 });
 
 exports.login = loginRouter;
 exports.logout = logoutRouter;
+exports.success = SuccessRouter
 exports.signup = SignupRouter
