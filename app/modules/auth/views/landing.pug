@@ -163,7 +163,7 @@ html(lang='en')
                     .col-md-6
                       .form-group
                         label.control-label Mobile Number
-                        input.form-control(type='text', placeholder='09xxxxxxxxx' name='mobile' required)
+                        input.form-control(type='number', placeholder='09xxxxxxxxx' name='mobile' required)
                     .col-md-6
                       .form-group
                         label.control-label Email
@@ -287,7 +287,8 @@ html(lang='en')
         $('.username').keyup(function () {
           var username = $(this).val()
           if (username.length >= 4) {
-            $.post('/login/users').done(function (data) {
+            $.post('/signup/users').done(function (data) {
+              console.log(data)
               for (i = 0; i < data.length; i++) {
                 if (data[i].userusername != username) {
                   $('#prompt').empty()
@@ -312,12 +313,13 @@ html(lang='en')
           var email = $(this).val()
           if (email.length >= 4) {
             $.post('/signup/users').done(function (data) {
+              console.log(data)
               for (i = 0; i < data.length; i++) {
                 if (data[i].useremail != email) {
                 } else {
                   $('.email').addClass('inv')
                   $('.email.input.form-control').addClass('inv')
-                  $('#prompt2').text('Username is already taken')
+                  $('#prompt2').text('Email is already taken')
                   $('#prompt2').css({
                     'color':'#ff6961',
                     'font-weight':'bold'
