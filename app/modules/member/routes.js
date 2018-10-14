@@ -251,7 +251,7 @@ router.post('/event/resign', (req, res) => {
 // APPLY
 router.post('/trainer/apply', (req, res) => {
     const query = `
-    INSERT INTO tbppt (memid, trainid, status) VALUES (?, ?, 2);
+    INSERT INTO tbppt (memid, trainid, status) VALUES (?, ?, 2)
     `
     db.query(query, [ req.session.member.userid, req.body.trainerId ], (err) => {
         if (err) return res.send(err)
