@@ -23,16 +23,20 @@ block main
               h3 #{trainer.trainerfname} #{trainer.trainerlname}
               h6(style="margin:0!important") #{trainer.specialname}
               - var fullname = trainer.trainerfname +" "+ trainer.trainerlname
+              
               button.view.btn-block.btn-primary(
-                                      style         = "position:relative; top:45px; padding:5px; font-weight: bold; border:none" 
-                                      data-target   = '.apply-modal', 
-                                      data-toggle   = 'modal', 
-                                      data-id       = trainer.trainerid,
-                                      data-name     = fullname, 
-                                      data-gender   = trainer.trainergender,
-                                      data-branch   = trainer.branchname,
-                                      data-specs    = trainer.specialname,
-                                      data-workdays = trainer.trainerschedule
+                                      style          = "position:relative; top:45px; padding:5px; font-weight: bold; border:none" 
+                                      data-target    = '.apply-modal', 
+                                      data-toggle    = 'modal', 
+                                      data-id        = trainer.trainerid,
+                                      data-name      = fullname, 
+                                      data-gender    = trainer.trainergender,
+                                      data-branch    = trainer.branchname,
+                                      data-specs     = trainer.specialname,
+                                      data-type      = trainer.type,
+                                      data-timestart = trainer.trainertimestart,
+                                      data-timeend   = trainer.trainertimeend,
+                                      data-workdays  = trainer.trainerschedule
                                     )
                 i.fa.fa-search(style="padding-right:10px;" )
                 | View
@@ -62,19 +66,32 @@ block main
                 .form-group
                   h5 
                     b Name: 
-                      label#name
+                    |
+                    <span id='name'></span>
                   h5 
                     b Gender: 
-                      label#gender
+                    |
+                    <span id='gender'></span>
                   h5 
                     b Branch: 
-                      label#branch
+                    |
+                    <span id='branch'></span>
                   h5 
                     b Specialization: 
-                      label#specs
+                    |
+                    <span id='specs'></span>
+                  h5 
+                    b Trainer Type: 
+                    |
+                    <span id='type'></span>
                   h5 
                     b Work Days: 
-                      label#workdays
+                    |
+                    <span id='workdays'></span>
+                  h5 
+                    b Time Available: 
+                    |
+                    <span id='time'></span>
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
           button.btn.btn-primary.apply(type='button') Apply
@@ -111,6 +128,7 @@ script.
 
   $('.apply-modal').on('show.bs.modal', function(event){
 
+
     var button   =  $(event.relatedTarget)
     var id       =  button.data('id')
     var name     =  button.data('name')
@@ -118,6 +136,14 @@ script.
     var branch   =  button.data('branch')  
     var specs    =  button.data('specs')   
     var workdays =  button.data('workdays')
+    var timestart =  moment(button.data('timestart'), 'HH:mm:ss').format('hh:mm A')
+    var timeend =  moment(button.data('timeend'), 'HH:mm:ss').format('hh:mm A')
+    var time = `${timestart} - ${timestart}`
+    var type =  button.data('type')
+
+    if (time == 'Invalid date - Invalid date'){
+      time = '8:00 PM - 9:00 PM'
+    }
 
     var modal = $(this)
     modal.find('.modal-body #name').text(name)
@@ -125,6 +151,9 @@ script.
     modal.find('.modal-body #branch').text(branch)
     modal.find('.modal-body #specs').text(specs)
     modal.find('.modal-body #workdays').text(workdays)
+    modal.find('.modal-body #time').text(time)
+    modal.find('.modal-body #type').text(type)
     modal.find('.modal-footer .apply').val(id)
+
   })
  

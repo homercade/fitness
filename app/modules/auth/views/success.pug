@@ -52,56 +52,6 @@ html(lang='en')
               each bl in bill
                 a.btn.btn-lg.btn-default.smoothScroll.wow.fadeInUp.hidden-xs(href='/login') Return to Log in Page
                 a.btn.btn-lg.btn-success.smoothScroll.wow.fadeInUp(data-toggle='modal', data-target='.OR-modal' data-name=bl.userfname +" "+ bl.userlname data-fee=bl.total,data-m=bl.memclassname + " " + bl.membershipname data-ad=bl.useraddress data-ph=bl.usermobile data-e=bl.useremail) View Bill 
-    // about section
-    section#about
-      .container
-        .row
-          .col-md-6.col-sm-12
-            img.img-responsive.wow.fadeInUp(style='-webkit-mask-image:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));\
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));', src='../../../../landing/images/muscle.png', alt='About')
-          .col-md-6.col-sm-12
-            .about-thumb
-              .section-title
-                h1.wow.fadeIn(data-wow-delay='0.2s') A-Team Fitness Center
-                h3.wow.fadeInUp(data-wow-delay='0.4s') A Philippine based gym software.
-              .wow.fadeInUp(data-wow-delay='0.6s')
-                p
-                  | To be verbose, this is a fitness gym membership, trainer assignment, with billing and payment system. A software
-                  | program that caters gym users (admins, trainers, staff, and their clients) to ease their daily transactions.
-                p
-                  strong A-Team Fitness Center
-                  |  can grant interbranch membership, as well as freezing, and transferring of
-                  |                 the customer's account to another successor. This system can recommend a set to you based on your input.
-                  |                 You can also inquire a trainer based on your workout preferences. And lastly, this can record every transaction
-                  |                 made, and generate report based on the data received.
-    // footer section
-    footer
-      .container
-        .row
-          svg.svgcolor-light(preserveaspectratio='none', viewbox='0 0 100 102', height='100', width='100%', version='1.1', xmlns='http://www.w3.org/2000/svg')
-            path(d='M0 0 L50 100 L100 0 Z')
-          .col-md-4.col-sm-6
-          .col-md-1.col-sm-1
-          .col-md-4.col-sm-5
-            h2 Our Center
-            p.wow.fadeInUp(data-wow-delay='0.6s')
-              | Sta. Mesa, MNL, Philippines
-            p.copyright-text
-              | Copyright © 2018 HJRD
-              br
-              |  Designed by
-              a(rel='nofollow', href='#', target='_parent') 
-              | HJRD
-            ul.social-icon
-              li
-                a.fa.fa-facebook.wow.bounceIn(href='#', data-wow-delay='0.9s')
-              li
-                a.fa.fa-twitter.wow.bounceIn(href='#', data-wow-delay='1.2s')
-              li
-                a.fa.fa-behance.wow.bounceIn(href='#', data-wow-delay='1.4s')
-              li
-                a.fa.fa-dribbble.wow.bounceIn(href='#', data-wow-delay='1.6s')
-
 
 .OR-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
     .modal-dialog.modal-lg
@@ -135,7 +85,7 @@ html(lang='en')
                   br
                   .row
                     .col-md-9
-                      h2.name
+                      h2.name(style='color:#333')
                       address
                         strong.m
                         br
@@ -145,7 +95,7 @@ html(lang='en')
                         br
                         strong.ph
                         br
-                        strong.ph                        r
+                        strong.ph                      
                     .col-md-3
                       div
                         .pull-left DATE : 
@@ -176,7 +126,7 @@ html(lang='en')
                         td.text-right.no-border
                           div(style='background-color:#ffbb00;color:white;padding:10px;')
                             bold Total
-                        td.text-right
+                        td.text-right.fee
                           strong
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
@@ -196,6 +146,7 @@ html(lang='en')
     script(src='../../../../landing/js/smoothscroll.js')
     script(src='../../../../landing/js/custom.js')
     script(src='../../../../assets/js/jquery.validate.js')
+    script(src='../../../../assets/js/moment.min.js')
 
     link(rel='stylesheet', type='text/css', href='../../../../landing/js/gritter/css/jquery.gritter.css')
     script(type='text/javascript', src='../../../../landing/js/gritter/js/jquery.gritter.js')
@@ -281,8 +232,10 @@ html(lang='en')
 
 script.
   $('.OR-modal').on('show.bs.modal', function(event){
-    var button = $(event.relatedTarget)      
-  
+    var button = $(event.relatedTarget)    
+    var date = new Date()  
+    var now = moment(date).format('MMM DD, YYYY')
+
     var name = button.data('name')
     var m = button.data('m')
     var ad = button.data('ad')
@@ -298,5 +251,6 @@ script.
     modal.find('.modal-body .ad').text(`${ad}`)
     modal.find('.modal-body .e').text(`${e}`)
     modal.find('.modal-body .ph').text(`${ph}`)
+    modal.find('.modal-body #date').text(now)
     modal.find('.modal-body .fee').text(`₱ ${fee}.00`)
   })
