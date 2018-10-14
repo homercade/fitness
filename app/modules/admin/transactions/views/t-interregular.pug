@@ -1,4 +1,21 @@
 include ../../../../templates/head
+style.
+
+  .r {
+    color: #ff6961;
+  }
+
+  label.error {
+    color: #ff6961;
+  }
+
+  input.form-control.error {
+    border: 1px solid #ff6961;
+  }
+
+  select.form-control.error {
+    border: 1px solid #ff6961;
+  }
 
 block main
 
@@ -9,6 +26,7 @@ block main
           .content-panel
             .container-fluid
               table.table.table-striped.table-advance.table-hover
+                
                 h4
                   | Regular Interbranch Member
                   button.btn.btn-theme(style='margin-left: 5px;', type='button', data-toggle='modal', data-target='#add')
@@ -65,7 +83,7 @@ block main
         .modal-header
           button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
           h4#myModalLabel.modal-title Add Member Manually
-        form(action='/exclusive/add', method='POST', autocomplete='off')
+        form#form.needs-validation(action='/exclusive/add', method='POST', autocomplete='off')
           .modal-body
             .container-fluid
               .row
@@ -76,16 +94,16 @@ block main
                 .row
                   .col-md-6
                     .form-group
-                      label.control-label First Name
-                      input.form-control(type='text' required name='fname')
+                      label.control-label First Name <span class='r'>*</span> 
+                      input.form-control#fname(type='text' required name='fname')
                   .col-md-6
                     .form-group
-                      label.control-label Last Name
-                      input.form-control(type='text' required name='lname')
+                      label.control-label Last Name <span class='r'>*</span> 
+                      input.form-control#lname(type='text' required name='lname')
                 .row
                   .col-md-6
                     .input-group
-                      .input-group-addon Gender:
+                      .input-group-addon Gender: <span class='r'>*</span> 
                       label.radio
                         | Male
                         input(type='radio', checked='', name='gen' value='Male')
@@ -96,22 +114,23 @@ block main
                         span.dot
                   .col-md-6
                     .form-group
-                      label.control-label Date of Birth
+                      label.control-label Date of Birth <span class='r'>*</span> 
                       input.date.form-control(type='text' required name='bday')
                 .row
                   .col-md-12
                     .form-group
-                      label.control-label Address
-                      input.form-control(type='text' required name='addr')
+                      label.control-label Address <span class='r'>*</span> 
+                      input.form-control#addr(type='text' required name='addr')
                 .row
                   .col-md-6
                     .form-group
-                      label.control-label Mobile Number
-                      input.form-control(type='number', placeholder='09xxxxxxxxx' name='mobile' required)
+                      label.control-label Mobile Number <span class='r'>*</span> 
+                      input.form-control#cont(type='number', placeholder='09xxxxxxxxx' name='mobile' required)
                   .col-md-6
                     .form-group
-                      label.control-label Email
-                      input.form-control(type='email' required  name='email')
+                      label.control-label Email <span class='r'>*</span> 
+                      input.email.form-control#emai(type='email' required  name='email')
+                      #prompt2
               .row
                 .col-md-12
                   h5 Login Information
@@ -120,12 +139,13 @@ block main
                 .row
                   .col-md-6
                     .form-group
-                      label.control-label Username
-                      input.form-control(type='text' required name='username')
+                      label.control-label Username <span class='r'>*</span> 
+                      input.username.form-control(type='text' required name='username')
+                      #prompt
                   .col-md-6
                     .form-group
-                      label.control-label Password
-                      input.form-control(type='password' name='password')
+                      label.control-label Password <span class='r'>*</span> 
+                      input.form-control(type='password' name='password' required)
               .row
                 .col-md-12
                   h5 More Information
@@ -134,21 +154,20 @@ block main
                 .row
                   .col-md-6
                     .form-group
-                      label.control-label Membership
-                      select.form-control(name='membership')
+                      label.control-label Membership <span class='r'>*</span> 
+                      - console.log(Excc, '<<<<<<<<<<<<<<<<<<<<<<<<')
+                      select.form-control#memb(name='membership')
                         each ex in Excc
-                          option.hidden(value='') Select Membership... 
-                          option(value=`${ex.memrateid}`) #{ex.memclassname} - #{ex.membershipname} (#{ex.memperiod} MONTHS) - ₱ #{ex.memfee} 
+                          option.hidden(value='') Select Membership...  
+                          option(value=`${ex.memrateid}` data-membership = `${ex.memclassname} - ${ex.membershipname}`, data-memfee = ex.memfee ) #{ex.memclassname} - #{ex.membershipname} (#{ex.memperiod} MONTHS) - ₱ #{ex.memfee} 
+                     
                   .col-md-6
                     .form-group
-                      label.control-label Interested Area
+                      label.control-label Interested Area <span class='r'>*</span> 
                       select.form-control(name='special')
                         each sp in Spes
                           option.hidden(value='') Select Interest... 
                           option(value=`${sp.specialID}`) #{sp.specialname}
-
-                
-            
 
                 
                   .col-md-12
@@ -156,11 +175,7 @@ block main
                       | Are you a Student?
                       input.student(type='checkbox')
                       span.check
-                    p.first Uncheck if you are unwilling to provide proof.       p
-                        | Interbranch - Membership valid to all branches.
-                        br
-                        | Exclusive - Membership valid only to the branch you choose.
-            
+                    p.first Uncheck if you are unwilling to provide proof.
                 
                   .col-md-12(style='color:gray; font-size:10pt')
                     i
@@ -177,7 +192,7 @@ block main
                       
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
-            button.btn.btn-primary(type='submit') Add Member
+            button.btn.btn-primary#reg(type='submit') Add Member
   // MODAL ADD MEMBER
   .edit-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
     .modal-dialog.modal-lg
@@ -185,7 +200,7 @@ block main
         .modal-header
           button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
           h4#myModalLabel.modal-title Add Member Manually
-        form(action='POST', method='')
+        form.needs-validation(action='POST', method='')
           .modal-body
             .container-fluid
               .row
@@ -196,16 +211,16 @@ block main
                 .row
                   .col-md-6
                     .form-group
-                      label.control-label First Name
+                      label.control-label First Name <span class='r'>*</span> 
                       input.form-control(type='text')
                   .col-md-6
                     .form-group
-                      label.control-label Last Name
+                      label.control-label Last Name <span class='r'>*</span> 
                       input.form-control(type='text')
                 .row
                   .col-md-6
                     .input-group
-                      .input-group-addon Gender:
+                      .input-group-addon Gender: <span class='r'>*</span> 
                       label.radio
                         | Male
                         input(type='radio', checked='', name='gen')
@@ -216,17 +231,17 @@ block main
                         span.dot
                   .col-md-6
                     .form-group
-                      label.control-label Date of Birth
+                      label.control-label Date of Birth <span class='r'>*</span> 
                       input#datepicker.form-control(type='text')
                 .row
                   .col-md-12
                     .form-group
-                      label.control-label Address
+                      label.control-label Address <span class='r'>*</span> 
                       input.form-control(type='text')
                 .row
                   .col-md-6
-                    .form-group
-                      label.control-label Mobile Number
+                    .form-group 
+                      label.control-label Mobile Number <span class='r'>*</span> 
                       input.form-control(type='text', value='+639')
                   .col-md-6
                     .form-group
@@ -240,7 +255,7 @@ block main
                 .row
                   .col-md-12
                     .form-group
-                      label.control-label Username
+                      label.control-label Username <span class='r'>*</span> 
                       input.form-control(type='text')
               .row
                 .col-md-12
@@ -250,7 +265,7 @@ block main
                 .row
                   .col-md-12
                     .form-group
-                      label.control-label Membership
+                      label.control-label Membership <span class='r'>*</span> 
                       select.form-control
                         option Select Membership... 
                         option Gold Membership - (360 days) - Interbranch
@@ -268,13 +283,13 @@ block main
                 .row
                   .col-md-6
                     .form-group
-                      label.control-label Branch
+                      label.control-label Branch <span class='r'>*</span> 
                       select.form-control(disabled='')
                         option Sta. Mesa
                         option Marikina
                   .col-md-6
                     .form-group
-                      label.control-label Interested Area
+                      label.control-label Interested Area <span class='r'>*</span> 
                       select.form-control
                         option Select Interest... 
                         option Body Building
@@ -306,33 +321,33 @@ block main
           button.btn.btn-primary(type='button') Save
 
       // MODAL ADD MEMBER
-.freeze-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-.modal-dialog
-  .modal-content
-    .modal-header
-      button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-      h4#myModalLabel.modal-title Freeze Account
-    form(action='/freeze', method='POST')
-      .modal-body
-        .container-fluid
-          .row
-          p Note: Failing to unfreeze account within due date period Will result to termination of membership. Visit one of our branches to 
-            span(style='color:orange;')
-              |  unfreeze 
-            | your account.
-          .row
-            .col-md-12
-              .form-group
-                label.control-label Duration (months)
-                input.form-control(type="number" name="freezevalue")
-                input.hidden#id(type="text" name="id")
-            .col-md-12
-              .form-group
-                label.control-label Date Effective
-                input.form-control(type='date' required name='effect')
-      .modal-footer
-        button.btn.btn-default(type='button', data-dismiss='modal') Close
-        button.btn.btn-primary(type='submit') Freeze Account
+  .freeze-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+          h4#myModalLabel.modal-title Freeze Account
+        form(action='/freeze', method='POST')
+          .modal-body
+            .container-fluid
+              .row
+              p Note: Failing to unfreeze account within due date period Will result to termination of membership. Visit one of our branches to 
+                span(style='color:orange;')
+                  |  unfreeze 
+                | your account.
+              .row
+                .col-md-12
+                  .form-group
+                    label.control-label Duration (months)
+                    input.form-control(type="number" name="freezevalue")
+                    input.hidden#id(type="text" name="id")
+                .col-md-12
+                  .form-group
+                    label.control-label Date Effective
+                    input.form-control(type='date' required name='effect')
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal') Close
+            button.btn.btn-primary(type='submit') Freeze Account
 
     // MODAL ADD MEMBER
   .suspend-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -372,179 +387,305 @@ block main
                   
             
 
-             
-
-
-
-//-----------------------------------------------------------------------------------------------------------
-//- A S S I G N   T R A I N E R
-//-----------------------------------------------------------------------------------------------------------
-
-// MODAL 
-.assign-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-  .modal-dialog
-    .modal-content
-      .modal-header
-        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4#myModalLabel.modal-title Sort Trainers
-      form(action='POST', method='')
-        .modal-body
-          .container-fluid
-            .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
-              .row
-                .col-md-6
-                  .form-group
-                    label.control-label Branch
-                    select.form-control
-                      option Sta. Mesa
-                      option Marikina
-                .col-md-6
-                  .form-group
-                    label.control-label Specialization
-                    select.form-control
-                      option Body Building
-                      option Weight Loss
-              .row
-                .input-group(style='margin-left:7%;')
-                  label.checkbox
-                    | Mon
-                    input.day(type='checkbox', value='monday')
-                    span.check
-                  label.checkbox
-                    | Tue
-                    input#day.day(type='checkbox', value='tuesday')
-                    span.check
-                  span.input-group-addon
-                  label.checkbox
-                    | Wed
-                    input.day(type='checkbox', value='wednesday')
-                    span.check
-                  label.checkbox
-                    | Thu
-                    input.day(type='checkbox', value='thursday')
-                    span.check
-                  span.input-group-addon
-                  label.checkbox
-                    | Fri
-                    input.day(type='checkbox', value='friday')
-                    span.check
-                  label.checkbox
-                    | Sat
-                    input.day(type='checkbox', value='saturday')
-                    span.check
-                  span.input-group-addon
-                  label.checkbox
-                    | Sun
-                    input.day(type='checkbox', value='sunday')
-                    span.check
-              .row
-                br
-                .col-md-12
-                  button.sort.btn.btn-primary(type='button' style="width:100%;") Sort
-                  
-// SORTED TRAINER MODAL
-.sorted.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-  .modal-dialog.modal-lg
-    .modal-content
-      .modal-header
-        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4#myModalLabel.modal-title Assign Member to a Trainer
-      form(method='POST' action='/assign')
-        .modal-body
-          .container-fluid
-            content-panel
-              table.table.table-striped.table-advance.table-hover
-                br
-                thead
-                  tr
-                    th
-                      i.fa.fa-user
-                      |  Name 
-                    th
-                      i.fa.fa-genderless
-                      |  Gender
-                    th
-                      i.fa.fa-calendar-alt
-                      |  Schedule
-                    //- th
-                    //-   i.fa.fa-home
-                    //-   |  Branch
-                    th
-                      i.fa.fa-edit
-                      |  Action
-                tbody
-                  each as in ass
-                      tr
-                      td #{as.trainerfname} #{as.trainerlname}
-                      td #{as.trainergender}
-                      td #{as.trainerschedule}
-                      //- td A-team Marikina
-                      td
-                        form(method='POST' action='/assign')
-                          input.hidden#id(type='text' name='memberid')
-                          input.hidden(type='text' name='trainerid' value=as.trainerid)
-                          button.btn.btn-primary(type='submit') Assign
-//IMAGE + DESCRIPTION
-.showImgModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true', style='overflow: auto;')
-  .modal-dialog.modal-lg
-    .modal-content
-      .modal-header
-        button.close#return(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4#myModalLabel.modal-title Trainer Details
-      form(action='POST', method='')
-        .modal-body
-          .container-fluid
-            .row(style='margin-top:15px; margin-bottom:15px;') 
-              .col-md-6
-                img(src="../../../../../assets/img/trainer/trainer.jpg", alt="" width='100%', style='max-width:720px;border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;')
-              .col-md-6
-                .row
-                    h5
-                      b Name:
-                      |  John Doe
-                      br
-                      br
-                      b Gender:
-                      |  Male
-                      br
-                      br
-                      b Age:
-                      |  31
-                      br
-                      br
-                      b Mobile Number:
-                      |  09291964686
-                      br
-                      br
-                      b E-mail Address:
-                      |  johndoe@gmail.com
-                      br
-                      br
-                      b Description:
-                      |  There are many reasons why people choose to exercise. Whether you want to improve your sport performance, reduce health risks, or look and feel better I can help you achieve your goals. Using a functional, yet fun approach I’ll help give you an edge – an edge in performance, and edge in health, and an edge in life.
-                      br
-                      
-.prompt.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true', style='overflow: auto;')
-  .modal-dialog.modal-sm
-    .modal-content
-      .modal-header
-        button.close#return(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4#myModalLabel.modal-title Assign
-      form(action='POST', method='')
-        .modal-body
-          .container-fluid
-            .row(style='margin-top:15px; margin-bottom:15px;') 
-              .container-fluid
-                h4 Are you sure?
-                input#id(type='text' name='memberid')
-                input#trainid(type='text' name='trainerid' )
-        .modal-footer
-          button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='submit') Yes
-
               
+
+
+
+  //-----------------------------------------------------------------------------------------------------------
+  //- A S S I G N   T R A I N E R
+  //-----------------------------------------------------------------------------------------------------------
+
+  // MODAL 
+  .assign-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+          h4#myModalLabel.modal-title Sort Trainers
+        form(action='POST', method='')
+          .modal-body
+            .container-fluid
+              .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
+                .row
+                  .col-md-6
+                    .form-group
+                      label.control-label Branch
+                      select.form-control
+                        option Sta. Mesa
+                        option Marikina
+                  .col-md-6
+                    .form-group
+                      label.control-label Specialization
+                      select.form-control
+                        option Body Building
+                        option Weight Loss
+                .row
+                  .input-group(style='margin-left:7%;')
+                    label.checkbox
+                      | Mon
+                      input.day(type='checkbox', value='monday')
+                      span.check
+                    label.checkbox
+                      | Tue
+                      input#day.day(type='checkbox', value='tuesday')
+                      span.check
+                    span.input-group-addon
+                    label.checkbox
+                      | Wed
+                      input.day(type='checkbox', value='wednesday')
+                      span.check
+                    label.checkbox
+                      | Thu
+                      input.day(type='checkbox', value='thursday')
+                      span.check
+                    span.input-group-addon
+                    label.checkbox
+                      | Fri
+                      input.day(type='checkbox', value='friday')
+                      span.check
+                    label.checkbox
+                      | Sat
+                      input.day(type='checkbox', value='saturday')
+                      span.check
+                    span.input-group-addon
+                    label.checkbox
+                      | Sun
+                      input.day(type='checkbox', value='sunday')
+                      span.check
+                .row
+                  br
+                  .col-md-12
+                    button.sort.btn.btn-primary(type='button' style="width:100%;") Sort
+                    
+  // SORTED TRAINER MODAL
+  .sorted.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+          h4#myModalLabel.modal-title Assign Member to a Trainer
+        form(method='POST' action='/assign')
+          .modal-body
+            .container-fluid
+              content-panel
+                table.table.table-striped.table-advance.table-hover
+                  br
+                  thead
+                    tr
+                      th
+                        i.fa.fa-user
+                        |  Name 
+                      th
+                        i.fa.fa-genderless
+                        |  Gender
+                      th
+                        i.fa.fa-calendar-alt
+                        |  Schedule
+                      //- th
+                      //-   i.fa.fa-home
+                      //-   |  Branch
+                      th
+                        i.fa.fa-edit
+                        |  Action
+                  tbody
+                    each as in ass
+                        tr
+                        td #{as.trainerfname} #{as.trainerlname}
+                        td #{as.trainergender}
+                        td #{as.trainerschedule}
+                        //- td A-team Marikina
+                        td
+                          form(method='POST' action='/assign')
+                            input.hidden#id(type='text' name='memberid')
+                            input.hidden(type='text' name='trainerid' value=as.trainerid)
+                            button.btn.btn-primary(type='submit') Assign
+  //IMAGE + DESCRIPTION
+  .showImgModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true', style='overflow: auto;')
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          button.close#return(type='button', data-dismiss='modal', aria-hidden='true') ×
+          h4#myModalLabel.modal-title Trainer Details
+        form(action='POST', method='')
+          .modal-body
+            .container-fluid
+              .row(style='margin-top:15px; margin-bottom:15px;') 
+                .col-md-6
+                  img(src="../../../../../assets/img/trainer/trainer.jpg", alt="" width='100%', style='max-width:720px;border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;')
+                .col-md-6
+                  .row
+                      h5
+                        b Name:
+                        |  John Doe
+                        br
+                        br
+                        b Gender:
+                        |  Male
+                        br
+                        br
+                        b Age:
+                        |  31
+                        br
+                        br
+                        b Mobile Number:
+                        |  09291964686
+                        br
+                        br
+                        b E-mail Address:
+                        |  johndoe@gmail.com
+                        br
+                        br
+                        b Description:
+                        |  There are many reasons why people choose to exercise. Whether you want to improve your sport performance, reduce health risks, or look and feel better I can help you achieve your goals. Using a functional, yet fun approach I’ll help give you an edge – an edge in performance, and edge in health, and an edge in life.
+                        br
+                        
+  .prompt.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true', style='overflow: auto;')
+    .modal-dialog.modal-sm
+      .modal-content
+        .modal-header
+          button.close#return(type='button', data-dismiss='modal', aria-hidden='true') ×
+          h4#myModalLabel.modal-title Assign
+        form(action='POST', method='')
+          .modal-body
+            .container-fluid
+              .row(style='margin-top:15px; margin-bottom:15px;') 
+                .container-fluid
+                  h4 Are you sure?
+                  input#id(type='text' name='memberid')
+                  input#trainid(type='text' name='trainerid' )
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal') Close
+            button.btn.btn-primary(type='submit') Yes
+
+  //- OR
+  .or.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+          h4.modal-title Official Receipt
+        .modal-body
+          .container-fluid
+            .row
+              .col-xs-12
+                .pull-left
+                  h1 A-TEAM FITNESS
+                  address
+                    strong A-Team Fitness Inc.
+                    br
+                    | 4408 Old. Sta. Mesa St, Newton Plaza
+                    br
+                    | Sta. Mesa Manila
+                    br
+                    abbr(title='Phone') P:
+                    |  0933 412 7526
+                // /pull-left
+                .pull-right
+                  h1
+                    img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+                // --/pull-right --
+                .clearfix
+                br
+                br
+              
+                .row
+                  .col-md-9
+                    h2
+                      #name
+                    address
+                      strong 
+                        #membership
+                      strong 
+                        #address
+                      strong 
+                        #email
+                      strong 
+                        #contact
+                  .col-md-3
+                    div
+                      .pull-left DATE : 
+                      .pull-right
+                        #date
+                      .clearfix
+                    br
+                    div
+                    div(style='background-color:#ffbb00;color:white;padding:10px;')
+                      .pull-left  Total Paid :
+                      .pull-right 
+                        .total
+                      .clearfix
+                table.table
+                  thead
+                    tr
+                      th.text-center(style='width:60px') QTY
+                      th.text-left DESCRIPTION
+                      th.text-right(style='width:90px') SUBTOTAL
+                  tbody
+                    tr
+                      td.text-center 
+                        #quantity
+                      td
+                        #desc
+                      td.text-right 
+                        .total
+                    tr
+                      td(colspan='2' rowspan='4')
+                      td.text-right
+                    tr
+                      td.text-right.no-border
+                        div(style='background-color:#ffbb00;color:white;padding:10px;')
+                          strong Total
+                      td.text-right
+                        strong 
+                          .total
+        .modal-footer
+          button#b.btn.btn-default(type='button', data-dismiss='modal') Close
+          button#a.btn.btn-primary(type='button') Print
          
 include ../../../../templates/foot
+
+script.
+  $(document).ready(function(){
+
+    var date = new Date()
+    date = moment(date).format('MMM DD, YYYY')
+    var sub = false
+    
+    $('#reg').click(function(e){
+     
+      $('.or').modal('show')
+      $('#name').text(`${$('#fname').val()} ${$('#lname').val()}`)
+      $('#membership').text($("#memb option:selected").data('membership'))
+      $('#address').text($('#addr').val())
+      $('#email').text($('#emai').val())
+      $('#contact').text($('#cont').val())
+      $('#date').text(date)
+      $('#quantity').text('-')
+      $('#desc').text(`Membership: ${$("#memb option:selected").data('membership')}`)
+      $('.total').text($("#memb option:selected").data('memfee'))
+      $('#add').modal('hide')    
+    })
+
+   
+    $(document).on("submit", "#form", function(e){  
+      if(sub == false) {
+        e.preventDefault()
+        return  false
+      }
+      else {
+        if ( $('.username').hasClass('inv') || $('.email').hasClass('inv') || sub === false ){ 
+          e.preventDefault()
+          return  false
+        }
+        //- else {
+        //-   setTimeout(
+        //-     continue, 2000
+        //-   )
+        //- }
+      }
+    })
+  })
+
 
 //- script.
 //-   $('.prompt').on('shown.bs.modal', function () {
@@ -655,3 +796,82 @@ script.
     modal.find('.modal-body #memid').val(`${memid}`)
   })
 
+script.
+  $(document).ready(function(){
+    
+    $('.needs-validation').validate({
+      rules:{
+        username: {
+          minlength: 4
+          },
+        mobile:{
+          maxlength: 11,
+          minlength: 11
+          },
+          
+      },
+      messages:{
+        username:{
+          minlength: 'Username shouldn\'t be less than four characters'
+        },
+        mobile:{
+          maxlength: 'Mobile number should be exactly 11 digits',
+          minlength: 'Mobile number should be exactly 11 digits'
+        }
+      }
+    })
+
+  $(".date").datepicker({
+    changeMonth: true,
+    changeYear: true,
+    todayHighlight: true,
+    maxViewMode: 2,
+    startView: 2,
+    autoclose: true
+  })
+
+  $('.username').keyup(function () {
+      var username = $(this).val()
+      if (username.length >= 4) {
+        $.post('/signup/users').done(function (data) {
+          console.log(data)
+          for (i = 0; i < data.length; i++) {
+            if (data[i].userusername != username) {
+            } else {
+              console.log('lolbawal')
+              $('.username').addClass('inv')
+              $('.username.input.form-control').addClass('inv')
+              $('#prompt').text('Username is already taken')
+              $('#prompt').css({
+                'color':'#ff6961',
+                'font-weight':'bold'
+              })
+            }
+          }
+        })
+      }
+      $('#prompt').empty()
+    })
+
+    $('.email').keyup(function () {
+      var email = $(this).val()
+      if (email.length >= 4) {
+        $.post('/signup/users').done(function (data) {
+          console.log(data)
+          for (i = 0; i < data.length; i++) {
+            if (data[i].useremail != email) {
+            } else {
+              $('.email').addClass('inv')
+              $('.email.input.form-control').addClass('inv')
+              $('#prompt2').text('Email is already taken')
+              $('#prompt2').css({
+                'color':'#ff6961',
+                'font-weight':'bold'
+              })
+            }
+          }
+        })
+      }
+      $('#prompt2').empty()
+    })
+  })

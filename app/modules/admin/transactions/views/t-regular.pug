@@ -1,5 +1,22 @@
 include ../../../../templates/head
 
+style.
+  .r {
+    color: #ff6961;
+  }
+
+  label.error {
+    color: #ff6961;
+  }
+
+  input.form-control.error {
+    border: 1px solid #ff6961;
+  }
+
+  select.form-control.error {
+    border: 1px solid #ff6961;
+  }
+
 block main
 
     section#main-content
@@ -69,7 +86,7 @@ block main
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Add Member Manually
-      form.needs-validation(action='/exclusive/add', method='POST', autocomplete='off')
+      form#form.needs-validation(action='/exclusive/add', method='POST', autocomplete='off')
         .modal-body
           .container-fluid
             .row
@@ -80,16 +97,16 @@ block main
               .row
                 .col-md-6
                   .form-group
-                    label.control-label First Name
+                    label.control-label First Name <span class='r'>*</span> 
                     input.form-control(type='text' required name='fname')
                 .col-md-6
                   .form-group
-                    label.control-label Last Name
+                    label.control-label Last Name <span class='r'>*</span> 
                     input.form-control(type='text' required name='lname')
               .row
                 .col-md-6
                   .input-group
-                    .input-group-addon Gender:
+                    .input-group-addon Gender: <span class='r'>*</span> 
                     label.radio
                       | Male
                       input(type='radio', checked='', name='gen' value='Male')
@@ -100,21 +117,21 @@ block main
                       span.dot
                 .col-md-6
                   .form-group
-                    label.control-label Date of Birth
+                    label.control-label Date of Birth <span class='r'>*</span> 
                     input.date.form-control(type='text' required name='bday')
               .row
                 .col-md-12
                   .form-group
-                    label.control-label Address
+                    label.control-label Address <span class='r'>*</span> 
                     input.form-control(type='text' required name='addr')
               .row
                 .col-md-6
                   .form-group
-                    label.control-label Mobile Number
+                    label.control-label Mobile Number <span class='r'>*</span> 
                     input.form-control(type='number', placeholder='09xxxxxxxxx' name='mobile' required)
                 .col-md-6
                   .form-group
-                    label.control-label Email
+                    label.control-label Email <span class='r'>*</span> 
                     input.email.form-control(type='email' required  name='email')
                     #prompt2
             .row
@@ -125,12 +142,12 @@ block main
               .row
                 .col-md-6
                   .form-group
-                    label.control-label Username
+                    label.control-label Username <span class='r'>*</span> 
                     input.username.form-control(type='text' required name='username')
                     #prompt
                 .col-md-6
                   .form-group
-                    label.control-label Password
+                    label.control-label Password <span class='r'>*</span> 
                     input.form-control(type='password' name='password')
             .row
               .col-md-12
@@ -140,7 +157,7 @@ block main
               .row
                 .col-md-12
                   .form-group
-                    label.control-label Membership
+                    label.control-label Membership <span class='r'>*</span> 
                     select.form-control(name='membership')
                       each ex in Exc
                         option.hidden(value='') Select Membership... 
@@ -157,14 +174,14 @@ block main
               .row
                 .col-md-6
                   .form-group
-                    label.control-label Branch
+                    label.control-label Branch <span class='r'>*</span> 
                     select#branch.form-control(name='branch')
                       each br in ExcB
                         option.hidden(value='') Select Branch... 
                         option(value=`${br.branchID}`) #{br.branchname}
                 .col-md-6
                   .form-group
-                    label.control-label Interested Area
+                    label.control-label Interested Area <span class='r'>*</span> 
                     select.form-control(name='special')
                       each sp in Spes
                         option.hidden(value='') Select Interest... 
@@ -694,6 +711,15 @@ script.
 
 script.
  $(document).ready(function(){
+  $(".date").datepicker({
+    changeMonth: true,
+    changeYear: true,
+    todayHighlight: true,
+    maxViewMode: 2,
+    startView: 2,
+    autoclose: true
+  });
+
   $('#transactionDrop').addClass('active');
   $('#memberDrop').addClass('active');
   $('#exclusive').addClass('active');
@@ -719,6 +745,63 @@ script.
       }
     }
   });
+
+  $('.username').keyup(function () {
+    var username = $(this).val()
+    if (username.length >= 4) {
+      $.post('/signup/users').done(function (data) {
+        console.log(data)
+        for (i = 0; i < data.length; i++) {
+          if (data[i].userusername != username) {
+            $('#prompt').empty()
+          } else {
+            $('.username').addClass('inv')
+            $('.username.input.form-control').addClass('inv')
+            $('#prompt').text('Username is already taken')
+            $('#prompt').css({
+              'color':'#ff6961',
+              'font-weight':'bold'
+            })
+          }
+        }
+      })
+    }
+    else{
+      $('#prompt').empty()
+    }
+  })
+
+  $('.email').keyup(function () {
+    var email = $(this).val()
+    if (email.length >= 4) {
+      $.post('/signup/users').done(function (data) {
+        console.log(data)
+        for (i = 0; i < data.length; i++) {
+          if (data[i].useremail != email) {
+          } else {
+            $('.email').addClass('inv')
+            $('.email.input.form-control').addClass('inv')
+            $('#prompt2').text('Email is already taken')
+            $('#prompt2').css({
+              'color':'#ff6961',
+              'font-weight':'bold'
+            })
+          }
+        }
+      })
+    }
+    $('#prompt2').empty()
+  })
+
+
+  $(document).on("submit", "#form", function(e){
+    if ( $('.username').hasClass('inv') || $('.email').hasClass('inv')){
+      e.preventDefault()
+      return  false
+    }else{
+      continue
+    }
+  })
   
   });
 
