@@ -69,7 +69,7 @@ block main
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Add Member Manually
-      form(action='/exclusive/add', method='POST', autocomplete='off')
+      form.needs-validation(action='/exclusive/add', method='POST', autocomplete='off')
         .modal-body
           .container-fluid
             .row
@@ -115,7 +115,8 @@ block main
                 .col-md-6
                   .form-group
                     label.control-label Email
-                    input.form-control(type='email' required  name='email')
+                    input.email.form-control(type='email' required  name='email')
+                    #prompt2
             .row
               .col-md-12
                 h5 Login Information
@@ -125,7 +126,8 @@ block main
                 .col-md-6
                   .form-group
                     label.control-label Username
-                    input.form-control(type='text' required name='username')
+                    input.username.form-control(type='text' required name='username')
+                    #prompt
                 .col-md-6
                   .form-group
                     label.control-label Password
@@ -557,6 +559,66 @@ block main
               
          
 include ../../../../templates/foot
+
+script.
+
+  $(document).ready(function(){
+
+    $('.username').keyup(function () {
+      var username = $(this).val()
+      if (username.length >= 4) {
+        $.post('/users').done(function (data) {
+          for (i = 0; i < data.length; i++) {
+            if (data[i].userusername != username) {
+              $('#prompt').empty()
+            } else {
+              $('.username').addClass('inv')
+              $('.username.input.form-control').addClass('inv')
+              $('#prompt').text('Username is already taken')
+              $('#prompt').css({
+                'color':'#ff6961',
+                'font-weight':'bold'
+              })
+            }
+          }
+        })
+      }
+      else{
+        $('#prompt').empty()
+      }
+    })
+
+    $('.email').keyup(function () {
+      var email = $(this).val()
+      if (email.length >= 4) {
+        $.post('/users').done(function (data) {
+          for (i = 0; i < data.length; i++) {
+            if (data[i].useremail != email) {
+            } else {
+              $('.email').addClass('inv')
+              $('.email.input.form-control').addClass('inv')
+              $('#prompt2').text('Username is already taken')
+              $('#prompt2').css({
+                'color':'#ff6961',
+                'font-weight':'bold'
+              })
+            }
+          }
+        })
+      }
+      $('#prompt2').empty()
+    })
+
+    $(document).on("submit", "#form", function(e){
+      if ( $('.username').hasClass('inv') || $('.email').hasClass('inv')){
+        e.preventDefault()
+        return  false
+      }else{
+        continue
+      }
+    })
+
+  })
 
 script.
   $('.prompt').on('shown.bs.modal', function () {

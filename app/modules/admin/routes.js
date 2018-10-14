@@ -609,6 +609,8 @@ function viewMembership(req, res, next){
 }
 
 
+
+
 //A-TEAM FITNESS FUNCTIONS
 
 // GENERAL
