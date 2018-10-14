@@ -1289,6 +1289,16 @@ router.post('/session/void', (req, res) => {
   })
 })
 
+// ALL USERS
+router.post('/users', (req, res) => {
+  db.query('SELECT * FROM tbluser', (err, out) => {
+      if(err) console.log(err)
+      if(out.length > 0){
+         res.send(out)
+      }
+  })
+})
+
 
 
 
