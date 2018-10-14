@@ -1080,20 +1080,21 @@ router.post('/assign',(req, res) => {
 
     });
 })
+
 //function regularid
 function regid(req, res, next) {
-  db.query('SELECT max(userid) id FROM tbluser ', function (err, results, fields) {
+  db.query('SELECT max(userid)+1 id FROM tbluser ', function (err, results, fields) {
     if (err) return res.send(err)
     req.regid = results[0].id
+    console.log(req.regid)
     return next();
   })
 }
 
 //add exlusive member manually
-
 router.post('/exclusive/add',regid,(req, res) => {
   db.query("INSERT INTO tbluser(userfname,userlname,usergender,userbday,useraddress,usermobile,useremail,userusername,branch,usertype,userpassword)VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, ?)", [req.body.fname, req.body.lname, req.body.gen, req.body.bday, req.body.addr, req.body.mobile, req.body.email, req.body.username, req.body.branch, req.body.password], (err, results, fields) => {
-    db.query("INSERT INTO tblmembership(usersid,membershiprateid,specialization)VALUES(?,?,?)",[req.regid, req.body.membership, req.body.special],(err, results, fields) => {
+    db.query("INSERT INTO tblmembership(usersid,membershiprateid,specialization)VALUES(? , ?, ?)",[req.regid, req.body.membership, req.body.special],(err, results, fields) => {
       db.query(`UPDATE tbluser u join tblmembership m on m.usersid=u.userid set signdate=CURDATE(), m.status='PAID' where u.userid=?`, [req.regid], (err, results, fields) => {
         db.query(`UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END where usersid=?`, [req.regid], (err, results, fields) => {
         if (err)
@@ -1521,7 +1522,7 @@ router.get('/income', income);
 router.get('/payment', viewPay, payment);
 router.get('/pending', check,viewUpdate, viewPend, pending);
 router.get('/personal', viewPer,personal);
-router.get('/regular',Nulling,viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
+router.get('/regular',regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
 router.get('/interregular',Nulling,viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
 router.get('/events',viewEve, Events);
 router.get('/walkins',viewWal, walkins);

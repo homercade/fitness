@@ -51,7 +51,7 @@ html(lang='en')
                 br
               each bl in bill
                 a.btn.btn-lg.btn-default.smoothScroll.wow.fadeInUp.hidden-xs(href='/login') Return to Log in Page
-                a.btn.btn-lg.btn-success.smoothScroll.wow.fadeInUp(data-toggle='modal', data-target='.OR-modal' data-name=bl.userfname +" "+ bl.userlname data-fee=bl.total) View Bill 
+                a.btn.btn-lg.btn-success.smoothScroll.wow.fadeInUp(data-toggle='modal', data-target='.OR-modal' data-name=bl.userfname +" "+ bl.userlname data-fee=bl.total,data-m=bl.memclassname + " " + bl.membershipname data-ad=bl.useraddress data-ph=bl.usermobile data-e=bl.useremail) View Bill 
     // about section
     section#about
       .container
