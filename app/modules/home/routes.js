@@ -699,7 +699,12 @@ function viewHie(req, res, next) {
 
 //view pending
 function viewPend(req, res, next) {
-  db.query('select u.* , r.* , cl.* , ct.* , m.* from tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID where m.status = "Pending" ', function (err, results, fields) {
+  db.query(`select u.* , r.* , cl.* , ct.* , 
+    m.* from tbluser u join tblmembership m 
+    ON m.usersid=u.userid inner join 
+    tblmemrates r ON m.membershiprateid=r.memrateid inner join 
+    tblmemclass cl ON r.memclass= cl.memclassid 
+    Inner join tblcat ct on r.memcat = ct.membershipID where m.status = "Pending" `, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewPend = results;
     return next(); 

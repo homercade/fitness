@@ -1,0 +1,302 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    title A-Team Fitness
+    link(rel='icon', type='image/png', href='../../../../landing/images/muscle.png')
+    link(rel='stylesheet', href='../../../../landing/css/bootstrap.min.css')
+    link(rel='stylesheet', href='../../../../landing/css/animate.min.css')
+    link(rel='stylesheet', href='../../../../landing/css/et-line-font.css')
+    link(rel='stylesheet', href='../../../../landing/css/font-awesome.min.css')
+    link(rel='stylesheet', href='../../../../landing/css/vegas.min.css')
+    link(rel='stylesheet', href='../../../../landing/css/style.css')
+    link(rel='stylesheet', href='../../../../assets/css/bootstrap-datepicker.css')
+    link(href='https://fonts.googleapis.com/css?family=Rajdhani:400,500,700', rel='stylesheet', type='text/css')
+
+  style.
+    label.error{
+      color:#ff6961;  
+    }
+    input.form-control.error{
+      border:1px solid #ff6961;
+    }
+    select.form-control.error{
+      border:1px solid #ff6961;
+    }
+
+  body
+    // preloader section
+    section.preloader
+      .sk-circle
+        .sk-circle1.sk-child
+        .sk-circle2.sk-child
+        .sk-circle3.sk-child
+        .sk-circle4.sk-child
+        .sk-circle5.sk-child
+        .sk-circle6.sk-child
+        .sk-circle7.sk-child
+        .sk-circle8.sk-child
+        .sk-circle9.sk-child
+        .sk-circle10.sk-child
+        .sk-circle11.sk-child
+        .sk-circle12.sk-child
+    // home section
+    section#home
+      .container
+        .row
+          .col-md-offset-2.col-md-8.col-sm-12
+            .home-thumb
+              h1.wow.fadeInUp(data-wow-delay='0.4s')
+                strong Request Succesfully Submitted!
+                br
+              each bl in bill
+                a.btn.btn-lg.btn-default.smoothScroll.wow.fadeInUp.hidden-xs(href='/login') Return to Log in Page
+                a.btn.btn-lg.btn-success.smoothScroll.wow.fadeInUp(data-toggle='modal', data-target='.OR-modal' data-name=bl.userfname +" "+ bl.userlname data-fee=bl.total) View Bill 
+    // about section
+    section#about
+      .container
+        .row
+          .col-md-6.col-sm-12
+            img.img-responsive.wow.fadeInUp(style='-webkit-mask-image:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));\
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));', src='../../../../landing/images/muscle.png', alt='About')
+          .col-md-6.col-sm-12
+            .about-thumb
+              .section-title
+                h1.wow.fadeIn(data-wow-delay='0.2s') A-Team Fitness Center
+                h3.wow.fadeInUp(data-wow-delay='0.4s') A Philippine based gym software.
+              .wow.fadeInUp(data-wow-delay='0.6s')
+                p
+                  | To be verbose, this is a fitness gym membership, trainer assignment, with billing and payment system. A software
+                  | program that caters gym users (admins, trainers, staff, and their clients) to ease their daily transactions.
+                p
+                  strong A-Team Fitness Center
+                  |  can grant interbranch membership, as well as freezing, and transferring of
+                  |                 the customer's account to another successor. This system can recommend a set to you based on your input.
+                  |                 You can also inquire a trainer based on your workout preferences. And lastly, this can record every transaction
+                  |                 made, and generate report based on the data received.
+    // footer section
+    footer
+      .container
+        .row
+          svg.svgcolor-light(preserveaspectratio='none', viewbox='0 0 100 102', height='100', width='100%', version='1.1', xmlns='http://www.w3.org/2000/svg')
+            path(d='M0 0 L50 100 L100 0 Z')
+          .col-md-4.col-sm-6
+          .col-md-1.col-sm-1
+          .col-md-4.col-sm-5
+            h2 Our Center
+            p.wow.fadeInUp(data-wow-delay='0.6s')
+              | Sta. Mesa, MNL, Philippines
+            p.copyright-text
+              | Copyright © 2018 HJRD
+              br
+              |  Designed by
+              a(rel='nofollow', href='#', target='_parent') 
+              | HJRD
+            ul.social-icon
+              li
+                a.fa.fa-facebook.wow.bounceIn(href='#', data-wow-delay='0.9s')
+              li
+                a.fa.fa-twitter.wow.bounceIn(href='#', data-wow-delay='1.2s')
+              li
+                a.fa.fa-behance.wow.bounceIn(href='#', data-wow-delay='1.4s')
+              li
+                a.fa.fa-dribbble.wow.bounceIn(href='#', data-wow-delay='1.6s')
+
+
+.OR-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+          h4.modal-title Bill Breakdown
+        form(action='/pending/update', method='POST')
+          .modal-body
+            .container-fluid
+              .row
+                .col-xs-12
+                  .pull-left
+                    h1 A-TEAM FITNESS
+                    address
+                      strong A-Team Fitness Inc.
+                      br
+                      | 4408 Old. Sta. Mesa St, Newton Plaza
+                      br
+                      | Sta. Mesa Manila
+                      br
+                      abbr(title='Phone') P:
+                      |  0933 412 7526
+                  // /pull-left
+                  .pull-right
+                    h1
+                      img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+                  // --/pull-right --
+                  .clearfix
+                  br
+                  br
+                  .row
+                    .col-md-9
+                      h.name
+                      address
+                        strong.m
+                        br
+                        strong.ad
+                        br
+                        strong.e
+                        br
+                        strong.ph
+                        br
+                        strong.ph                        r
+                    .col-md-3
+                      div
+                        .pull-left DATE : 
+                        .pull-right#date 
+                        .clearfix
+                      br
+                      div
+                      div(style='background-color:#ffbb00;color:white;padding:10px;')
+                        .pull-left  Total Due :
+                        .pull-right.fee
+                        .clearfix
+                  table.table
+                    thead
+                      tr
+                        th.text-center(style='width:60px') QTY
+                        th.text-left DESCRIPTION
+                        th.text-right(style='width:90px') TOTAL
+                    tbody
+                      tr
+                        td.text-center -
+                        td.m
+                        td.text-right.fee
+                      tr
+                        td(colspan='2' rowspan='4')
+                        td.text-right
+
+                      tr
+                        td.text-right.no-border
+                          div(style='background-color:#ffbb00;color:white;padding:10px;')
+                            bold Total
+                        td.text-right
+                          strong
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal') Close
+            button.btn.btn-primary(type='button') Print
+
+    //- // Back top
+    a.go-top(href='#back-top')
+      i.fa.fa-angle-up
+    //- // javscript js
+    
+
+    script(src='../../../../landing/js/jquery.js')
+    script(src='../../../../assets/js/bootstrap-datepicker.js')
+    script(src='../../../../landing/js/bootstrap.min.js')
+    script(src='../../../../landing/js/vegas.min.js')
+    script(src='../../../../landing/js/wow.min.js')
+    script(src='../../../../landing/js/smoothscroll.js')
+    script(src='../../../../landing/js/custom.js')
+    script(src='../../../../assets/js/jquery.validate.js')
+
+    link(rel='stylesheet', type='text/css', href='../../../../landing/js/gritter/css/jquery.gritter.css')
+    script(type='text/javascript', src='../../../../landing/js/gritter/js/jquery.gritter.js')
+    script(type='text/javascript', src='../../../../landing/js/gritter-conf.js')
+
+    script.
+     $(document).ready(function(){
+       $('#membership').on('change', function(){
+         var selected = $('#membership').val()
+         if($(`.membershipOption[value='${selected}']`).attr('memName') == 'Exclusive'){
+           $('#branchCol').css('display', 'block')
+           $.post('/signup/query/branch').done(function(data){
+             console.log(data)
+             for(var i=0; i< data.length; i++){
+               $('#branch').append(`<option value='${data[i].branchID}'>${data[i].branchname}</option>`)
+             }
+           })
+         }
+         else{
+           $('#branchCol').css('display', 'none')
+         }
+       })
+     })
+
+    script.
+      $(document).ready(function () {
+      $("#login").on("show", function () {
+      $("body").addClass("modal-open");
+      }).on("hidden", function () {
+      $("body").removeClass("modal-open")
+      });
+      $('#type').click(function () {
+      if ($(this).val() == 2) {
+      $('#branch').prop("disabled", false);
+      } else {
+      $('#branch').prop("disabled", true);
+      }
+      });
+
+      $(".date").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        todayHighlight: true,
+        maxViewMode: 2,
+        startView: 2,
+        autoclose: true
+      });
+
+      $(function () {
+      $("#student").click(function () {
+      if ($(this).is(":checked")) {
+      $("#2").show();
+      $("#1").hide();
+      } else {
+      $("#2").hide();
+      $("#1").show();
+      }
+      });
+      });
+
+      $('.needs-validation').validate({
+        rules:{
+          username: {
+            minlength: 4
+            },
+          mobile:{
+            maxlength: 11,
+            minlength: 11
+            },
+            
+        },
+        messages:{
+          username:{
+            minlength: 'Username shouldn\'t be less than four characters'
+          },
+          mobile:{
+            maxlength: 'Mobile number should be exactly 11 digits',
+            minlength: 'Mobile number should be exactly 11 digits'
+          }
+        }
+      });
+      });
+
+script.
+  $('.OR-modal').on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget)      
+  
+    var name = button.data('name')
+    var m = button.data('m')
+    var ad = button.data('ad')
+    var ph = button.data('ph')
+    var e = button.data('e')
+    var fee = button.data('fee')
+
+    let modal = $(this)     
+
+
+    modal.find('.modal-body .name').text(`${name}`)
+    modal.find('.modal-body .m').text(`${m}`)
+    modal.find('.modal-body .ad').text(`${ad}`)
+    modal.find('.modal-body .e').text(`${e}`)
+    modal.find('.modal-body .ph').text(`${ph}`)
+    modal.find('.modal-body .fee').text(`₱ ${fee}.00`)
+  })
