@@ -7,6 +7,7 @@ var nodemailer = require('nodemailer');
 var hbs = require('nodemailer-express-handlebars');
 var SuccessRouter = express.Router();
 var authMiddleware = require('./middlewares/auth');
+var multer = require('multer');
 
 var mailer = nodemailer.createTransport({
     service: 'gmail',
@@ -24,6 +25,19 @@ mailer.use('compile', hbs({
     viewpath: '',
     extname:'.html'
 }));
+
+
+//- FILE UPLOAD - MULTER
+var storage = multer.diskStorage({
+    destination: function( req, file, cb ){
+      cb(null, './public/upload')
+    },
+    filename: function ( req, file, cb ){
+      cb(null, 'user'+'-'+Date.now()+path.extname(file.originalname))
+    }
+  })
+  
+var upload = multer({ storage:storage })
 
 
 

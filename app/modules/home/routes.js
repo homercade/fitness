@@ -5,6 +5,8 @@ var authMiddleware = require('../auth/middlewares/auth');
 var moment = require('moment');
 var nodemailer = require('nodemailer');
 var hbs = require('nodemailer-express-handlebars');
+var multer = require('multer');
+const path = require('path');
 
 router.use(authMiddleware.hasAuth);
 
@@ -28,6 +30,17 @@ mailer.use('compile', hbs({
     extname:'.html'
 }));
 
+//- FILE UPLOAD - MULTER
+var storage = multer.diskStorage({
+  destination: function( req, file, cb ){
+    cb(null, './public/upload')
+  },
+  filename: function ( req, file, cb ){
+    cb(null, 'user'+'-'+Date.now()+path.extname(file.originalname))
+  }
+})
+
+var upload = multer({ storage:storage })
 
 //insert staff
 
