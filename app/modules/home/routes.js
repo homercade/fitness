@@ -1012,10 +1012,13 @@ function viewGt(req, res, next) {
     return next();
   })
 }
-
 //creating groupclass
 router.post('/groupclass',(req, res) => {
-  db.query("INSERT INTO tbleventclass(eventclassname,starttime,endtime,slot,type,desc,days)VALUES(?, ?, ?, ?, 1, ?, ?)", [req.body.event, req.body.startt, req.body.endt, req.body.slot, req.body.desc, req.body.sched.toString()], (err, results, fields) => {
+  db.query(`INSERT INTO 
+    tbleventclass(eventclassname,starttime,endtime,slot,type,descr,days)
+    VALUES(?, ?, ?, ?, 1, ?, ?)`, 
+    [req.body.event, req.body.startt, req.body.endt, req.body.slot, req.body.descr, 
+    req.body.sched.toString()], (err, results, fields) => {
     if (err)
         console.log(err);
       else {
@@ -1024,10 +1027,9 @@ router.post('/groupclass',(req, res) => {
 
     });
    })
-
 //creating event
 router.post('/event',(req, res) => {
-  db.query("INSERT INTO tbleventclass(eventclassname,startdate,enddate,starttime,endtime,slot,type,desc)VALUES(?, ?, ?, ?, ?, ?, 2, ?)", [req.body.event, req.body.start, req.body.end, req.body.startt, req.body.endt, req.body.slot, req.body.desc], (err, results, fields) => {
+  db.query("INSERT INTO tbleventclass(eventclassname,startdate,enddate,starttime,endtime,slot,type,descr)VALUES(?, ?, ?, ?, ?, ?, 2, ?)", [req.body.event, req.body.start, req.body.end, req.body.startt, req.body.endt, req.body.slot, req.body.desc], (err, results, fields) => {
     if (err)
         console.log(err);
       else {

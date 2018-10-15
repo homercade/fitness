@@ -62,11 +62,11 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Start Time
-                        input.form-control.time(type='text' name='startt')
+                        input.form-control(type='time' name='startt')
                     .col-md-6
                       .form-group
                         label.control-label End Time
-                        input.form-control.time(type='text' name='endt')
+                        input.form-control(type='time' name='endt')
                   .row
                     .input-group
                       span.input-group-addon
@@ -90,7 +90,7 @@ block main
                         span.check
                       label.checkbox
                         | Friday
-                        input#student(type='checkbox', name='sched[]' ,value='4')
+                        input#student(type='checkbox', name='sched[]' ,value='4 ')
                         span.check
                       label.checkbox
                         | Saturday
@@ -99,7 +99,7 @@ block main
                       span.input-group-addon
                       label.checkbox
                         | Sunday
-                        input#student(type='checkbox', name='sched[]' ,value='6')
+                        input#student(type='checkbox', name='sched[]' ,value='6 ')
                         span.check
                   //- .row
                   //-   .col-md-12
@@ -127,7 +127,7 @@ block main
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3')
+                        textarea#prog-desc.form-control(style='resize:none', name='descr', rows='3')
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
