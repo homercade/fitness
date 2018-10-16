@@ -1408,7 +1408,7 @@ ct.membershipID=r.memcat
 //change membership OR
 function viewMemChangeOr ( req,res,next ) {
   const query = `
-  select * from tblgenera where generalID=5
+  select * from tblgenera where generalID=6
   `
   db.query(query, ( err,results ) => {
     if (err) console.log(err)
