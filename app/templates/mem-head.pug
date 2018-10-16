@@ -11,17 +11,23 @@ block main
 					i.fa.fa-bell
 					span.badge.bg-theme 1
 				ul.dropdown-menu.extended.inbox
-					li
-						p You have 1 new notification
-					li
-						a(href='/')
-							span.subject
-								span.from(style='margin:0;') System
-								span.time Just now
-							span.message
-								| Event at 7:30AM Tomorrow
-					li
-						a(href='/') See all pending request
+					//- li
+					//- 	p You have new notification
+					- console.log(notifs)
+					each n in notifs
+						li
+							a(href='/')
+								span.subject
+									span.from(style='margin:0;') System
+									span.time #{n.notifdate}
+								if n.notifdescid == 1 || n.notifdescid == 2
+									span.message
+										| You have #{n.notifdesc}
+								else if n.notifdescid == 3
+									span.message
+										| #{n.notifdesc}
+					//- li
+					//- 	a(href='/') See all pending request
 			div(style='float:right')
 				each pr in profs
 					span.sm(style='font-size: 12pt;')
