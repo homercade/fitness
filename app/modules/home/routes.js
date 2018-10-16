@@ -834,16 +834,16 @@ function viewInt(req, res, next) {
 
 }
 
-//view update regular to suspended
-function viewSusp(req, res, next) {
-  db.query("UPDATE tblmembership m join tbluser u on m.usersid=u.userid SET m.status='Suspended', u.userpassword=NULL where m.expirydate= CURDATE()", (err, results, fields) => {
-    if (err)
-      console.log(err);
-    else {
-      return next()
-    };
-  })
-};
+// //view update regular to suspended
+// function viewSusp(req, res, next) {
+//   db.query("UPDATE tblmembership m join tbluser u on m.usersid=u.userid SET m.status='Suspended', u.userpassword=NULL where m.expirydate= CURDATE()", (err, results, fields) => {
+//     if (err)
+//       console.log(err);
+//     else {
+//       return next()
+//     };
+//   })
+// };
 
 //view to payment
 function viewPay(req, res, next) {
@@ -1028,7 +1028,7 @@ function viewGt(req, res, next) {
 //creating groupclass
 router.post('/groupclass',(req, res) => {
   db.query(`INSERT INTO 
-    tbleventclass(eventclassname,starttime,endtime,slot,type,descr,days)
+    tbleventclass(eventclassname,starttime,endtime,slot,type,desc,days)
     VALUES(?, ?, ?, ?, 1, ?, ?)`, 
     [req.body.event, req.body.startt, req.body.endt, req.body.slot, req.body.descr, 
     req.body.sched.toString()], (err, results, fields) => {
@@ -1042,7 +1042,7 @@ router.post('/groupclass',(req, res) => {
    })
 //creating event
 router.post('/event',(req, res) => {
-  db.query("INSERT INTO tbleventclass(eventclassname,startdate,enddate,starttime,endtime,slot,type,descr)VALUES(?, ?, ?, ?, ?, ?, 2, ?)", [req.body.event, req.body.start, req.body.end, req.body.startt, req.body.endt, req.body.slot, req.body.desc], (err, results, fields) => {
+  db.query("INSERT INTO tbleventclass(eventclassname,startdate,enddate,starttime,endtime,slot,type,desc)VALUES(?, ?, ?, ?, ?, ?, 2, ?)", [req.body.event, req.body.start, req.body.end, req.body.startt, req.body.endt, req.body.slot, req.body.desc], (err, results, fields) => {
     if (err)
         console.log(err);
       else {
@@ -1348,6 +1348,84 @@ ct.membershipID=r.memcat
   })
 }
 
+//change membership OR
+function viewMemChangeOr ( req,res,next ) {
+  const query = `
+  select * from tblgenera where generalID=5
+  `
+  db.query(query, ( err,results ) => {
+    if (err) console.log(err)
+    req.MemChangeOr = results
+    return next();
+  })
+}
+
+//change membership
+router.post('/changemem', (req, res) => {
+  db.query(`UPDATE tblmembership 
+    SET membershiprateid=? where usersid=? `,[req.body.memid,req.body.usersid], (err, results, fields) => {
+    db.query(`UPDATE tbluser u 
+    join tblmembership m ON m.usersid=u.userid 
+    inner join tblmemrates r ON m.membershiprateid=r.memrateid 
+    inner join tblmemclass cl ON r.memclass= cl.memclassid 
+    Inner join tblcat ct on r.memcat = ct.membershipID  
+    SET m.upgradedate = case 
+    when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END
+    where usersid=?`,[req.body.usersid], (err, results, fields) => {
+      db.query(`Insert Into tblpayment 
+        (userid,paymentdate,amount,classification,branchid)
+        VALUES(?, CURDATE(), ?, 6, ?) `,
+        [req.body.usersid, req.body.total, req.session.user.branch], (err, results, fields) => {
+          db.query(`UPDATE tbluser u 
+          join tblmembership m ON m.usersid=u.userid 
+          inner join tblmemrates r ON m.membershiprateid=r.memrateid 
+          inner join tblmemclass cl ON r.memclass= cl.memclassid 
+          Inner join tblcat ct on r.memcat = ct.membershipID  
+          SET m.expirydate=m.upgradedate
+          where usersid=?`,[req.body.usersid], (err, results, fields) => {
+          if(err) console.log(err) 
+          else{
+             res.redirect('/regular')
+          }
+  })
+})
+  })
+  })
+   })
+
+//change membership
+router.post('/changememin', (req, res) => {
+  db.query(`UPDATE tblmembership 
+    SET membershiprateid=? where usersid=? `,[req.body.memid,req.body.usersid], (err, results, fields) => {
+    db.query(`UPDATE tbluser u 
+    join tblmembership m ON m.usersid=u.userid 
+    inner join tblmemrates r ON m.membershiprateid=r.memrateid 
+    inner join tblmemclass cl ON r.memclass= cl.memclassid 
+    Inner join tblcat ct on r.memcat = ct.membershipID  
+    SET m.upgradedate = case 
+    when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END
+    where usersid=?`,[req.body.usersid], (err, results, fields) => {
+      db.query(`Insert Into tblpayment 
+        (userid,paymentdate,amount,classification,branchid)
+        VALUES(?, CURDATE(), ?, 6, ?) `,
+        [req.body.usersid, req.body.total, req.session.user.branch], (err, results, fields) => {
+          db.query(`UPDATE tbluser u 
+          join tblmembership m ON m.usersid=u.userid 
+          inner join tblmemrates r ON m.membershiprateid=r.memrateid 
+          inner join tblmemclass cl ON r.memclass= cl.memclassid 
+          Inner join tblcat ct on r.memcat = ct.membershipID  
+          SET m.expirydate=m.upgradedate
+          where usersid=?`,[req.body.usersid], (err, results, fields) => {
+          if(err) console.log(err) 
+          else{
+             res.redirect('/interregular')
+          }
+  })
+})
+  })
+  })
+   })
+
 
 
 
@@ -1484,7 +1562,8 @@ function regular(req, res) {
     Exc: req.viewExc,
     ExcB: req.viewExcB,
     Spes: req.viewSp,
-    change: req.MemChange
+    change: req.MemChange,
+    gene: req.MemChangeOr
   });
 }
 
@@ -1495,7 +1574,8 @@ function Interregular(req, res) {
     Excc: req.viewExcc,
     ExcB: req.viewExcB,
     Spes: req.viewSp,
-    change: req.MemChange
+    change: req.MemChange,
+    gene: req.MemChangeOr
   });
 }
 
@@ -1566,8 +1646,8 @@ router.get('/income', income);
 router.get('/payment', viewPay, payment);
 router.get('/pending', check,viewUpdate, viewPend, pending);
 router.get('/personal', viewPer,personal);
-router.get('/regular',viewMemChange,regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewSusp, viewReg, regular);
-router.get('/interregular',viewMemChange,Nulling,viewSp,viewExcB,viewExcc,viewAss, viewSusp,viewInt, Interregular);
+router.get('/regular',viewMemChangeOr,viewMemChange,regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewReg, regular);
+router.get('/interregular',viewMemChangeOr,viewMemChange,Nulling,viewSp,viewExcB,viewExcc,viewAss,viewInt, Interregular);
 router.get('/events',viewEve, Events);
 router.get('/walkins',viewWal, walkins);
 router.get('/trainsessions', sessionsToday, trainSessions);

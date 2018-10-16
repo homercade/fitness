@@ -51,17 +51,13 @@ block main
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
                   .row
-                    .col-md-9
+                    .col-md-12
                       .form-group
                         label.control-label Class Name
                         select#branch.form-control(name='event')
                           each cl in classes
                             option.hidden(value='') Select Class... 
                             option(value=`${cl.classname}`) #{cl.classname}
-                    .col-md-3
-                      .form-group
-                        label.control-label Slot
-                        input.form-control(type='number' name='slot')
                   .row
                     .col-md-6
                       .form-group
@@ -77,33 +73,33 @@ block main
                         | Schedule:
                       label.checkbox
                         | Monday
-                        input#student(type='checkbox', name='sched[]' ,value='0')
+                        input#student(type='checkbox', name='sched[]' ,value='1 ')
                         span.check
                       label.checkbox
                         | Tuesday
-                        input#student(type='checkbox', name='sched[]' ,value='1')
+                        input#student(type='checkbox', name='sched[]' ,value='2 ')
                         span.check
                       label.checkbox
                         | Wednesday
-                        input#student(type='checkbox', name='sched[]' ,value='2')
+                        input#student(type='checkbox', name='sched[]' ,value='3 ')
                         span.check
                       span.input-group-addon
                       label.checkbox
                         | Thursday
-                        input#student(type='checkbox', name='sched[]' ,value='3')
-                        span.check
-                      label.checkbox
-                        | Friday
                         input#student(type='checkbox', name='sched[]' ,value='4 ')
                         span.check
                       label.checkbox
+                        | Friday
+                        input#student(type='checkbox', name='sched[]' ,value='5 ')
+                        span.check
+                      label.checkbox
                         | Saturday
-                        input#student(type='checkbox', name='sched[]' ,value='5')
+                        input#student(type='checkbox', name='sched[]' ,value='6 ')
                         span.check
                       span.input-group-addon
                       label.checkbox
                         | Sunday
-                        input#student(type='checkbox', name='sched[]' ,value='6 ')
+                        input#student(type='checkbox', name='sched[]' ,value='0 ')
                         span.check
                   //- .row
                   //-   .col-md-12
@@ -122,7 +118,11 @@ block main
                   //-         option All 
                   //-         option Sta. Mesa
                   //-         option Marikina
-                  
+                  .row  
+                    .col-md-
+                      .form-group
+                        label.control-label Slot
+                        input.form-control(type='number' name='slot')
                   .row
                     .col-md-12
                       label.control-label Description
@@ -195,23 +195,23 @@ block main
                     | Sunday
                     input#student(type='checkbox', value='sunday')
                     span.check
-              //- .row
-              //-   .col-md-12
-              //-     .form-group
-              //-       label.control-label Trainer In-charge
-              //-       select#branch.form-control
-              //-         option Select Trainer... 
-              //-         option John Doe
-              //-         option Doe John
-              //- .row
-              //-   .col-md-6
-              //-     .form-group
-              //-       label.control-label Branch
-              //-       select#branch.form-control
-              //-         option Select Branch... 
-              //-         option All 
-              //-         option Sta. Mesa
-              //-         option Marikina
+              .row
+                .col-md-12
+                  .form-group
+                    label.control-label Trainer In-charge
+                    select#branch.form-control
+                      option Select Trainer... 
+                      option John Doe
+                      option Doe John
+              .row
+                .col-md-6
+                  .form-group
+                    label.control-label Branch
+                    select#branch.form-control
+                      option Select Branch... 
+                      option All 
+                      option Sta. Mesa
+                      option Marikina
                 .col-md-6
                   .form-group
                     label.control-label Slot
