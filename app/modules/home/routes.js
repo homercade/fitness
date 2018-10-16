@@ -1630,7 +1630,20 @@ function qSession (req,res,next) {
   })
 }
 
+// REPORTS
 
+// function totalPayment (req, res, next) {
+//   const query = `SELECT * from tblpayment join tbluser on tblpayment.userid = tbluser.userid where tbluser.userid = ?`
+//   db.query(query, [ req.session.member.userid ], ( err, results, fields ) => {
+//       if (err) console.log(err)
+//       let total = 0
+//       for ( i=0; i < results.length; i++ ){
+//           total += results[i].amount
+//       }
+//       req.total = total
+//       return next()
+//   })
+// }
 
 
 
@@ -1873,6 +1886,14 @@ function qWalkins(req, res) {
 }
 
 
+//- REPORTS
+function rsales(req, res) {
+  res.render('admin/reports/views/sales',{
+    
+  })
+}
+
+
 //A-TEAM FITNESS GETS
 
 //GENERAL
@@ -1910,7 +1931,6 @@ router.get('/t/classes',viewClass2,viewGt,viewGcl, GClasses);
 router.get('/pending/pt', viewPendingChange, pendingPtChange);
 router.get('/payment/session', viewPaymentSession, paymentSession);
 
-
 //QUERIES
 router.get('/queries/classes', qClass, qClasses);
 router.get('/queries/events', qEvent, qEvents);
@@ -1920,6 +1940,11 @@ router.get('/queries/PTsessions', qSession, qSessions);
 router.get('/queries/staffs', qStaff,qStaffs);
 router.get('/queries/trainers',qTrainer, qTrainers);
 router.get('/queries/walkins', qwalkin, qWalkins);
+
+
+// REPORTS
+router.get('/reports/sales', rsales);
+
 
 /**
  * Here we just export said router on the 'index' property of this module.

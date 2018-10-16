@@ -1,0 +1,44 @@
+include ../../../../templates/head
+
+block main    
+
+    section#main-content
+      section.wrapper.site-min-height
+        .row.mt
+          .col-md-12
+            .content-panel
+              .container-fluid
+                table.table.table-advance.table-hover
+                  h4
+                    |   Sales Report
+                  thead
+                    tr
+                      th Name          
+                      th Schedule
+                      th Start time
+                      th End time
+                      th desc
+                      
+                  tbody
+                    each q in qClass
+                      tr
+                        td #{q.eventclassname}
+                        td #{q.days}
+                        td #{q.starttime}
+                        td #{q.endtime}
+                        td #{q.desc}
+                        
+                  tfoot
+                     tr
+                      th Name          
+                      th Schedule
+                      th Start time
+                      th End time
+                      th desc
+                      
+                    
+                                    
+include ../../../../templates/foot
+script.
+
+  
