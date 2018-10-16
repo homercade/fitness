@@ -919,22 +919,22 @@ router.post('/payment',(req, res) => {
 
 //freezing
 router.post('/freeze',(req, res) => {
-   db.query("INSERT INTO tblfreeze(userfid,freezedmonths,datefrozen,genid) values(?,?,?,4)", [req.body.id,req.body.freezevalue,req.body.effect], (err, results, fields) => {
-      db.query("UPDATE tblfreeze f inner join tblgenera g ON f.genid=g.generalID inner join tbluser u ON u.userid=f.userfid set total = fee * freezedmonths Where minus is null and userid=?",[req.body.id], (err, results, fields) => {
-        db.query("UPDATE tblfreeze SET freezeduntil=datefrozen + interval ? MONTH,status='Unpaid' Where minus is null and userfid=? ", [req.body.freezevalue,req.body.id], (err, results, fields) => {  
-          db.query("INSERT INTO tblpayment(userid,classification)VALUES(?,2)",[req.body.id], (err, results, fields) => {   
-            db.query("UPDATE tblfreeze f join tblpayment p on f.userfid=p.userid SET amount=total where paymentdate is null and f.userfid=?", [req.body.id], (err, results, fields) => {  
-              if (err)
-                console.log(err);
-              else {
-                res.redirect('/freezed');
-              }
-            });
-          });
-    });
-    })
-      })
-   })
+ db.query("INSERT INTO tblfreeze(userfid,freezedmonths,datefrozen,genid) values(?,?,?,4)", [req.body.id,req.body.freezevalue,req.body.effect], (err, results, fields) => {
+  db.query("INSERT INTO tblpayment(userid,classification)VALUES(?,2)",[req.body.id], (err, results, fields) => {
+    db.query("UPDATE tblfreeze f inner join tblgenera g ON f.genid=g.generalID inner join tbluser u ON u.userid=f.userfid set total = fee * freezedmonths Where minus is null and userid=?",[req.body.id], (err, results, fields) => {
+      db.query("UPDATE tblfreeze SET freezeduntil=datefrozen + interval ? MONTH,status='Unpaid' Where minus is null and userfid=? ", [req.body.freezevalue,req.body.id], (err, results, fields) => {          
+        db.query("UPDATE tblfreeze f join tblpayment p on f.userfid=p.userid SET amount=total where paymentdate is null and f.userfid=?", [req.body.id], (err, results, fields) => {  
+          if (err)
+            console.log(err);
+          else {
+            res.redirect('/freezed');
+          }
+        });
+      });
+  });
+})
+  })
+ })
 
 //freeze online account
 function Nulling(req, res, next) {
@@ -980,7 +980,7 @@ where f.unfreezedate is null and classification = 2 and userfid=?`, [req.session
       if (err)
           console.log(err);
         else {
-          res.redirect('/freezed');
+          res.redirect('/freezed'); 
         }
       });
     });
@@ -989,16 +989,15 @@ where f.unfreezedate is null and classification = 2 and userfid=?`, [req.session
 //unfreezing
 router.post('/unfreeze',(req, res) => {
   db.query(`UPDATE tbluser u join tblfreeze f on f.userfid=u.userid 
-    inner join tblpayment p on p.userid=u.userid inner join tblmembership m on m.usersid=u.userid where u.userpassword is null and u.userid = ? and classification =2 SET minus=(DATEDIFF(freezeduntil,datefrozen)) + (DATEDIFF(CURDATE(),freezeduntil)) 
-    where u.userpassword is null and u.userid = ?`, [req.body.id], (err, results, fields) => {
+    inner join tblpayment p on p.userid=u.userid inner join tblmembership m on m.usersid=u.userid 
+    SET minus=(DATEDIFF(freezeduntil,datefrozen)) + (DATEDIFF(CURDATE(),freezeduntil)), unfreezedate=CURDATE() 
+    where f.minus is null and u.userid = ?`, [req.body.id], (err, results, fields) => {
       db.query(`UPDATE tbluser u join tblfreeze f on f.userfid=u.userid 
         inner join tblpayment p on p.userid=u.userid 
-        inner join tblmembership m on m.usersid=u.userid SET expirydate=expirydate + interval minus DAY where u.userpassword 
-        is null and u.userid = ? and classification =2`, [req.body.id], (err, results, fields) => {
+        inner join tblmembership m on m.usersid=u.userid SET expirydate=expirydate + interval minus DAY where u.userid = ? and classification =2`, [req.body.id], (err, results, fields) => {
           db.query(`UPDATE tbluser u join tblfreeze f on f.userfid=u.userid 
             inner join tblpayment p on p.userid=u.userid inner join tblmembership m on 
-            m.usersid=u.userid SET userpassword=12345,usertype=2 where u.userpassword is null 
-            and u.userid = ? and classification =2`, [req.body.id], (err, results, fields) => {
+            m.usersid=u.userid SET userpassword=12345,usertype=2 where u.userid = ? and classification =2`, [req.body.id], (err, results, fields) => {
             if (err)
                 console.log(err);
               else {

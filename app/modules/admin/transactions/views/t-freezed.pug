@@ -31,7 +31,7 @@ block main
                         i.fa.fa-user
                         |  Status
                       th
-                        i.fa.fa-edit
+                        i.fa.fa-edit 
                         |  Action
                   tbody
                     each fr in fres
@@ -43,12 +43,14 @@ block main
                         td ₱ #{fr.amount}.00
                         td #{fr.status}
                         td
-                          button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.unfreeze-modal' data-id=fr.userid)
-                            i.fa.fa-fire
-                          button.btn.btn-primary.btn-xs(data-toggle='modal', data-target='.view-modal' data-fname=fr.userfname + " " + fr.userlname ,data-fee=fr.amount ,data-mem=fr.genname ,data-addr=fr.useraddress ,data-em=fr.useremail ,data-mob=fr.usermobile data-qt=fr.freezedmonths)
-                            i.fa.fa-search
                           button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.pay-modal', data-id=fr.userid)
                               i.fa.fa-coins
+                          if fr.status=='Paid'
+                            button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.unfreeze-modal' data-id=fr.userid)
+                              i.fa.fa-fire
+                          button.btn.btn-primary.btn-xs(data-toggle='modal', data-target='.view-modal' data-fname=fr.userfname + " " + fr.userlname ,data-fee=fr.amount ,data-mem=fr.genname ,data-addr=fr.useraddress ,data-em=fr.useremail ,data-mob=fr.usermobile data-qt=fr.freezedmonths)
+                            i.fa.fa-search
+                          
               
 // MODAL FREEZE MEMBER
 .unfreeze-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
