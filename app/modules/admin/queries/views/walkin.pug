@@ -8,23 +8,54 @@ block main
           .col-md-12
             .content-panel
               .container-fluid
-                table.table.table-striped.table-advance.table-hover
+                table.table.table-advance.table-hover
                   h4
-                    | All Group Classes
+                    | All Walkins
                   thead
                     tr
-                      th
-                        i.fa.fa-user
-                        |  
-                      th
-                        i.fa.fa-clock
-                        |  
+                      th Name          
+                      th Usermobile
+                      //- th Entry Date
+                      
                   tbody
+                    each q in qwalkin
                       tr
-                        td 
-                        td 
-              
+                        td #{q.userfname} #{q.userlname}
+                        td #{q.usermobile}
+                        //- td #{q.memperiod} mos.
+                      
+                  tfoot
+                    tr
+                      th Name          
+                      th Usermobile
+                      //- th Entry Date
+                      
+                    
+                                    
 include ../../../../templates/foot
 script.
 
- 
+  $('table').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            { extend:'copy', attr: { id: 'allan' } }, 'csv', 'excel', 'pdf', 'print'
+        ],
+    initComplete: function () {
+      this.api().columns().every(function () {
+        var column = this;
+        var select = $('<select><option value=""></option></select>')
+          .appendTo($(column.footer()).empty())
+          .on('change', function () {
+            var val = $.fn.dataTable.util.escapeRegex(
+              $(this).val()
+            );
+            column
+              .search(val ? '^' + val + '$' : '', true, false)
+              .draw();
+          });
+        column.data().unique().sort().each(function (d, j) {
+          select.append('<option value="' + d + '">' + d + '</option>')
+        });
+      });
+    }
+  });

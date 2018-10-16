@@ -8,23 +8,67 @@ block main
           .col-md-12
             .content-panel
               .container-fluid
-                table.table.table-striped.table-advance.table-hover
+                table.table.table-advance.table-hover
                   h4
-                    | All Group Classes
+                    | All Users
                   thead
                     tr
-                      th
-                        i.fa.fa-user
-                        |  
-                      th
-                        i.fa.fa-clock
-                        |  
+                      th Name          
+                      th Gender
+                      th Contact
+                      th Email
+                      th Age
+                      th Mem Category
+                      th Mem Type
+                      th Working On
+                         
                   tbody
+                    each q in quser
                       tr
-                        td 
-                        td 
-              
+                        td #{q.userfname} #{q.userlname}
+                        td #{q.usergender}
+                        td #{q.usermobile}
+                        td #{q.useremail}
+                        td #{q.userbday}
+                        td #{q.membershipname}
+                        td #{q.memclassname}
+                        td #{q.specialname}
+                  tfoot
+                    tr
+                      th Name          
+                      th Gender
+                      th Contact
+                      th Email
+                      th Age
+                      th Mem Category
+                      th Mem Type
+                      th Working On
+                    
+                                    
 include ../../../../templates/foot
 script.
 
- 
+  $('table').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            { extend:'copy', attr: { id: 'allan' } }, 'csv', 'excel', 'pdf', 'print'
+        ],
+    initComplete: function () {
+      this.api().columns().every(function () {
+        var column = this;
+        var select = $('<select><option value=""></option></select>')
+          .appendTo($(column.footer()).empty())
+          .on('change', function () {
+            var val = $.fn.dataTable.util.escapeRegex(
+              $(this).val()
+            );
+            column
+              .search(val ? '^' + val + '$' : '', true, false)
+              .draw();
+          });
+        column.data().unique().sort().each(function (d, j) {
+          select.append('<option value="' + d + '">' + d + '</option>')
+        });
+      });
+    }
+  });
