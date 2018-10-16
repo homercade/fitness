@@ -7,6 +7,7 @@ var nodemailer = require('nodemailer');
 var hbs = require('nodemailer-express-handlebars');
 var multer = require('multer');
 const path = require('path');
+var fs=require('fs')
 
 router.use(authMiddleware.hasAuth);
 
@@ -30,23 +31,26 @@ mailer.use('compile', hbs({
     extname:'.html'
 }));
 
-//- FILE UPLOAD - MULTER
-var storage = multer.diskStorage({
-  destination: function( req, file, cb ){
-    cb(null, './public/upload')
-  },
-  filename: function ( req, file, cb ){
-    cb(null, 'user'+'-'+Date.now()+path.extname(file.originalname))
-  }
-})
+// //- FILE UPLOAD - MULTER
+// var storage = multer.diskStorage({
+//   destination: function( req, file, cb ){
+//     cb(null, './public/upload')
+//   },
+//   filename: function ( req, file, cb ){
+//     cb(null, 'user'+'-'+Date.now()+path.extname(file.originalname))
+//   }
+// })
 
-var upload = multer({ storage:storage })
+// var upload = multer({ storage:storage })
 
 //insert staff
 
 router.post('/staff', (req, res) => {
+  console.log(req.files)
+  pic=`${req.body.sfirstName + req.body.slastName}.jpg`
   fullname= req.session.user.userfname + " " + req.session.user.userlname
-  db.query("INSERT INTO tbluser ( userfname, userlname, usermobile, useremail, usertype,statusfront,userpassword,userusername,Dateadded,addedby) VALUES ( ?, ?, ?, ?, 4,'Inactive',?, ?, CURDATE(), ?)", [req.body.sfirstName, req.body.slastName, req.body.smobNum, req.body.semail, req.body.pass, req.body.username,fullname], (err, results, fields) => {
+  req.files.img.mv('public/assets/images/'+pic, function(err){
+  db.query("INSERT INTO tbluser ( userfname, userlname, usermobile, useremail, usertype,statusfront,userpassword,userusername,Dateadded,addedby,profile) VALUES ( ?, ?, ?, ?, 4,'Inactive',?, ?, CURDATE(), ?, ?)", [req.body.sfirstName, req.body.slastName, req.body.smobNum, req.body.semail, req.body.password, req.body.username,fullname,pic], (err, results, fields) => {
     if (err)
       console.log(err);
     else {
@@ -54,7 +58,7 @@ router.post('/staff', (req, res) => {
     }
   });
 });
-
+});
 //edit staff
 
 router.post('/staff/edit', (req, res) => {
@@ -756,7 +760,7 @@ router.post('/pending/update', useraddid, (req, res) => {
     var a= results[0].discount / 100
     db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.body.id], (err, results, fields) => {
       db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.body.id], (err, results, fields) => {
-        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee - (r.memfee * ?), p.paymentdate=CURDATE(), p.classification='4', p.branch=? Where p.userid= ? ", [a, req.session.user.branch,req.body.id], (err, results, fields) => {  
+        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee - (r.memfee * ?), p.paymentdate=CURDATE(), p.classification='4', p.branchid=? Where p.userid= ? ", [a, req.session.user.branch,req.body.id], (err, results, fields) => {  
           if (err)
             console.log(err);
           else {
@@ -769,7 +773,7 @@ router.post('/pending/update', useraddid, (req, res) => {
     else{
     db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.body.id], (err, results, fields) => {
       db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.body.id], (err, results, fields) => {
-        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee, p.paymentdate=CURDATE(), p.classification='1' ,p.branch=? Where p.userid= ? ", [req.session.user.branch,req.body.id], (err, results, fields) => {  
+        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee, p.paymentdate=CURDATE(), p.classification='1' ,p.branchid=? Where p.userid= ? ", [req.session.user.branch,req.body.id], (err, results, fields) => {  
           if (err)
             console.log(err);
           else {

@@ -72,7 +72,7 @@ block main
 						.modal-header
 							button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 							h4#myModalLabel.modal-title Register a Staff
-						form.needs-validation(action='/staff', method='POST', autocomplete='off' novalidate id='add-staff')
+						form.needs-validation(action='/staff', method='POST', autocomplete='off' novalidate id='add-staff' enctype='multipart/form-data')
 							.modal-body
 								.container-fluid
 									.row
@@ -115,7 +115,7 @@ block main
 										.row
 											.col-md-4
 												| Upload your Image 
-												input(type='file', name='img')
+												input(type='file', name='img' ,accept="image/*")
 							.modal-footer
 								button.btn.btn-default(type='button', data-dismiss='modal') Close
 								button.btn.btn-primary(type='submit' id='btn-add-staff') Add Staff
@@ -194,7 +194,7 @@ block main
 										.row
 											.col-md-4
 												| Upload your Image 
-												input(type='file', name='img')
+												input(type='file', name='pic')
 
 							.modal-footer
 								button.btn.btn-default(type='button', data-dismiss='modal') Close

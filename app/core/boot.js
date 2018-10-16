@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var serveStatic = require('serve-static');
 var methodOverride = require('method-override');
 var session = require('express-session');
-// var fileUpload=require('express-fileupload')
+var fileUpload=require('express-fileupload')
 
 module.exports = app => {
 
@@ -22,5 +22,5 @@ module.exports = app => {
     app.use(methodOverride('_method'));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    // app.use(fileUpload());
+    app.use(fileUpload());
 }
