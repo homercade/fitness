@@ -1397,7 +1397,7 @@ router.post('/view/notif', (req, res) => {
   })
 })
 router.post('/view/notif/payment', (req, res) => {
-  db.query(`SELECT * FROM puta.tblsession where amount IS NULL`, (err, out) => {
+  db.query(`SELECT * FROM puta.tblsession where amount IS NOT NULL`, (err, out) => {
     if(err) console.log(err)
     console.log(out)
     res.send(out)
@@ -1494,6 +1494,144 @@ router.post('/changememin', (req, res) => {
   })
   })
    })
+
+// QUERIES
+
+// USER 
+function quser (req,res,next) {
+  const query = `
+  SELECT * FROM tbluser
+  JOIN tblmembership on tblmembership.usersid = tbluser.userid
+  JOIN tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
+  JOIN tblcat on tblcat.membershipID = tblmemrates.memcat
+  JOIN tblmemclass on tblmemclass.memclassid = tblmemrates.memclass
+  JOIN tblspecial on tblspecial.specialID = tblmembership.specializationid
+  WHERE tblmembership.status != 'pending'
+  `
+  db.query(query, ( err,results ) => {
+    results.forEach(( results ) => {
+      results.acceptdate = moment(results.acceptdate).format("MMM DD, YYYY");
+      results.userbday = moment().diff(results.userbday, 'years', false)
+      // req.pt[0].trainerbday = moment().diff(req.pt[0].trainerbday, 'years', false)
+    })
+    req.quser = results
+    return next()
+  })
+}
+
+function qmembership (req,res,next) {
+  const query = `
+  SELECT * FROM tblmemrates
+  JOIN tblcat on tblcat.membershipID = tblmemrates.memcat
+  JOIN tblmemclass on tblmemclass.memclassid = tblmemrates.memclass
+  `
+  db.query(query, ( err,results ) => {
+    results.forEach(( results ) => {
+      results.Dateadded = moment(results.Dateadded).format("MMM DD, YYYY");
+    })
+    req.qmembership = results
+    return next()
+  })
+}
+
+function qwalkin (req,res,next) {
+  const query = `
+  SELECT * FROM tbluser 
+  JOIN tblpayment on tblpayment.userid = tbluser.userid
+  Where tbluser.usertype IS NULL
+  `
+  db.query(query, ( err,results ) => {
+    results.forEach(( results ) => {
+      results.paymentdate = moment(results.paymentdate).format("MMM DD, YYYY");
+    })
+    req.qwalkin = results
+    return next()
+  })
+}
+
+function qStaff (req,res,next) {
+  const query = `
+  SELECT * FROM tbluser 
+  JOIN tblbranch on tblbranch.branchID = tbluser.branch
+  WHERE usertype = 4
+  `
+  db.query(query, ( err,results ) => {
+    req.qStaff = results
+    return next()
+  })
+}
+
+function qTrainer (req,res,next) {
+  const query = `
+  SELECT * FROM tbltrainer
+  JOIN tblbranch on tblbranch.branchID = tbltrainer.trainerbranch
+  JOIN tblspecial on tblspecial.specialID = tbltrainer.trainerspecialization
+  `
+  db.query(query, ( err,results ) => {
+    results.forEach(( results ) => {
+      results.trainerbday = moment().diff(results.trainerbday, 'years', false)
+    })
+    req.qTrainer = results
+    return next()
+  })
+}
+
+function qClass (req,res,next) {
+  const query = `
+  SELECT * FROM tbleventclass where type = 1
+  `
+  db.query(query, ( err,results ) => {
+    results.forEach(( results ) => {
+      results.starttime = moment(results.starttime, 'HH:mm:ss').format("hh:mm A")
+      results.endtime = moment(results.endtime, 'HH:mm:ss').format("hh:mm A")
+    })
+    req.qClass = results
+    return next()
+  })
+}
+
+function qEvent (req,res,next) {
+  const query = `
+  SELECT * FROM tbleventclass where type = 2
+  `
+  db.query(query, ( err,results ) => {
+    results.forEach(( results ) => {
+      results.startdate = moment(results.starttime, 'MM/DD/YYYY').format("MMM DD, YYYY")
+      results.enddate = moment(results.enddate, 'MM/DD/YYYY').format("MMM DD, YYYY")
+      results.starttime = moment(results.starttime, 'HH:mm:ss').format("hh:mm A")
+      results.endtime = moment(results.endtime, 'HH:mm:ss').format("hh:mm A")
+    })
+    req.qEvent = results
+    return next()
+  })
+}
+
+function qSession (req,res,next) {
+  const query = `
+  SELECT * FROM tbppt 
+  JOIN tbluser on tbluser.userid = tbppt.memid
+  JOIN tbltrainer on tbltrainer.trainerid = tbppt.trainid
+  WHERE scheduleStatus = 0
+  `
+  db.query(query, ( err,results ) => {
+    results.forEach(( results ) => {
+      if (results.description == null){
+        results.description =  'Success'
+      }
+      else if (results.description != null){
+        results.description =  'Unsuccesful'
+      }
+      results.sessionDate = moment(results.sessionDate).format("MMM DD, YYYY")
+      results.sessionTime = moment(results.sessionTime, 'hh:mm a').format("hh:mm A")
+      results.branch = moment(results.sessionTime, 'hh:mm a').add(1,'h').format("hh:mm A")
+    })
+    req.qSession = results
+    return next()
+  })
+}
+
+
+
 
 
 
@@ -1695,42 +1833,42 @@ function paymentSession(req, res) {
 //QUERIES
 function qClasses(req, res) {
   res.render('admin/queries/views/class',{
-    
+    qClass: req.qClass
   })
 }
 function qEvents(req, res) {
   res.render('admin/queries/views/event',{
-   
+    qEvent: req.qEvent
   })
 }
 function qMembers(req, res) {
   res.render('admin/queries/views/member',{
-   
+    quser : req.quser
   })
 }
 function qMembership(req, res) {
   res.render('admin/queries/views/membership',{
-  
+    qmembership : req.qmembership
   })
 }
 function qSessions(req, res) {
   res.render('admin/queries/views/session',{
-   
+    qSession : req.qSession
   })
 }
 function qStaffs(req, res) {
   res.render('admin/queries/views/staff',{
-   
+    qStaff: req.qStaff
   })
 }
 function qTrainers(req, res) {
   res.render('admin/queries/views/trainer',{
-   
+    qTrainer : req.qTrainer
   })
 }
 function qWalkins(req, res) {
   res.render('admin/queries/views/walkin',{
-   
+    qwalkin: req.qwalkin
   })
 }
 
@@ -1774,14 +1912,14 @@ router.get('/payment/session', viewPaymentSession, paymentSession);
 
 
 //QUERIES
-router.get('/queries/classes', qClasses);
-router.get('/queries/events', qEvents);
-router.get('/queries/members', qMembers);
-router.get('/queries/membership', qMembership);
-router.get('/queries/PTsessions', qSessions);
-router.get('/queries/staffs', qStaffs);
-router.get('/queries/trainers', qTrainers);
-router.get('/queries/walkins', qWalkins);
+router.get('/queries/classes', qClass, qClasses);
+router.get('/queries/events', qEvent, qEvents);
+router.get('/queries/members', quser, qMembers);
+router.get('/queries/membership', qmembership, qMembership);
+router.get('/queries/PTsessions', qSession, qSessions);
+router.get('/queries/staffs', qStaff,qStaffs);
+router.get('/queries/trainers',qTrainer, qTrainers);
+router.get('/queries/walkins', qwalkin, qWalkins);
 
 /**
  * Here we just export said router on the 'index' property of this module.
