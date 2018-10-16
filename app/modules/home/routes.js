@@ -1632,18 +1632,18 @@ function qSession (req,res,next) {
 
 // REPORTS
 
-// function totalPayment (req, res, next) {
-//   const query = `SELECT * from tblpayment join tbluser on tblpayment.userid = tbluser.userid where tbluser.userid = ?`
-//   db.query(query, [ req.session.member.userid ], ( err, results, fields ) => {
-//       if (err) console.log(err)
-//       let total = 0
-//       for ( i=0; i < results.length; i++ ){
-//           total += results[i].amount
-//       }
-//       req.total = total
-//       return next()
-//   })
-// }
+function totalPayment (req, res, next) {
+  const query = `SELECT * from tblpayment join tbluser on tblpayment.userid = tbluser.userid where tbluser.userid = ?`
+  db.query(query, [ req.session.member.userid ], ( err, results, fields ) => {
+      if (err) console.log(err)
+      let total = 0
+      for ( i=0; i < results.length; i++ ){
+          total += results[i].amount
+      }
+      req.total = total
+      return next()
+  })
+}
 
 
 
@@ -1943,7 +1943,7 @@ router.get('/queries/walkins', qwalkin, qWalkins);
 
 
 // REPORTS
-router.get('/reports/sales', rsales);
+router.get('/reports/sales',  rsales);
 
 
 /**

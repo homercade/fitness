@@ -263,6 +263,7 @@ function initial(req, res, next) {
             join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass 
             join tblpayment on tblpayment.userid = tbluser.userid
             where usertype= 2 and tbluser.userid = ?
+            group by tbluser.userid
             `,[req.session.member.userid], (err, results,fields) => {
                 if (err) return res.send(err)
                 results.forEach(( results ) => {
