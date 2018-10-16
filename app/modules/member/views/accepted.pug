@@ -59,12 +59,16 @@ block main
                           th Status
                           th
                       tbody
-                        tr
-                          td 01/01/18 (8:00-9:00PM)
-                          td Success
-                          td
-                            a(style='color:rgb(18, 35, 49); cursor:pointer;', data-toggle='modal', data-target='#remove')
-                              i.fa.fa-times
+                        each s in sessions
+                          tr
+                            
+                            td #{s.sessionDate} ( #{s.sessionTime} )
+                            if s.description != null
+                              td 
+                                .label.label-danger Unsuccesful
+                            else 
+                              td 
+                                .label.label-success Succesful
         
 .dateModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog.modal-sm
@@ -122,13 +126,19 @@ script.
 
 script.
   $(document).ready(function () {
+    var fee
+    $.post('/member/fee').done(function(data){
+      console.log(data)
+      fee = data.fee
+      
+    })
     $('#buySession').click(function () {
       let stat = $('#sessionStatus').val()
       if (stat == '') {
 
         swal({
           title: 'How many Sessions?',
-          text: 'Current price per Session is ₱ 50.00',
+          text: `Current price per Session is ₱ ${fee}.00`,
           input: 'number',
           showCancelButton: true,
           confirmButtonText: 'Confirm',
@@ -138,7 +148,7 @@ script.
         .then((result) => {
           let sessionID = $('#sessionID').val()
           if (result.value) {
-            let total = result.value * 50
+            let total = result.value * fee
             let amount = result.value
             
               swal({
@@ -183,9 +193,7 @@ script.
 script.
   $(document).ready(function(){
     
-
     $.post('/member/pt/schedule').done(function (data) {
-
       var evs = []
       var delId
       var prefDate 

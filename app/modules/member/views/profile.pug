@@ -72,7 +72,18 @@ block main
                 .form-group
                   label(style=' margin-left:15px;font-weight:bold') Username: 
                   input#username.form-control(type="text" value = pr.userusername , name='username' style='position:relative; right:-115px')
-                
+              .row(style='margin-bottom:5px;')
+              each pr in profs
+                .form-group
+                  label(style=' margin-left:15px;font-weight:bold') Password: 
+                  input#password.form-control(type="password" value = pr.userpassword , name='password' style='position:relative; right:-120px')
+              .row(style='margin-bottom:5px;')
+              each pr in profs
+                .form-group
+                  label(style=' margin-left:15px;font-weight:bold') Confirm Password: 
+                  input#rpassword.form-control(type="password" value = pr.userusername , name='rpassword' style='position:relative; right:-66px')
+              .row(style='margin-bottom:5px;')
+                #prompt(style='margin-left:30px; margin-top:10px')
       #extra.col-md-7
         .content-panel
           h4 
@@ -164,30 +175,42 @@ script.
 
   $('#save').click(function(){
     
-    
-    
-    $.post('/member/profile/edit', {
+    if( $('#password').val() == $('#rpassword').val() ){
+
+      $.post('/member/profile/edit', {
       address: $('#address').val(),
       contact: $('#contact').val(),
       email: $('#email').val(),
-      username: $('#username').val()
-    }).done(
-      swal(
-        'Succesful!',
-        'You succesfully edited your profile.',
-        'success'
-      ).then((result) => {
-        if (result.value){
-          $('#editFields').hide();
-          $('#fields').show();
-          $('#save').hide();
-          $('#cancel').hide();
-          $('#edit').show();
-          $('#extra').show();
-          $('#info').animate({
-            'left': '0%'
-          })
-        }
+      username: $('#username').val(),
+      password: $('#password').val()
+      }).done(
+        swal(
+          'Succesful!',
+          'You succesfully edited your profile.',
+          'success'
+        ).then((result) => {
+          if (result.value){
+            $('#prompt').text('')
+            $('#editFields').hide();
+            $('#fields').show();
+            $('#save').hide();
+            $('#cancel').hide();
+            $('#edit').show();
+            $('#extra').show();
+            $('#info').animate({
+              'left': '0%'
+            })
+          }
+        })
+      )
+    }
+    else{
+      $('#prompt').text('Password did not match.').css({
+        'color':'red',
+        'font-weight':'bold'
       })
-    )
+    }
+    
+    
+    
   })

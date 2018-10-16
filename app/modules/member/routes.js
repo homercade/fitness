@@ -39,6 +39,12 @@ function totalPayment (req, res, next) {
 //                      PROFILE.
 //******************************************************* */
 
+function fee (req,res,next){
+    db.query('SELECT * from tblgenera where generalID = 5', (err,results)=>{
+        req.fee = results[0]
+        return next()
+    })
+}
 // VIEW
 function initial(req, res, next) {
     const query = `
@@ -56,7 +62,6 @@ function initial(req, res, next) {
     `
     db.query(query, [req.session.member.userid], function (err, results, fields) {
         if (err) return res.send(err);
-        console.log(results, '<<<<<<<<<<<<<<<< initial')
         results.forEach(( results ) => {
             results.acceptdate = moment(results.acceptdate).format("LL");
             results.userbday = moment(results.userbday).format("MMM DD, YYYY");
@@ -123,12 +128,13 @@ function initial(req, res, next) {
 // }
 
 router.post('/profile/edit', ( req,res ) => {
-    const query = `UPDATE tbluser SET useraddress = ?, usermobile = ?, useremail = ?, userusername = ? where userid = ?`
+    const query = `UPDATE tbluser SET useraddress = ?, usermobile = ?, useremail = ?, userusername = ?, userpassword = ? where userid = ?`
     db.query(query, [
         req.body.address,
         req.body.contact,
         req.body.email,
         req.body.username,
+        req.body.password,
         req.session.member.userid
     ], (err, out) => {
         if (err) console.log(err)
@@ -279,7 +285,6 @@ function check(req, res, next){
     SELECT * from tbppt join tbluser on tbppt.memid = tbluser.userid where tbluser.userid = ?
     `
     db.query(query, [req.session.member.userid], function(err, results, fields){
-        console.log(results[0], '<< CHECKING IF MAY PERSONAL TRAINER')
         if(err) return res.send(err);
         // req.check = results[0];
         if (results[0] == undefined){
@@ -327,7 +332,7 @@ router.post('/buy', (req, res) => {
 
 //View Schedule
 router.post('/pt/schedule',(req, res)=>{
-    const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid join tbltrainer on tbltrainer.trainerid = tbppt.trainid where userid = ?`
+    const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid join tbltrainer on tbltrainer.trainerid = tbppt.trainid where userid = ? AND scheduleStatus != 0`
     db.query(query,[req.session.member.userid],(err,out)=>{
       res.send(out)
     })
@@ -392,6 +397,29 @@ router.post('/change', ( req,res ) => {
     })
 })
 
+//- History
+function viewHistory ( req,res,next ){
+    db.query('SELECT * from tbppt JOIN tbluser on tbluser.userid = tbppt.memid where userid = ? AND scheduleStatus = 0',[ req.session.member.userid ], (err,results) => {
+        if (err) res.send(err)
+        results.forEach(( results ) => {
+
+            var end = moment(results.sessionTime, 'hh:mm a').add(1, 'hour').format('hh:mm A')
+            var start = moment(results.sessionTime, 'hh:mm a').format('hh:mm A')
+            results.sessionDate = moment(results.sessionDate).format('MMM DD, YYYY')
+            results.sessionTime = `${start} - ${end}`
+        })
+        req.sessions = results
+        return next()
+    })
+}
+
+router.post('/fee', ( req,res ) => {
+    db.query('SELECT * from tblgenera where generalID = 5', (err, out) => {
+        if (err) console.log(err)
+        console.log(out[0], 'YOGI')
+        res.send(out[0])
+    })
+})
 
 
 
@@ -399,7 +427,8 @@ router.post('/change', ( req,res ) => {
 function dashboard(req, res, next) {
     res.render('member/views/dashboard', {
         profs: req.initial,
-        total :req.total
+        total :req.total,
+        fee :req.fee
         // classes: req.viewClass,
         // eves: req.viewEvent
     })
@@ -459,7 +488,8 @@ function pending(req, res, next) {
 function accepted(req, res, next) {
     res.render('member/views/accepted', {
         profs: req.initial,
-        pt :req.pt
+        pt :req.pt,
+        sessions : req.sessions
     });
     return next();
 }
@@ -472,7 +502,7 @@ function change(req, res, next) {
 }
 
 // ------------- GET ---------------//
-router.get('/', initial, totalPayment, dashboard);
+router.get('/', initial, fee, totalPayment, dashboard);
 router.get('/profile', initial, profile);
 router.get('/events', joinedEvents, viewEvent, initial, events);
 router.get('/trainers', initial, check, viewTrainers, trainer);
@@ -480,6 +510,6 @@ router.get('/classes', joinedClasses, viewClass, initial, classes);
 router.get('/billing', initial, billing);
 // trainer
 router.get('/pending', initial, pending);
-router.get('/accepted', checkForChange, personalTrainer, initial, accepted);
+router.get('/accepted', viewHistory, checkForChange, personalTrainer, initial, accepted);
 router.get('/change', initial, change);
 exports.member = router;

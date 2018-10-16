@@ -14,7 +14,7 @@ router.get('/dashboard', indexController);
 
 router.post('/trainee/viewSched/all',( req,res ) => {
   const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid join tblsession on tblsession.sessionID = tbppt.sessionID
-  where trainid = ?`
+  where trainid = ? AND scheduleStatus != 0`
   db.query( query, [ req.session.trainer.trainerid ], ( err,out ) => {
     res.send(out)
   })
@@ -94,7 +94,7 @@ function individualTrainee(req, res, next){
 //View Schedule
 router.post('/trainee/viewSched',(req,res)=>{
   const query =`SELECT * FROM tbppt join tbluser on tbluser.userid = tbppt.memid join tblsession on tblsession.sessionID = tbppt.sessionID
-  where userid = ?`
+  where userid = ? AND scheduleStatus != 0`
   db.query(query,[ req.query.id ],(err,out)=>{
     res.send(out)
   })
@@ -208,6 +208,28 @@ router.post('/check', ( req,res ) => {
   })
 })
 
+function viewHistory ( req,res,next ){
+  const query = `
+  SELECT * from tbppt 
+  JOIN tbluser on tbluser.userid = tbppt.memid
+  JOIN tbltrainer on tbltrainer.trainerid = tbppt.trainid 
+  WHERE trainid = ? AND userid = ? AND scheduleStatus = 0
+  `
+  db.query(query, [ req.session.trainer.trainerid, req.query.id ], (err,results) => {
+      if (err) res.send(err)
+      console.log(results, 'HERE IT IS')
+      results.forEach(( results ) => {
+
+          var end = moment(results.sessionTime, 'hh:mm a').add(1, 'hour').format('hh:mm A')
+          var start = moment(results.sessionTime, 'hh:mm a').format('hh:mm A')
+          results.sessionDate = moment(results.sessionDate).format('MMM DD, YYYY')
+          results.sessionTime = `${start} - ${end}`
+      })
+      req.sessions = results
+      return next()
+  })
+}
+
 
 //******************************************************* */
 //                     PENDING.
@@ -237,6 +259,7 @@ function viewPend(req, res, next){
 //accept pending
 router.post('/trainee/accept', (req, res) => {
   db.query(`INSERT INTO tblsession (session_count, sessionForSched) VALUES (1, 1)`,(err,results, fields) => {
+    console.log(results, '<<<<<')
     db.query('update tbppt set status = 1, sessionID = ? WHERE trainid = ? and memid=?',[      
       results.insertId, 
       req.session.trainer.trainerid,
@@ -283,7 +306,8 @@ function traineeSched(req, res, next){
   res.render('trainer/views/trainee-sched',{
     trainee: req.viewTrainee,
     hello: req.trainer,
-    general: req.general        
+    general: req.general,
+    sessions: req.sessions   
   })
   return next();
 }
@@ -301,7 +325,7 @@ router.get('/', hello, dashboard);
 router.get('/trainee', hello, allTrainees, trainee);
 router.get('/pending', hello, viewPend, pending);
 router.get('/no-trainee', hello, notrainee);
-router.get('/trainee-sched', hello, individualTrainee, traineeSched);
+router.get('/trainee-sched', hello, viewHistory, individualTrainee, traineeSched);
 router.get('/change', hello, change);
 
 
