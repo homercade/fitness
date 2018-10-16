@@ -9,19 +9,20 @@ block main
 			span#header_inbox_bar.dropdown
 				a.dropdown-toggle(data-toggle='dropdown', href='#')
 					i.fa.fa-bell
-					span.badge.bg-theme 1
+					span.badge.bg-theme #{notifs.length}
 				ul.dropdown-menu.extended.inbox
 					li
-						p You have 1 new notification
-					li
-						a(href='/')
-							span.subject
-								span.from(style='margin:0;') System
-								span.time Just now
-							span.message
-								| Event at 7:30AM Tomorrow
-					li
-						a(href='/') See all pending request
+						p You have new notifications
+					each n in notifs
+						li
+							a(href='/')
+								span.subject
+									span.from(style='margin:0;') System
+									span.time #{n.notifdate}
+								span.message
+									| #{n.userfname} #{n.userfname} #{n.notifdesc}
+						//- li
+						//- 	a(href='/') See all pending request
 			div(style='float:right')
 				span.sm(style='font-size: 12pt;')
 					| Hello, 

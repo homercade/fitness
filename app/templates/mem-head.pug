@@ -9,26 +9,38 @@ block main
 			span#header_inbox_bar.dropdown
 				a.dropdown-toggle(data-toggle='dropdown', href='#')
 					i.fa.fa-bell
-					span.badge.bg-theme 1
+					span.badge.bg-theme #{notifs.length}
 				ul.dropdown-menu.extended.inbox
-					//- li
-					//- 	p You have new notification
-					- console.log(notifs)
-					each n in notifs
+					li
+						p You have new notifications
+					
+					if notifs.length != 0
+						each n in notifs
+							li
+								a(href='/')
+									span.subject
+										span.from(style='margin:0;') System
+										span.time #{n.notifdate}
+									if n.notifdescid == 1 || n.notifdescid == 2
+										span.message
+											| You have #{n.notifdesc}
+									else if n.notifdescid == 3
+										span.message
+											| #{n.notifdesc}
+									else 
+										span.message
+											| No Data
+									
+					else 
 						li
 							a(href='/')
 								span.subject
-									span.from(style='margin:0;') System
-									span.time #{n.notifdate}
-								if n.notifdescid == 1 || n.notifdescid == 2
-									span.message
-										| You have #{n.notifdesc}
-								else if n.notifdescid == 3
-									span.message
-										| #{n.notifdesc}
+									span.time No data to show
+
 					//- li
 					//- 	a(href='/') See all pending request
 			div(style='float:right')
+				- console.log(profs, '<<<< FRONT END INITIAL')
 				each pr in profs
 					span.sm(style='font-size: 12pt;')
 						| Hello, 

@@ -111,5 +111,13 @@ include ../../../templates/footer
 
 script.
 	$(document).ready(function(){
-		$('#dashboard').addClass('active');
-	});
+		//- $('#dashboard').addClass('active');
+
+   	$.post('/view/notif').done(
+						swal(
+						'Success',
+						'Request Rejected',
+						'success'
+						)
+					)
+	})

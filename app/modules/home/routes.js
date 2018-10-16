@@ -1384,9 +1384,23 @@ router.post('/view/event/participant', (req, res) => {
   db.query(query, [ req.body.id ],(err, out) => {
     if(err) console.log(err)
     console.log(out, 'RESULT FROM BE')
-   
     res.send(out)
-    
+  })
+})
+
+// ALL NOTIFS
+router.post('/view/notif', (req, res) => {
+  db.query(`select * from tblmembership where status = 'pending'`, (err, out) => {
+    if(err) console.log(err)
+    console.log(out)
+    res.send(out)
+  })
+})
+router.post('/view/notif/payment', (req, res) => {
+  db.query(`SELECT * FROM puta.tblsession where amount IS NULL`, (err, out) => {
+    if(err) console.log(err)
+    console.log(out)
+    res.send(out)
   })
 })
 

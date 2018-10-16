@@ -91,5 +91,38 @@ block main
 
 include ../../../templates/foot.pug
 
- 
+script.
+  $(document).ready(function () {
+    $.post('/view/notif').done(function (data) {
+      const toast = swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: true
+      });
+      toast({
+        type: 'info',
+        title: `${data.length} pending membership`,
+      }).then((result)=>{
+        if(result.value){
+          $.post('/view/notif/payment').done(function (data) {
+        const toast = swal.mixin({
+          toast: true,
+          position: 'top',
+          showConfirmButton: true
+        });
+        toast({
+          type: 'info',
+          title: `${data.length} purchased sessions`,
+        })
+      })
+        }
+      })
+      
+    })
 
+
+  })
+
+
+      
+   
