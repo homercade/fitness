@@ -16,8 +16,28 @@ router.get('/dashboard', indexController);
 //******************************************************* */
 
 router.post('/event/view', (req, res)=>{
+
+    var now = moment().format('MM/DD/YYYY')
+    var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD')
+
     db.query('select * from tbleventclass', (err, out) => {
-        res.send(out)
+        console.log(out,'<< OUT')
+        for( i = 0; i < out.length; i++){
+            if (out[i].enddate > now){
+                console.log(out[i].eventclassid,'<< ID SA LOOB NG IF')
+                continue
+            } 
+            else {
+                console.log(out[i].eventclassid,'<< ID SA LOOB NG ELSE')
+                db.query(`UPDATE tbleventclass SET status = 0 where eventclassid = ?`, [ out[i].eventclassid ], (err, out) => {
+                })
+            }
+        }
+        
+        console.log(out, '<< PRE FINAL')
+        db.query(`select * from tbleventclass where status is NULL`, (err, out) => {
+            res.send(out)
+        })
     })
 })
 
@@ -148,7 +168,7 @@ router.post('/profile/edit', ( req,res ) => {
 
 // VIEW
 function viewClass(req, res, next) {
-    db.query('select * from tbleventclass where type = 1', function (err, results, fields) {
+    db.query('select * from tbleventclass where type = 1 AND status is NULL', function (err, results, fields) {
         if (err) return res.send(err);
         req.viewClass = results;
         return next();
@@ -199,7 +219,7 @@ router.post('/class/resign', (req, res) => {
 
 // VIEW
 function viewEvent(req, res, next) {
-    db.query('select * from tbleventclass where type = 2', function (err, results, fields) {
+    db.query('select * from tbleventclass where type = 2 AND status is NULL', function (err, results, fields) {
         if (err) return res.send(err);
         
         results.forEach((results) => {
