@@ -402,7 +402,7 @@ block main
               select.form-control#membs(name='membership')
                 each ch in change
                   option.hidden(value='0') Choose Membership...
-                  option(data-ids = `${ch.memrateid}`) #{ch.memclassname}-#{ch.membershipname}
+                  option(data-ids = `${ch.memrateid}` data-per=`${ch.memperiod}`) #{ch.memclassname}-#{ch.membershipname}
                 input.hidden#usersid(type='text' name='id')
                 input.hidden#name(type='text' name='id')
         .modal-footer
@@ -748,6 +748,7 @@ block main
                             input.hidden#client(type='text' name='usersid')
                             input.hidden#membersid(type='text' name='memid' )
                             input.hidden(value=`${gn.fee}` type='text' name='total' )
+                            input.hidden#per(type='text' name='per' )
           .modal-footer
             button#b.btn.btn-default(type='button', data-dismiss='modal') Close
             button#a.btn.btn-primary(type='button') Print
@@ -1009,6 +1010,7 @@ script.
       $('#client').val(`${$('#usersid').val()}`)
       $('#fnames').text(`${$('#name').val()}`)
       $('#membersid').val($("#membs option:selected").data('ids'))
+      $('#per').val($("#membs option:selected").data('per'))
       //- $('#address').text($('#addr').val())
       //- $('#email').text($('#emai').val())
       //- $('#contact').text($('#cont').val())

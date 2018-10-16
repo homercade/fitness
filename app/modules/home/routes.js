@@ -1425,9 +1425,8 @@ router.post('/changemem', (req, res) => {
     inner join tblmemrates r ON m.membershiprateid=r.memrateid 
     inner join tblmemclass cl ON r.memclass= cl.memclassid 
     Inner join tblcat ct on r.memcat = ct.membershipID  
-    SET m.upgradedate = case 
-    when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END
-    where usersid=?`,[req.body.usersid], (err, results, fields) => {
+    SET m.upgradedate = curdate() + interval ? MONTH END
+    where usersid=?`,[req.body.per ,req.body.usersid], (err, results, fields) => {
       db.query(`Insert Into tblpayment 
         (userid,paymentdate,amount,classification,branchid)
         VALUES(?, CURDATE(), ?, 6, ?) `,
