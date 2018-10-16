@@ -756,7 +756,7 @@ router.post('/pending/update', useraddid, (req, res) => {
     var a= results[0].discount / 100
     db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.body.id], (err, results, fields) => {
       db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.body.id], (err, results, fields) => {
-        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee - (r.memfee * ?), p.paymentdate=CURDATE(), p.classification='4' Where p.userid= ? ", [a,req.body.id], (err, results, fields) => {  
+        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee - (r.memfee * ?), p.paymentdate=CURDATE(), p.classification='4', p.branch=? Where p.userid= ? ", [a, req.session.user.branch,req.body.id], (err, results, fields) => {  
           if (err)
             console.log(err);
           else {
@@ -769,7 +769,7 @@ router.post('/pending/update', useraddid, (req, res) => {
     else{
     db.query("UPDATE tblmembership SET status='Paid', acceptdate=CURDATE() Where usersid=?", [req.body.id], (err, results, fields) => {
       db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END, userpassword=12345 where usersid=?", [req.body.id], (err, results, fields) => {
-        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee, p.paymentdate=CURDATE(), p.classification='1' Where p.userid= ? ", [req.body.id], (err, results, fields) => {  
+        db.query("UPDATE tblmembership m join tblpayment p on m.usersid = p.userid inner join tblmemrates r on m.membershiprateid = r.memrateid SET p.amount=r.memfee, p.paymentdate=CURDATE(), p.classification='1' ,p.branch=? Where p.userid= ? ", [req.session.user.branch,req.body.id], (err, results, fields) => {  
           if (err)
             console.log(err);
           else {
@@ -880,7 +880,7 @@ function viewPay(req, res, next) {
 //payment
 router.post('/payment',(req, res) => {
     db.query("INSERT INTO tblpayment (userid)VALUES(?)", [req.body.id], (err, results, fields) => {
-      db.query("UPDATE tbluser u join tblpayment p on p.userid=u.userid inner join tblmembership m on m.usersid=u.userid inner join tblmemrates r on r.memrateid=m.membershiprateid SET p.paymentdate=CURDATE() ,amount=r.memfee , classification =1 where p.paymentdate is null and p.userid= ?", [req.body.id], (err, results, fields) => {
+      db.query("UPDATE tbluser u join tblpayment p on p.userid=u.userid inner join tblmembership m on m.usersid=u.userid inner join tblmemrates r on r.memrateid=m.membershiprateid SET p.paymentdate=CURDATE() ,amount=r.memfee , classification =1, p.branchid=? where p.paymentdate is null and p.userid= ?", [req.session.user.branchid,req.body.id], (err, results, fields) => {
         db.query("UPDATE tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON m.membershiprateid=r.memrateid inner join tblmemclass cl ON r.memclass= cl.memclassid Inner join tblcat ct on r.memcat = ct.membershipID  SET m.expirydate = case when cl.memclassid = r.memclass then m.expirydate + interval r.memperiod MONTH END where u.userid=?", [req.body.id], (err, results, fields) => {
           // fullname=(results[0].userfname + " " +results[0].userlname)
           //   date=moment(results[0].recentpay).format("LL");
@@ -974,8 +974,9 @@ inner join tblpayment p on p.userid=u.userid where f.minus is null and classific
 //payment freeze
 router.post('/payment/freeze',(req, res) => {
   db.query("UPDATE tblfreeze SET status='Paid' where unfreezedate is NULL and userfid=?", [req.body.ids], (err, results, fields) => {
-    db.query(`UPDATE tblfreeze f join tblpayment p on p.userid=f.userfid Set paymentdate=CURDATE()
-where f.unfreezedate is null and classification = 2 and userfid=?`, [req.body.ids], (err, results, fields) => {
+    db.query(`UPDATE tblfreeze f join tblpayment p on p.userid=f.userfid Set paymentdate=CURDATE(),
+p.branchid=?
+where f.unfreezedate is null and classification = 2 and userfid=?`, [req.session.user.branch,req.body.ids], (err, results, fields) => {
       if (err)
           console.log(err);
         else {
@@ -1195,7 +1196,7 @@ function viewSp(req, res, next){
 //addwalkin
 router.post('/walkin',regid,(req, res) => {
   db.query("INSERT INTO tbluser(userfname,userlname,usermobile)VALUES(?, ?, ?)", [req.body.fname, req.body.lname,req.body.mobile], (err, results, fields) => {
-    db.query("INSERT INTO tblpayment(userid,classification,amount)VALUES(?, 3,50)", [req.regid], (err, results, fields) => {
+    db.query("INSERT INTO tblpayment(userid,classification,amount,branchid)VALUES(?, 3,50,?)", [req.regid,req.session.user.branch], (err, results, fields) => {
       if (err)
           console.log(err);
         else {
@@ -1282,7 +1283,7 @@ router.post('/payment/session/pay', (req, res) => {
   `
   db.query(query, [ req.body.id ], ( err,out ) => {
     if(err) console.log(err)
-    db.query(`INSERT INTO tblpayment (userid, paymentdate, amount, classification) VALUES (?, CURDATE(), ?, 5)`, [ req.body.userid, req.body.amount ], ( err,out ) => {
+    db.query(`INSERT INTO tblpayment (userid, paymentdate, amount, classification, branchid) VALUES (?, CURDATE(), ?, 5, ?)`, [ req.body.userid, req.body.amount, req.session.user.branch], ( err,out ) => {
       if(err) console.log(err)
     })
   })
