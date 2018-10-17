@@ -22,22 +22,23 @@ block main
                       th
                         i.fa.fa-clock
                         |  Time
-                      th
-                        i.fa.fa-calendar-alt
-                        |  Schedule
+                      //- th
+                      //-   i.fa.fa-calendar-alt
+                      //-   |  Schedule
                       th
                         i.fa.fa-edit
                         |  Action
                   tbody
-                    tr
-                      td Zumba
-                      td 8:00AM - 9:00PM
-                      td M/W/F)
-                      td
-                        button#edit.btn.btn-success.btn-xs(data-toggle='popover', data-trigger='hover', data-placement='top', data-content='Edit Account')
-                          i.fa.fa-edit
-                        button.btn.btn-danger.btn-xs(data-toggle='popover', data-trigger='hover', data-placement='top', data-content='Remove Account Permanently')
-                          i.fa.fa-trash-alt
+                    each c in clazz
+                      tr
+                        td #{c.eventclassname}
+                        td #{c.starttime} - #{c.endtime}
+                        //- td M/W/F)
+                        td
+                          button#edit.btn.btn-success.btn-xs(data-toggle='popover', data-trigger='hover', data-placement='top', data-content='Edit Account')
+                            i.fa.fa-edit
+                          button.btn.btn-danger.btn-xs(data-toggle='popover', data-trigger='hover', data-placement='top', data-content='Remove Account Permanently')
+                            i.fa.fa-trash-alt
               // /content-panel
     // MODAL ADD MEMBER
     #add.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -61,49 +62,49 @@ block main
                     .col-md-3
                       .form-group
                         label.control-label Slot
-                        input.form-control(type='number' name='slot')
+                        input.form-control(type='number' name='slot'  required)
                   .row
                     .col-md-6
                       .form-group
                         label.control-label Start Time
-                        input.form-control(type='time' name='startt')
+                        input.form-control.time(name='startt'  required)
                     .col-md-6
                       .form-group
                         label.control-label End Time
-                        input.form-control(type='time' name='endt')
+                        input.form-control.time(name='endt'  required)
                   .row
                     .input-group
                       span.input-group-addon
                         | Schedule:
                       label.checkbox
                         | Monday
-                        input#student(type='checkbox', name='sched[]' ,value='0')
-                        span.check
-                      label.checkbox
-                        | Tuesday
                         input#student(type='checkbox', name='sched[]' ,value='1')
                         span.check
                       label.checkbox
-                        | Wednesday
+                        | Tuesday
                         input#student(type='checkbox', name='sched[]' ,value='2')
+                        span.check
+                      label.checkbox
+                        | Wednesday
+                        input#student(type='checkbox', name='sched[]' ,value='3')
                         span.check
                       span.input-group-addon
                       label.checkbox
                         | Thursday
-                        input#student(type='checkbox', name='sched[]' ,value='3')
+                        input#student(type='checkbox', name='sched[]' ,value='4')
                         span.check
                       label.checkbox
                         | Friday
-                        input#student(type='checkbox', name='sched[]' ,value='4 ')
+                        input#student(type='checkbox', name='sched[]' ,value='5 ')
                         span.check
                       label.checkbox
                         | Saturday
-                        input#student(type='checkbox', name='sched[]' ,value='5')
+                        input#student(type='checkbox', name='sched[]' ,value='6')
                         span.check
                       span.input-group-addon
                       label.checkbox
                         | Sunday
-                        input#student(type='checkbox', name='sched[]' ,value='6 ')
+                        input#student(type='checkbox', name='sched[]' ,value='0')
                         span.check
                   //- .row
                   //-   .col-md-12
@@ -122,12 +123,12 @@ block main
                   //-         option All 
                   //-         option Sta. Mesa
                   //-         option Marikina
-                  
+              
                   .row
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#prog-desc.form-control(style='resize:none', name='descr', rows='3')
+                        textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3'  required)
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close

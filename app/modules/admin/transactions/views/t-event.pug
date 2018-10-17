@@ -57,7 +57,7 @@ block main
                           .switch(style='width:50px;', data-on-label="<i class=' fa fa-check'></i>", data-off-label="<i class='fa fa-times'></i>")
                             input(type='checkbox', checked='')
                         td
-                          button.view.btn.btn-info.btn-xs(data-toggle='modal', data-target='.view-modal')
+                          button.view.btn.btn-info.btn-xs(value = ev.eventclassid)
                             i.fa.fa-search
                           button.edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.edit-modal')
                             i.fa.fa-edit
@@ -76,10 +76,14 @@ block main
           .container-fluid
             .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
               .row
-                .col-md-12
+                .col-md-9
                   .form-group
                     label.control-label Event Name
                     input.form-control(type='text' name='event')
+                .col-md-3
+                  .form-group
+                    label.control-label Slots
+                    input.form-control(type="number" name='slot')
               .row
                 .col-md-6
                   .form-group
@@ -99,11 +103,8 @@ block main
               //-         option Interbranch
               //-         option Sta. Mesa
               //-         option Marikina
-              .row
-                .col-md-12
-                  .form-group
-                    label.control-label Slots
-                    input.form-control(type="number" name='slot')
+          
+                
               .row
                 .col-md-6
                   .form-group
@@ -141,11 +142,11 @@ block main
     .modal-content
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4#myModalLabel.modal-title All Attendants
+        h4#myModalLabel.modal-title All Possible Attendants
       form(action='', method='post')
         br
         .container-fluid
-          table.table.table-striped.table-advance.table-hover
+          table.table.table-advance.table-hover
             thead
               tr
                 th 
@@ -154,14 +155,16 @@ block main
                 th 
                   i.fa.fa-user
                   |  Name
-                th
-                  i.fa.fa-bookmark
-                  |  Category
-            tbody
-              tr
-                td 1.
-                td John Doe
-                td Walk-In
+                th 
+                  i.fa.fa-phone
+                  |  Contact
+                
+            tbody#participant
+              
+              //- tr
+              //-   td 1.
+              //-   td John Doe
+              
                       
       .modal-footer
         button.btn.btn-default(type='button', data-dismiss='modal') Close
@@ -174,7 +177,44 @@ script.
   $(document).ready(function(){
     $('#transactionDrop').addClass('active');
     $('#event').addClass('active');
-    });
+
+    $('.view').click(function(){
+      $.post('/view/event/participant',{
+        id : $(this).val()
+      }).done(function(data){
+          console.log(data, 'puta')
+          if (data.length == 0){
+            $('#participant').append(`
+              <tr>
+                <td> No Data found ...</td>
+              </tr>
+            `)
+          }
+          else  {
+            var num = 1
+            for(i=0; i<data.length; i++){
+              $('#participant').append(`
+                <tr>
+                  <td>${num}</td>
+                  <td>${data[i].userfname} ${data[i].userlname}</td>  
+                  <td>${data[i].usermobile}</td>  
+                </tr>
+              `)
+              num ++
+            }
+          }
+      }).then(
+        $('.view-modal').modal('show')
+      )
+    })
+
+    $('.view-modal').on('hidden.bs.modal', function(){
+      $('#participant').empty()
+    })
+
+
+
+  });
 
 script.
   $(".datee").datepicker({

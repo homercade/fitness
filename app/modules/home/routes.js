@@ -1027,19 +1027,52 @@ function viewGt(req, res, next) {
 }
 //creating groupclass
 router.post('/groupclass',(req, res) => {
-  db.query(`INSERT INTO 
-    tbleventclass(eventclassname,starttime,endtime,slot,type,descr,days)
-    VALUES(?, ?, ?, ?, 1, ?, ?)`, 
-    [req.body.event, req.body.startt, req.body.endt, req.body.slot, req.body.descr, 
-    req.body.sched.toString()], (err, results, fields) => {
+  var sched = req.body.sched.toString()
+  var start = moment(req.body.startt, 'hh:mm A').format('HH:mm:ss')
+  var end = moment(req.body.endt, 'hh:mm A').format('HH:mm:ss')
+  db.query(`
+  INSERT INTO tbleventclass (starttime, endtime, slot, eventclassname, tbleventclass.type, tbleventclass.desc, days) 
+  VALUES ( ?, ?, ?, ?, 1, ?, ? );
+  `, [start, end, req.body.slot, req.body.event, req.body.desc, sched ], (err, results, fields) => {
     if (err)
         console.log(err);
       else {
         res.redirect('/t/classes');
       }
-
     });
    })
+
+function viewClass2 (req, res, next){
+  db.query('SELECT * from tbleventclass where tbleventclass.type = 1', (err, results) => {
+    if (err) console.log(err)
+    if (results.length != 0){
+      results.forEach((results) => {
+      results.starttime = moment(results.starttime, 'HH:mm:ss').format('hh:mm A')
+      results.endtime = moment(results.endtime, 'HH:mm:ss').format('hh:mm A')
+      })
+      req.viewClass2 = results
+      return next()
+    }
+    return next()
+  })
+}
+
+function viewClass2 (req, res, next){
+  db.query('SELECT * from tbleventclass where tbleventclass.type = 2 AND status IS NULL ', (err, results) => {
+    if (err) console.log(err)
+    if (results.length != 0){
+      results.forEach((results) => {
+      results.starttime = moment(results.starttime, 'HH:mm:ss').format('hh:mm A')
+      results.endtime = moment(results.endtime, 'HH:mm:ss').format('hh:mm A')
+      })
+      req.viewClass2 = results
+      return next()
+    }
+    return next()
+  })
+}
+
+
 //creating event
 router.post('/event',(req, res) => {
   db.query("INSERT INTO tbleventclass(eventclassname,startdate,enddate,starttime,endtime,slot,type,descr)VALUES(?, ?, ?, ?, ?, ?, 2, ?)", [req.body.event, req.body.start, req.body.end, req.body.startt, req.body.endt, req.body.slot, req.body.desc], (err, results, fields) => {
@@ -1057,6 +1090,11 @@ router.post('/event',(req, res) => {
 function viewEve(req, res, next) {
   db.query('select * from tbleventclass where type=2', function (err, results, fields) {
     if (err) return res.send(err);
+    results.forEach((results) => {
+      results.starttime = moment(results.starttime,'HH:mm:ss').format('hh:mm A')
+      results.endtime = moment(results.endtime,'HH:mm:ss').format('hh:mm A')
+    })
+
     req.viewEve = results;
     //moments expiration
     // for (var i = 0; i < req.viewInt.length; i++) {
@@ -1334,6 +1372,23 @@ router.post('/users', (req, res) => {
   })
 })
 
+// ALL USERS PARTICIPANT
+router.post('/view/event/participant', (req, res) => {
+  const query = `
+  SELECT * FROM tbluce  
+  JOIN tbluser on tbluser.userid =  tbluce.intUCEUserID 
+  JOIN  tbleventclass on tbleventclass.eventclassid = tbluce.intUCEClassID
+  WHERE eventclassid = ?
+  `
+  db.query(query, [ req.body.id ],(err, out) => {
+    if(err) console.log(err)
+    console.log(out, 'RESULT FROM BE')
+   
+    res.send(out)
+    
+  })
+})
+
 //change membership dropdowns
 function viewMemChange ( req,res,next ) {
   const query = `
@@ -1440,9 +1495,11 @@ function memclass(req, res) {
 
 // TRANSACTIONS
 
-function t_class(req, res) {
-  res.render('admin/transactions/views/t-classes');
-}
+// function t_class(req, res) {
+//   res.render('admin/transactions/views/t-classes',{
+   
+//   });
+// }
 
 function t_event(req, res) {
   res.render('admin/transactions/views/t-event');
@@ -1519,6 +1576,7 @@ function trainSessions(req, res) {
 
 function GClasses(req, res) {
   res.render('admin/transactions/views/t-classes',{
+    clazz : req.viewClass2,
     classes: req.viewGcl,
     train: req.viewGt
   })
@@ -1536,6 +1594,51 @@ function paymentSession(req, res) {
   })
 }
 
+
+
+
+
+//QUERIES
+function qClasses(req, res) {
+  res.render('admin/queries/views/class',{
+    
+  })
+}
+function qEvents(req, res) {
+  res.render('admin/queries/views/event',{
+   
+  })
+}
+function qMembers(req, res) {
+  res.render('admin/queries/views/member',{
+   
+  })
+}
+function qMembership(req, res) {
+  res.render('admin/queries/views/membership',{
+  
+  })
+}
+function qSessions(req, res) {
+  res.render('admin/queries/views/session',{
+   
+  })
+}
+function qStaffs(req, res) {
+  res.render('admin/queries/views/staff',{
+   
+  })
+}
+function qTrainers(req, res) {
+  res.render('admin/queries/views/trainer',{
+   
+  })
+}
+function qWalkins(req, res) {
+  res.render('admin/queries/views/walkin',{
+   
+  })
+}
 
 
 //A-TEAM FITNESS GETS
@@ -1559,7 +1662,7 @@ router.get('/trains', viewTrainer, viewspecialdrop, viewbranchdrop, trains);
 router.get('/memclass', viewHie, memclass);
 
 //TRANSACTIONS
-router.get('/t-class', t_class);
+// router.get('/t-class', t_class);
 router.get('/t-event', t_event);
 router.get('/freezed',viewFre, freezed);
 router.get('/income', income);
@@ -1571,9 +1674,21 @@ router.get('/interregular',viewMemChange,Nulling,viewSp,viewExcB,viewExcc,viewAs
 router.get('/events',viewEve, Events);
 router.get('/walkins',viewWal, walkins);
 router.get('/trainsessions', sessionsToday, trainSessions);
-router.get('/t/classes',viewGt,viewGcl, GClasses);
+router.get('/t/classes',viewClass2,viewGt,viewGcl, GClasses);
 router.get('/pending/pt', viewPendingChange, pendingPtChange);
 router.get('/payment/session', viewPaymentSession, paymentSession);
+
+
+//QUERIES
+router.get('/queries/classes', qClasses);
+router.get('/queries/events', qEvents);
+router.get('/queries/members', qMembers);
+router.get('/queries/membership', qMembership);
+router.get('/queries/PTsessions', qSessions);
+router.get('/queries/staffs', qStaffs);
+router.get('/queries/trainers', qTrainers);
+router.get('/queries/walkins', qWalkins);
+
 /**
  * Here we just export said router on the 'index' property of this module.
  */

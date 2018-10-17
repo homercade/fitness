@@ -23,14 +23,16 @@ router.post('/event/view', (req, res)=>{
     db.query('select * from tbleventclass', (err, out) => {
         console.log(out,'<< OUT')
         for( i = 0; i < out.length; i++){
-            if (out[i].enddate > now){
-                console.log(out[i].eventclassid,'<< ID SA LOOB NG IF')
-                continue
-            } 
-            else {
-                console.log(out[i].eventclassid,'<< ID SA LOOB NG ELSE')
-                db.query(`UPDATE tbleventclass SET status = 0 where eventclassid = ?`, [ out[i].eventclassid ], (err, out) => {
-                })
+            if (out[i].enddate != null){
+                if (out[i].enddate > now){
+                    console.log(out[i].eventclassid,'<< ID SA LOOB NG IF')
+                    continue
+                } 
+                else {
+                    console.log(out[i].eventclassid,'<< ID SA LOOB NG ELSE')
+                    db.query(`UPDATE tbleventclass SET status = 0 where eventclassid = ?`, [ out[i].eventclassid ], (err, out) => {
+                    })
+                }
             }
         }
         
@@ -170,6 +172,11 @@ router.post('/profile/edit', ( req,res ) => {
 function viewClass(req, res, next) {
     db.query('select * from tbleventclass where type = 1 AND status is NULL', function (err, results, fields) {
         if (err) return res.send(err);
+      
+        results.forEach(( results ) => {
+            results.starttime = moment(results.starttime, 'HH:mm:ss').format('hh:mm A')
+            results.endtime = moment(results.endtime, 'HH:mm:ss').format('hh:mm A')
+        })
         req.viewClass = results;
         return next();
     })
@@ -220,15 +227,13 @@ router.post('/class/resign', (req, res) => {
 // VIEW
 function viewEvent(req, res, next) {
     db.query('select * from tbleventclass where type = 2 AND status is NULL', function (err, results, fields) {
-        if (err) return res.send(err);
-        
+        if (err) return res.send(err);     
         results.forEach((results) => {
             results.startdate = moment(results.startdate,'MM/DD/YYYY').format('MMM DD, YYYY');
             results.enddate = moment(results.enddate,'MM/DD/YYYY').format('MMM DD, YYYY');
-            // results.starttime = moment(results.starttime,'hh:mm A').format('hh:mm A');
-            // results.endtime = moment(results.endtime,'hh:mm A').format('hh:mm A');
+            results.starttime = moment(results.starttime,'HH:mm:ss').format('hh:mm A');
+            results.endtime = moment(results.endtime,'HH:mm:ss').format('hh:mm A');
         })
-        
         req.viewEvent = results;
         return next();
     })
@@ -449,8 +454,6 @@ function dashboard(req, res, next) {
         profs: req.initial,
         total :req.total,
         fee :req.fee
-        // classes: req.viewClass,
-        // eves: req.viewEvent
     })
     return next();
 }

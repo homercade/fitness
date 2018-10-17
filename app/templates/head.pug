@@ -119,17 +119,36 @@ block main
 									a(href='/payment') Membership Payment
 								li#session
 									a(href='/payment/session') Session Payment
-
 				li.sub-menu
-					a(href='/user')
-						i.fa.fa-user
-						span User Profile
+					a#queries(href='javascript:;')
+						i.fa.fa-th
+						span Queries
+						i.fa.fa-caret-down(style='margin-left:5px;')
+					ul.sub
+						li
+							a(href='/queries/members') Members
+						li
+							a(href='/queries/walkins') Walkins 
+						li
+							a(href='/queries/trainers') Trainers 
+						li
+							a(href='/queries/staffs') Staffs 
+						li
+							a(href='/queries/events') Events 
+						li
+							a(href='/queries/classes') Classes 
+						li
+							a(href='/queries/membership') Membership List
+						li
+							a(href='/queries/PTsessions') PT Sessions 
+				li.sub-menu
+					a(href='/reports')
+						i.fa.fa-chart-line
+						span Reports
 				li.sub-menu
 					a(href='/utilities')
 						i.fa.fa-cogs
 						span Utilities
-				li.sub-menu
-					a(href='/reports')
-						i.fa.fa-th
-						span Report
+				
+			
 
