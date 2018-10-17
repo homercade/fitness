@@ -6,7 +6,7 @@ style.
   }
 
   label.error {
-    color: #ff6961;
+    color: #ff6961; 
   }
 
   input.form-control.error {
@@ -70,10 +70,12 @@ block main
                           i.fa.fa-edit
                         button.btn.btn-warning.btn-xs(data-toggle='modal', data-target='.sorted' data-id=br.userid)
                           i.fa.fa-dumbbell
-                        button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.suspend-modal')
-                          i.fa.fa-exclamation-circle
-                        button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.delete-modal')
-                          i.fa.fa-trash-alt
+                        button.train.btn.btn-primary.btn-xs(data-toggle='modal', data-target='#viewmodal' data-usersid=br.userid data-name=br.userfname +" "+br.userlname)
+                          i.fa.fa-arrow-alt-circle-up
+                        //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.suspend-modal')
+                        //-   i.fa.fa-exclamation-circle
+                        //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.delete-modal')
+                        //-   i.fa.fa-trash-alt
                           
             
   // MODAL ADD MEMBER
@@ -384,9 +386,28 @@ block main
                   br
                   button.btn.btn-primary(type='submit') Yes
                   button.btn.btn-default(type='button', data-dismiss='modal') No
-                  
-            
-
+              
+#viewmodal.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h4#myModalLabel.modal-title Change Membership
+      form(action='', method='POST')
+        .modal-body
+          .row
+            .col-md-12
+              .form-group
+              label.control-label Membership
+              select.form-control#membs(name='membership')
+                each ch in change
+                  option.hidden(value='0') Choose Membership...
+                  option(data-ids = `${ch.memrateid}`) #{ch.memclassname}-#{ch.membershipname}
+                input.hidden#usersid(type='text' name='id')
+                input.hidden#name(type='text' name='id')
+        .modal-footer
+          button.btn.btn-primary#upg(type='button') Submit
+          button.btn.btn-default(type='button', data-dismiss='modal') Close
               
 
 
@@ -641,7 +662,96 @@ block main
         .modal-footer
           button#b.btn.btn-default(type='button', data-dismiss='modal') Close
           button#a.btn.btn-primary(type='button') Print
-         
+
+.org.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+        h4.modal-title Official Receipt
+      form(action='/changememin', method='POST')
+        .modal-body
+          .container-fluid
+            .row
+              .col-xs-12
+                .pull-left
+                  h1 A-TEAM FITNESS
+                  address
+                    strong A-Team Fitness Inc. 
+                    br
+                    | 4408 Old. Sta. Mesa St, Newton Plaza
+                    br
+                    | Sta. Mesa Manila
+                    br
+                    abbr(title='Phone') P:
+                    |  0933 412 7526
+                // /pull-left
+                .pull-right
+                  h1
+                    img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+                // --/pull-right --
+                .clearfix
+                br
+                br
+                each gn in gene
+                  .row
+                    .col-md-9
+                      h2
+                        #fnames
+                      address
+                        strong 
+                          #membership
+                        strong 
+                          #address
+                        strong 
+                          #email
+                        strong 
+                          #contact
+                    .col-md-3
+                      div
+                        .pull-left DATE : 
+                        .pull-right
+                          #dated
+                        .clearfix
+                      br
+                      div
+                      div(style='background-color:#ffbb00;color:white;padding:10px;')
+                        .pull-left  Total Paid :
+                        .pull-right 
+                            |₱ #{gn.fee}.00
+                        .total
+                        .clearfix
+                  table.table
+                    thead
+                      tr
+                        th.text-center(style='width:60px') QTY
+                        th.text-left DESCRIPTION
+                        th.text-right(style='width:90px') SUBTOTAL
+                    tbody
+                      tr
+                        td.text-center 
+                          #quantity
+                        td
+                          |#{gn.genname}
+                        td.text-right 
+                          |₱ #{gn.fee}.00
+                      tr
+                        td(colspan='2' rowspan='4')
+                        td.text-right
+                      tr
+                        td.text-right.no-border
+                          div(style='background-color:#ffbb00;color:white;padding:10px;')
+                            strong Total
+                        td.text-right
+                          strong 
+                            |₱ #{gn.fee}.00
+                            input.hidden#client(type='text' name='usersid')
+                            input.hidden#membersid(type='text' name='memid' )
+                            input.hidden(value=`${gn.fee}` type='text' name='total' )
+          .modal-footer
+            button#b.btn.btn-default(type='button', data-dismiss='modal') Close
+            button#a.btn.btn-primary(type='button') Print
+            button#a.btn.btn-danger(type='submit') Pay
 include ../../../../templates/foot
 
 script.
@@ -873,5 +983,39 @@ script.
         })
       }
       $('#prompt2').empty()
+    })
+  })
+
+script.
+  $('#viewmodal').on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget)      
+    var usersid = button.data('usersid')
+    var name=button.data('name')
+    let modal = $(this);     
+    modal.find('.modal-body #usersid').val(`${usersid}`)
+    modal.find('.modal-body #name').val(`${name}`)
+  })
+
+script.
+  $(document).ready(function(){
+
+    var date = new Date()
+    date = moment(date).format('MMM DD, YYYY')
+    var sub = false
+    
+    $('#upg').click(function(e){
+     
+      $('.org').modal('show')
+      $('#client').val(`${$('#usersid').val()}`)
+      $('#fnames').text(`${$('#name').val()}`)
+      $('#membersid').val($("#membs option:selected").data('ids'))
+      //- $('#address').text($('#addr').val())
+      //- $('#email').text($('#emai').val())
+      //- $('#contact').text($('#cont').val())
+      $('#dated').text(date)
+      //- $('#quantity').text('-')
+      //- $('#desc').text(`Membership: ${$("#memb option:selected").data('membership')}`)
+      //- $('.total').text($("#memb option:selected").data('memfee'))
+      //- $('#add').modal('dismiss')    
     })
   })

@@ -128,16 +128,16 @@ html(lang='en')
                   .row
                     .col-md-6
                       .form-group
-                        label#fname.control-label.required First Name
+                        label#fname.control-label.required First Name <span class='r'>*</span> 
                         input.form-control(type='text' name='fname' required)
                     .col-md-6
                       .form-group
-                        label.control-label Last Name
+                        label.control-label Last Name <span class='r'>*</span> 
                         input.form-control(type='text' name='lname' required)
                   .row
                     .col-md-6
                       .input-group
-                        .input-group-addon Gender:
+                        .input-group-addon Gender: <span class='r'>*</span> 
                         label.radio
                           | Male
                           input(type='radio', checked='', name='gen' value='Male')
@@ -148,26 +148,26 @@ html(lang='en')
                           span.dot
                     .col-md-6
                       .form-group
-                        label.control-label Date of Birth
+                        label.control-label Date of Birth <span class='r'>*</span> 
                         input.date.form-control(type='text' name='bday'  required)
                   .row
                     .col-md-9
                       .form-group
-                        label.control-label Address
+                        label.control-label Address  
                         input.form-control(type='text' name='str' placeholder='Street Name..' required)
                     .col-md-3 
                       .form-group
-                        label.control-label(style="color:white") Address
+                        label.control-label(style="color:white") Address <span class='r'>*</span> 
                         input.form-control(type='text' name='city' placeholder='City..' required)
                   .row
                     .col-md-6
                       .form-group
-                        label.control-label Mobile Number
+                        label.control-label Mobile Number <span class='r'>*</span> 
                         input.form-control(type='number', placeholder='09xxxxxxxxx' name='mobile' required)
                     .col-md-6
                       .form-group
-                        label.control-label Email
-                        input.email.form-control(type='email' name='email' required)
+                        label.control-label Email  
+                        input.email.form-control(type='email' name='email' value='')
                         #prompt2
                 .row
                   .col-md-12
@@ -178,7 +178,7 @@ html(lang='en')
                   .row
                     .col-md-12
                       .form-group
-                        label.control-label Username
+                        label.control-label Username <span class='r'>*</span> 
                         input.username.form-control(type='text' name='username' required)
                         #prompt
                 .row
@@ -189,7 +189,7 @@ html(lang='en')
                   .row
                     .col-md-12
                       .form-group
-                        label.control-label Membership
+                        label.control-label Membership <span class='r'>*</span> 
                         select#membership.form-control.required(name='membership')
                           each ct in cat
                             option.hidden(value='') Select Membership... 
@@ -197,7 +197,7 @@ html(lang='en')
                   .row
                     .col-md-6#branchCol(style='display:none')
                       .form-group
-                        label.control-label Branch
+                        label.control-label Branch <span class='r'>*</span> 
                         select#branch.form-control.required(name='branch')
                           option.hidden(value='5') Select Branch...
                           //-   option(value='' + br.branchID) #{br.branchname}
@@ -205,28 +205,28 @@ html(lang='en')
                           | Only For Exclusive membership for interbranch leave it unfilled        
                     .col-md-6
                       .form-group
-                        label.control-label Interested Area
+                        label.control-label Interested Area <span class='r'>*</span> 
                         select.form-control.required(name='specs')
                           each sp in specs
                             option.hidden(value='') Select Interest... 
                             option(value='' + sp.specialID) #{sp.specialname}
-                        label.checkbox
-                          | Are you a Student?
-                          input#student(type='checkbox' value='.10')
-                          span.check
-                        p#1 Uncheck if you are unwilling to provide proof.
-                    .col-md-12(style='color:gray; font-size:10pt')
-                      p#2(style='display: none')
-                        | You can avail a student discount if we can confirm your claim. Give us proof (eg. student ID, registration
-                        | card etc.) through our branch near you.
-                        br
-                        br
-                        | Or upload a scanned photo of your ID (NOTE: We may not accept it if we think it's fraud. In case
-                        |                         that happens please consult us personally)
-                        input#file.inputfile(type='file')
-                        br
-                        b NOTE:
-                        |  We will not accept your request until you are verified.
+                    //-     label.checkbox
+                    //-       | Are you a Student?
+                    //-       input#student(type='checkbox' value='.10')
+                    //-       span.check
+                    //-     p#1 Uncheck if you are unwilling to provide proof.
+                    //- .col-md-12(style='color:gray; font-size:10pt')
+                    //-   p#2(style='display: none')
+                    //-     | You can avail a student discount if we can confirm your claim. Give us proof (eg. student ID, registration
+                    //-     | card etc.) through our branch near you.
+                    //-     br
+                    //-     br
+                    //-     | Or upload a scanned photo of your ID (NOTE: We may not accept it if we think it's fraud. In case
+                    //-     |                         that happens please consult us personally)
+                    //-     input#file.inputfile(type='file')
+                    //-     br
+                    //-     b NOTE:
+                    //-     |  We will not accept your request until you are verified.
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Cancel
               button#reg.btn.btn-primary(type='submit') Register
@@ -280,8 +280,24 @@ html(lang='en')
     script(src='../../../../landing/js/custom.js')
     script(src='../../../../assets/js/jquery.validate.js')
     script(src='../../../../assets/js/sweetalert2.all.min.js')
+style.
 
-    script.
+  .r {
+    color: #ff6961;
+  }
+
+  label.error {
+    color: #ff6961; 
+  }
+
+  input.form-control.error {
+    border: 1px solid #ff6961;
+  }
+
+  select.form-control.error {
+    border: 1px solid #ff6961;
+  }
+script.
       $(document).ready(function(){
         
         $('.username').keyup(function () {
@@ -385,7 +401,7 @@ html(lang='en')
 
       
 
-    script.
+script.
       $(document).ready(function () {
       $("#login").on("show", function () {
       $("body").addClass("modal-open");
