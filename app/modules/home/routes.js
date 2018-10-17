@@ -1026,9 +1026,9 @@ function viewGt(req, res, next) {
     return next();
   })
 }
+
 //creating groupclass
 router.post('/groupclass',(req, res) => {
-<<<<<<< HEAD
   var sched = req.body.sched.toString()
   var start = moment(req.body.startt, 'hh:mm A').format('HH:mm:ss')
   var end = moment(req.body.endt, 'hh:mm A').format('HH:mm:ss')
@@ -1036,13 +1036,6 @@ router.post('/groupclass',(req, res) => {
   INSERT INTO tbleventclass (starttime, endtime, slot, eventclassname, tbleventclass.type, tbleventclass.desc, days) 
   VALUES ( ?, ?, ?, ?, 1, ?, ? );
   `, [start, end, req.body.slot, req.body.event, req.body.desc, sched ], (err, results, fields) => {
-=======
-  db.query(`INSERT INTO 
-    tbleventclass(eventclassname,starttime,endtime,slot,type,desc,days)
-    VALUES(?, ?, ?, ?, 1, ?, ?)`, 
-    [req.body.event, req.body.startt, req.body.endt, req.body.slot, req.body.descr, 
-    req.body.sched.toString()], (err, results, fields) => {
->>>>>>> b4b857acb9e2cd3903f12c28f5a1c0ff9fed2960
     if (err)
         console.log(err);
       else {
