@@ -1,5 +1,4 @@
 module.exports = (req, res) => {
-    console.log(req.session);
     if (typeof process.env.ENABLE_DATABASE !== 'undefined' && process.env.ENABLE_DATABASE === 'false') { 
         return render([]);
     }
@@ -11,6 +10,6 @@ module.exports = (req, res) => {
     });
     
     function render(users) {
-        res.render('home/views/dashboard', { users: users });
+        res.render('admin/general/views/dashboard', { users: users });
     }
 }

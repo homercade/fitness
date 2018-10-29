@@ -1,123 +1,128 @@
-include ../../../templates/head
+include ../../../../templates/head
+append head
+  style.
+    h3 span{
+      margin-right:10px;
+    }
 
 block main
    section#main-content
        section.wrapper.site-min-height
           .row
-            .col-lg-9
-              .row.mt
-                .col-md-3.col-sm-2.box0
-                  .box1
-                    span.fa.fa-users
-                    h3 210
-                  p 210 Active Members
-                .col-md-3.col-sm-2.box0
-                  .box1
-                    span.fa.fa-dumbbell
-                    h3 25
-                  p 25 Active Trainers
-                .col-md-3.col-sm-2.box0
-                  .box1
-                    span.fa.fa-heart
-                    h3 3
-                  p 3 Active Classes
-                .col-md-3.col-sm-2.box0
-                  .box1
-                    span.fa.fa-envelope
-                    h3 0
-                  p 0 Messages
-              .row
-                section.wrapper
-                  aside.col-lg-12.mt
-                    section.panel
-                      .panel-body
-                        #calendar.has-toolbar
-              .row
-                section.wrapper(style='margin-top:0;')
-                  .border-head
-                    h3 Revenue
-                  .custom-bar-chart
-                    ul.y-axis
-                      li
-                        span 10.000
-                      li
-                        span 8.000
-                      li
-                        span 6.000
-                      li
-                        span 4.000
-                      li
-                        span 2.000
-                      li
-                        span 0
-                    .bar
-                      .title JAN
-                      .value.tooltips(data-original-title='8.500', data-toggle='tooltip', data-placement='top') 85%
-                    .bar
-                      .title FEB
-                      .value.tooltips(data-original-title='5.000', data-toggle='tooltip', data-placement='top') 50%
-                    .bar
-                      .title MAR
-                      .value.tooltips(data-original-title='6.000', data-toggle='tooltip', data-placement='top') 60%
-                    .bar
-                      .title APR
-                      .value.tooltips(data-original-title='4.500', data-toggle='tooltip', data-placement='top') 45%
-                    .bar
-                      .title MAY
-                      .value.tooltips(data-original-title='3.200', data-toggle='tooltip', data-placement='top') 32%
-                    .bar
-                      .title JUN
-                      .value.tooltips(data-original-title='6.200', data-toggle='tooltip', data-placement='top') 62%
-                    .bar
-                      .title JUL
-                      .value.tooltips(data-original-title='7.500', data-toggle='tooltip', data-placement='top') 75%
+            .col-lg-9.main-chart
+              .row.mtbox
+                .col-md-2.col-sm-2.box0.col-md-offset-2
+                  a(href='')
+                    .box1
+                      span.li_heart
+                      h3 210
+                    p 210 Active Members
+                .col-md-2.col-sm-2.box0
+                  a(href='')
+                    .box1
+                      span.li_calendar
+                      h3 25
+                    p 25 Active Trainers
+                .col-md-2.col-sm-2.box0
+                  a(href='')
+                    .box1
+                      span.li_vynil
+                      h3 3
+                    p 3 Active Classes
+                .col-md-2.col-sm-2.box0
+                  a
+                    .box1
+                      span.li_bubble
+                      h3 0
+                    p 0 Messages
+      
+              //- .row
+              //-   section.wrapper
+              //-     .col-md-4.col-sm-4.mb
+              //-       .darkblue-panel.pn
+              //-         .darkblue-header
+              //-           h5 REVENUE
+              //-         .chart.mt
+              //-           .sparkline(data-type='line', data-resize='true', data-height='75', data-width='90%', data-line-width='1', data-line-color='#fff', data-spot-color='#fff', data-fill-color='', data-highlight-line-color='#fff', data-spot-radius='4', data-data='[200,135,667,333,526,996,564,123,890,464,655]')
+              //-             canvas(style='display: inline-block; width: 233px; height: 75px; vertical-align: top;', width='233', height='75')
+              //-         p.mt
+              //-           b $ 17,980
+              //-           br
+              //-           | Month Income
 
             .col-lg-3.ds
-              h3 MEMBERSHIP
+              h3 
+                span.li_heart 
+                |  Membership
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
                 .details
                   h6  Gold Membership
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
                 .details
                   h6  Silver Membership
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
                 .details
                   h6  Bronze Membership
-
-              h3 CLASS LIST
+              h3 
+                span.li_calendar 
+                |  Class List
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-divya.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
                 .details
                   h6  Body Building
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-sherman.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
                 .details
                   h6 Aerobics
               .desc
                 .thumb
-                  img.img-circle(src='assets/img/ui-danro.jpg', width='35px', height='35px', align='')
+                  img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
                 .details
                   h6 General Training
 
-include ../../../templates/footer
+
+include ../../../../templates/foot.pug
 
 script.
-	$(document).ready(function(){
-		//- $('#dashboard').addClass('active');
+  $(document).ready(function () {
+    $.post('/view/notif').done(function (data) {
+      const toast = swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: true
+      });
+      toast({
+        type: 'info',
+        title: `${data.length} pending membership`,
+      }).then((result)=>{
+        if(result.value){
+          $.post('/view/notif/payment').done(function (data) {
+        const toast = swal.mixin({
+          toast: true,
+          position: 'top',
+          showConfirmButton: true
+        });
+        toast({
+          type: 'info',
+          title: `${data.length} purchased sessions`,
+        })
+      })
+        }
+      })
+      
+    })
 
-   	$.post('/view/notif').done(
-						swal(
-						'Success',
-						'Request Rejected',
-						'success'
-						)
-					)
-	})
+
+  })
+
+
+      
+   
