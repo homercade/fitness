@@ -13,22 +13,6 @@ block main
 			b  A-Team Fitness
 		// logo end
 		.top-menu
-			span#header_inbox_bar.dropdown
-				a.dropdown-toggle(data-toggle='dropdown', href='#')
-					i.fa.fa-bell
-					span.badge.bg-theme 1
-				ul.dropdown-menu.extended.inbox
-					li
-						p You have 1 new notification
-					li
-						a(href='/')
-							span.subject
-								span.from(style='margin:0;') System
-								span.time Just now
-							span.message
-								| Event at 7:30AM Tomorrow
-					li
-						a(href='/') See all pending request
 			ul.nav.pull-right.top-menu
 				li
 					a(href='/logout') 
@@ -119,6 +103,8 @@ block main
 									a(href='/payment') Membership Payment
 								li#session
 									a(href='/payment/session') Session Payment
+						li#pending
+							a(href='/receipt') Reciepts 
 				li.sub-menu
 					a#queries(href='javascript:;')
 						i.fa.fa-th
@@ -141,8 +127,9 @@ block main
 							a(href='/queries/membership') Membership List
 						li
 							a(href='/queries/PTsessions') PT Sessions 
+
 				li.sub-menu
-					a(href='/reports')
+					a(href='/reports/sales')
 						i.fa.fa-chart-line
 						span Reports
 				li.sub-menu

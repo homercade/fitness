@@ -1559,6 +1559,19 @@ router.post('/changememin', (req, res) => {
   })
    })
 
+//view receipts
+function viewReceipt(req, res, next) {
+  db.query(`select u.*,p.* from tbluser u join tblpayment p on p.userid = u.userid `, function (err, results, fields) {
+    if (err) return res.send(err);
+    req.viewReceipt = results;
+       //moments dateadded
+      for (var i = 0; i < req.viewReceipt.length; i++) {
+        req.viewReceipt[i].paymentdate = moment(results[i].paymentdate).format("LL");
+      }
+    return next();
+  })
+}
+
 // QUERIES
 
 // USER 
@@ -1628,7 +1641,7 @@ function qStaff (req,res,next) {
 function qTrainer (req,res,next) {
   const query = `
   SELECT * FROM tbltrainer
-  JOIN tblbranch on tblbranch.branchID = tbltrainer.trainerbranch
+  left JOIN tblbranch on tblbranch.branchID = tbltrainer.trainerbranch
   JOIN tblspecial on tblspecial.specialID = tbltrainer.trainerspecialization
   `
   db.query(query, ( err,results ) => {
@@ -1697,14 +1710,16 @@ function qSession (req,res,next) {
 // REPORTS
 
 function totalPayment (req, res, next) {
-  const query = `SELECT * from tblpayment join tbluser on tblpayment.userid = tbluser.userid where tbluser.userid = ?`
-  db.query(query, [ req.session.member.userid ], ( err, results, fields ) => {
+  const query = `SELECT * from tblpayment join tbluser on tblpayment.userid = tbluser.userid inner join
+  tblbranch on tblpayment.branchid=tblbranch.branchID where tblpayment.paymentdate is not NULL and tblpayment.amount is not null
+  and tblpayment.amount is not null`
+  db.query(query, ( err, results, fields ) => {
       if (err) console.log(err)
-      let total = 0
-      for ( i=0; i < results.length; i++ ){
-          total += results[i].amount
+      req.total = results
+      //moments dateadded
+      for (var i = 0; i < req.total.length; i++) {
+        req.total[i].paymentdate = moment(results[i].paymentdate).format("LL");
       }
-      req.total = total
       return next()
   })
 }
@@ -1903,7 +1918,12 @@ function paymentSession(req, res) {
   })
 }
 
-
+function receipt(req, res) {
+  res.render('admin/transactions/views/t-reciepts',{
+    paid :req.paymentSession,
+    rec :req.viewReceipt
+  })
+}
 
 
 
@@ -1950,9 +1970,11 @@ function qWalkins(req, res) {
 }
 
 
+
 //- REPORTS
 function rsales(req, res) {
   res.render('admin/reports/views/sales',{
+    qClass:req.total
     
   })
 }
@@ -1994,6 +2016,7 @@ router.get('/trainsessions', sessionsToday, trainSessions);
 router.get('/t/classes',viewClass2,viewGt,viewGcl, GClasses);
 router.get('/pending/pt', viewPendingChange, pendingPtChange);
 router.get('/payment/session', viewPaymentSession, paymentSession);
+router.get('/receipt', viewReceipt,receipt);
 
 //QUERIES
 router.get('/queries/classes', qClass, qClasses);
@@ -2007,7 +2030,7 @@ router.get('/queries/walkins', qwalkin, qWalkins);
 
 
 // REPORTS
-router.get('/reports/sales',totalPayment);
+router.get('/reports/sales',totalPayment, rsales);
 
 
 /**

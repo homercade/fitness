@@ -1,0 +1,341 @@
+include ../../../../templates/head 
+
+block main
+	section#main-content
+		section.wrapper.site-min-height
+			.row.mt
+				.col-md-12
+					.content-panel
+						.container-fluid
+							table.table.table-striped.table-advance.table-hover
+								h4
+									| All Receipts
+								thead
+									tr
+										th
+											i.fa.fa-user
+											|  Name
+										th
+											i.fa.fa-edit
+											|  Action
+									tbody 
+										each re in rec 
+											tr
+												td #{re.userfname} #{re.userlname}
+												td 
+													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='.OR-modal',data-name=re.userfname + " " + re.userlname,
+													data-date=re.paymentdate, data-class=re.classification)
+														i.fa.fa-search
+													button.btn.btn-danger.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Reject')
+														i.fa.fa-times
+				// /content-panel
+
+			// VIEW
+			#viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+				.modal-dialog
+					.modal-content
+						.modal-header
+							button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+							h4#myModalLabel.modal-title View Request
+						form(action='', method='POST')
+							.modal-body
+								.container-fluid
+									.container-fluid
+										.row
+											.col-md-6
+												h5
+													//- br
+													b Gender: 
+													span#gen
+													br
+													br
+													b Birth date: 
+													span#bd
+													br
+													br
+													b Address: 
+													span#add
+													br
+													br
+													b Mobile Phone Number: 
+													span#ph
+													br
+													br
+													b Email: 
+													span#em
+													br
+													br
+											.col-md-6
+												h5
+													b Membership Class: 
+													span#cl
+													br
+													br
+													b Membership Category: 
+													span#ct
+													br
+													br
+													b Client Code: 
+													span#clientCode
+													br
+													br
+													b Amount(₱): 
+													span#f
+							//- 						b Interest: 
+							//- 						span Weight Loss
+							//- 						br
+							//- //- 						br
+							//- 						b Student?:  
+							//- 						span Yes
+							//- 						br
+							//- 						br
+							//- 			hr
+							//- 			.row
+							//- 				.col-md-12
+							//- 					b ID Given:
+							//- 					br
+							//- 					#is-not-student
+							//- 						| None
+							//- 					#is-student
+							//- 						img(src='../assets/img/id-sample.jpg', width='200x;', style='margin-left:30%;')
+							//- 					br
+							//- 					br
+								
+							//- .modal-footer
+								button.btn.btn-default(type='button', data-dismiss='modal') Close
+								button#accept.btn.btn-primary(type='button') Accept
+		
+
+			// MODAL DELETE
+			#deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+				.modal-dialog
+					.modal-content
+						.modal-header
+							button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+							h4#myModalLabel.modal-title Remove
+						form(action='/staff/delete', method='POST')
+							.modal-body
+								.container-fluid
+									.container-fluid(style='padding:1rem 4rem 1rem 4rem;')
+										.row
+											.col-md-12
+												.form-group
+													h4 Delete this staff?
+											input#id(type='text' name='id')
+
+							.modal-footer
+								button.btn.btn-default(type='button', data-dismiss='modal') Close
+								button.btn.btn-default(type='submit') Delete
+			// MODAL CODE
+			#code.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+				.modal-dialog
+					.modal-content
+						.modal-header
+							button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+							h4#myModalLabel.modal-title Accept Membership
+						form(action='/pending/update', method='POST')
+							.modal-body
+								.container-fluid
+									.row
+										.col-md-12
+											.form-group
+												label.control-label Enter Code
+												input.form-control(type='text' name='newcode')
+												input.hidden#id(type='text' name='newid' )
+												input.hidden#thedate(type='text' name='currdate')
+												input#code(type='text' name='codenow')
+
+							.modal-footer
+								button.btn.btn-default(type='button', data-dismiss='modal') Close
+								button.btn.btn-primary(type='submit') Submit
+
+.OR-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+		.modal-dialog.modal-lg
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+					h4.modal-title Bill Breakdown
+				form(action='/pending/update', method='POST')
+					.modal-body
+						.container-fluid
+							.row
+								.col-xs-12
+									.pull-left
+										h1 A-TEAM FITNESS
+										address
+											strong A-Team Fitness Inc.
+											br
+											| 4408 Old. Sta. Mesa St, Newton Plaza
+											br
+											| Sta. Mesa Manila
+											br
+											abbr(title='Phone') P:
+											|  0933 412 7526
+									// /pull-left
+									.pull-right
+										h1
+											img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+									// --/pull-right --
+									.clearfix
+									br
+									br
+									.row
+										.col-md-9
+											h2.fullname
+											address
+												strong.m
+												br
+												strong.ad
+												br
+												strong.e
+												br
+												strong.ph
+										.col-md-3
+											div
+												.pull-left DATE : 
+												.pull-right#date 
+												.clearfix
+											br
+											div
+											div(style='background-color:#ffbb00;color:white;padding:10px;')
+												.pull-left  Total Due :
+												.pull-right.fee
+												.clearfix
+									table.table
+										thead
+											tr
+												th.text-center(style='width:60px') QTY
+												th.text-left DESCRIPTION
+												th.text-right(style='width:90px') TOTAL
+										tbody
+											tr
+												td.text-center -
+												td.m
+												td.text-right.fee
+											tr
+												td(colspan='2' rowspan='4')
+												td.text-right
+
+											tr
+												td.text-right.no-border
+													div(style='background-color:#ffbb00;color:white;padding:10px;')
+														strong Total
+												td.text-right
+													strong
+											input.hidden#id(type='text' name='id' )
+					.modal-footer
+						button.btn.btn-default(type='button', data-dismiss='modal') Close
+						button.btn.btn-primary(type='button') Print
+						button.btn.btn-danger(type='submit') Pay
+
+include ../../../../templates/foot
+//- script.
+//- 	$('#is-not-student').hide();
+//- 	$('#is-student').show();
+//- 	$('#accept').click(function(){
+//- 		$('#code').modal();
+//- 		$('#viewmodal').modal('hide');
+//- 	});
+
+//- script.
+//- 	var today = new Date();
+//- 	var dd = today.getDate();
+//- 	var mm = today.getMonth()+1;
+//- 	var yyyy = today.getFullYear();
+
+//- 	if(dd<10) {
+//- 			dd = '0'+dd
+//- 	} 
+
+//- 	if(mm<10) {
+//- 			mm = '0'+mm
+//- 	} 
+
+//- 	today = yyyy + '-' + mm + '-' + dd;
+
+//- 	document.getElementById("thedate").value = today;
+
+//- script.
+//- 	//- $(document).ready(function(){
+//- 	//- 	$('.edit').click(function(){
+//- 	//- 		$('#form').attr('action', `/pending/update/${$(this).val()}`)
+//- 	//- 		$('#form').submit()
+//- 	//- 	})
+//- 	//- 	$('#transactionDrop').addClass('active');
+//- 	//- 	$('#pending').addClass('active');
+//- 	//- 	});
+
+
+//- 	$('#code').on('show.bs.modal', function(event){
+//- 			var button = $(event.relatedTarget)      
+//- 			//id
+//- 			var id = button.data('id')
+//- 			var code = button.data('code')
+//- 			console.log(id)
+
+//- 			let modal = $(this);     
+			
+//- 			modal.find('.modal-body #id').val(` ${id}`)
+//- 			modal.find('.modal-body #code').val(`${code}`)
+//- 		})
+
+
+//- script.
+//- 	$('#viewmodal').on('show.bs.modal', function(event){
+//- 		var button = $(event.relatedTarget)      
+//- 		var gen = button.data('gen')
+//- 		var bd = button.data('bd')
+//- 		var add = button.data('add')
+//- 		var ph = button.data('ph')
+//- 		var em = button.data('em')
+//- 		var cl = button.data('cl')
+//- 		var ct = button.data('ct')
+//- 		var code = button.data('code')
+//- 		var f = button.data('f')
+//- 		console.log(f)
+
+//- 		let modal = $(this)     
+
+//- 		modal.find('.modal-body #gen').text(`${gen}`)
+//- 		modal.find('.modal-body #bd').text(`${bd}`)
+//- 		modal.find('.modal-body #add').text(`${add}`)
+//- 		modal.find('.modal-body #ph').text(`${ph}`)
+//- 		modal.find('.modal-body #em').text(`${em}`)	
+//- 		modal.find('.modal-body #cl').text(`${cl}`)
+//- 		modal.find('.modal-body #ct').text(`${ct}`)
+//- 		modal.find('.modal-body #clientCode').text(`${code}`)
+//- 		modal.find('.modal-body #f').text(`₱ ${f}.00`)
+//- 	})
+
+
+//- script.
+//- 	$('.OR-modal').on('show.bs.modal', function(event){
+//- 		var button = $(event.relatedTarget)      
+	
+//- 		var id = button.data('id')
+//- 		var fullname = button.data('fullname')
+//- 		var m = button.data('m')
+//- 		var ad = button.data('ad')
+//- 		var ph = button.data('ph')
+//- 		var e = button.data('e')
+//- 		var fee = button.data('fee')
+
+//- 		let modal = $(this)     
+
+
+//- 		modal.find('.modal-body #id').val(`${id}`)
+//- 		modal.find('.modal-body .fullname').text(`${fullname}`)
+//- 		modal.find('.modal-body .m').text(`${m}`)
+//- 		modal.find('.modal-body .ad').text(`${ad}`)
+//- 		modal.find('.modal-body .e').text(`${e}`)
+//- 		modal.find('.modal-body .ph').text(`${ph}`)
+//- 		modal.find('.modal-body .fee').text(`₱ ${fee}.00`)
+//- 	})
+
+//- script.
+//- 	n = new Date();
+//- 	y = n.getFullYear();
+//- 	m = n.getMonth() + 1;
+//- 	d = n.getDate();
+
+//- 	document.getElementById("date").innerHTML =m +"-" +d+"-"+y;

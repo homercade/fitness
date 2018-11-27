@@ -350,7 +350,7 @@ router.post('/class/join', (req, res) => {
 })
 
   
-router.post('/class/resign', (req, res) => {
+router.post('/class/resign', (req, res) => { 
     db.query("DELETE FROM tbluce WHERE intUCEID = ?", [req.body.uceid], (err, results, fields) => {
         db.query('UPDATE tbleventclass SET slot= slot + 1 where eventclassid=?', [req.body.classid],(err, results, fields) => {
             if (err) return res.send(err);

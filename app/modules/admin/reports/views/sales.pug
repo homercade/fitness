@@ -9,36 +9,126 @@ block main
             .content-panel
               .container-fluid
                 table.table.table-advance.table-hover
-                  h4
+                  h4(style="float:left")
                     |   Sales Report
+                  select(id="monthFilter" style="float:right;font-size: 17px;")
+                    option(value='-') -
+                    option(value='January') January
+                    option(value='Febuary') Febuary
+                    option(value='March') March
+                    option(value='April') April
+                    option(value='May') May
+                    option(value='June') June
+                    option(value='July') July
+                    option(value='August') August
+                    option(value='September') September
+                    option(value='October') October
+                    option(value='November') November
+                    option(value='December') December
+                  div(style="clear:both")
                   thead
                     tr
-                      th Name          
-                      th Schedule
-                      th Start time
-                      th End time
-                      th desc
-                      
-                  tbody
-                    each q in qClass
-                      tr
-                        td #{q.eventclassname}
-                        td #{q.days}
-                        td #{q.starttime}
-                        td #{q.endtime}
-                        td #{q.desc}
-                        
+                      th
+                        i.fa.fa-home
+                        |  Name
+                      th
+                        i.Calendar
+                        |  Date
+                      th
+                        i.fa.fa-user
+                        |  Type
+                      th
+                        i.fa.fa-user
+                        |  Amount
+                      th
+                        i.fa.fa-user
+                        |  Branch
+                  tbody(id="record-div")
+                    each q in qClass              
+                      tr(class="record")
+                        td #{q.userfname} #{q.userlname}
+                        td(date=`${q.paymentdate}`) #{q.paymentdate}
+                        td 
+                          if q.classification=='1' 
+                            | Membership
+                          else if q.classification=='2' 
+                            | Freeze
+                          else if q.classification=='3' 
+                            | Walkin
+                          else if q.classification=='4' 
+                            | Discounted Membership
+                          else if q.classification=='5' 
+                            | Session
+                          else if q.classification=='6' 
+                            | Change Membership
+                        td ₱ #{q.amount}
+                        td #{q.branchname}
                   tfoot
-                     tr
-                      th Name          
-                      th Schedule
-                      th Start time
-                      th End time
-                      th desc
-                      
+                    tr
+                      th
+                        i.fa.fa-home
+                        |  Name
+                      th
+                        i.Calendar
+                        |  Date
+                      th
+                        i.fa.fa-user
+                        |  Type
+                      th
+                        i.fa.fa-user
+                        |  Amount
+                      th
+                        i.fa.fa-user
+                        |  Branch
+                        
                     
                                     
 include ../../../../templates/foot
+
 script.
+  $(`select#monthFilter`).change(function(){
+    let thisMonth = $(this).val()
+    if(thisMonth != `-`){
+      $(`tr.record`).each(function(){
+        if(thisMonth == $(this).children(`td:nth-child(2)`).attr('date').split(" ")[0]){      
+          $(this).removeAttr('hidden')
+        }
+        else{
+          $(this).attr('hidden','hidden')
+        }
+      })
+    }
+    else{
+      $(`tr.record`).removeAttr('hidden')
+    }
+  })
+
+script.
+    $('table').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            { extend:'copy', attr: { id: 'allan' } }, 'csv', 'excel', 'pdf', 'print'
+        ],
+    initComplete: function () {
+      this.api().columns().every(function () {
+        var column = this;
+        var select = $('<select><option value=""></option></select>')
+          .appendTo($(column.footer()).empty())
+          .on('change', function () {
+            var val = $.fn.dataTable.util.escapeRegex(
+              $(this).val()
+            );
+            column
+              .search(val ? '^' + val + '$' : '', true, false)
+              .draw();
+          });
+        column.data().unique().sort().each(function (d, j) {
+          select.append('<option value="' + d + '">' + d + '</option>')
+        });
+      });
+    }
+  });
+
+
 
   
