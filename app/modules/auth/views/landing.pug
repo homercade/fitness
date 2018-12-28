@@ -117,7 +117,7 @@ html(lang='en')
             button.close(type='button', data-dismiss='modal', aria-label='Close')
               span(aria-hidden='true') ×
           form#form.needs-validation(method='POST', action='/signup', autocomplete='off' novalidate)
-            h2(style='color:black; margin-left:30px;') Sign Up
+            h2(style='color:black; margin-left:30px;') REGISTER
             .modal-body
               .container-fluid
                 .row
@@ -153,11 +153,11 @@ html(lang='en')
                   .row
                     .col-md-9
                       .form-group
-                        label.control-label Address  
+                        label.control-label Address <span class='r'>*</span>
                         input.form-control(type='text' name='str' placeholder='Street Name..' required)
                     .col-md-3 
                       .form-group
-                        label.control-label(style="color:white") Address <span class='r'>*</span> 
+                        label.control-label(style="color:white") Address  
                         input.form-control(type='text' name='city' placeholder='City..' required)
                   .row
                     .col-md-6
@@ -190,10 +190,12 @@ html(lang='en')
                     .col-md-12
                       .form-group
                         label.control-label Membership <span class='r'>*</span> 
-                        select#membership.form-control.required(name='membership')
+                        select#membership.form-control.required(name='membership') 
                           each ct in cat
                             option.hidden(value='') Select Membership... 
-                            option.membershipOption(value=`${ct.memrateid}` memName=`${ct.membershipname}`) #{ct.memclassname} - #{ct.membershipname} (#{ct.memperiod} MONTHS) - ₱ #{ct.memfee} 
+                            option.membershipOption(value=`${ct.memrateid}` memName=`${ct.membershipname}`) #{ct.memclassname} - #{ct.membershipname} (#{ct.memperiod} MONTHS) - ₱ #{ct.memfee}
+                        a#detailsCol(style="text-decoration:none; cursor:pointer; display:none" data-toggle="modal" data-target="#modal_details") 
+                          i See details of selected Membership
                   .row
                     .col-md-6#branchCol(style='display:none')
                       .form-group
@@ -201,15 +203,18 @@ html(lang='en')
                         select#branch.form-control.required(name='branch')
                           option.hidden(value='5') Select Branch...
                           //-   option(value='' + br.branchID) #{br.branchname}
-                        p
-                          | Only For Exclusive membership for interbranch leave it unfilled        
-                    .col-md-6
-                      .form-group
-                        label.control-label Interested Area <span class='r'>*</span> 
-                        select.form-control.required(name='specs')
-                          each sp in specs
-                            option.hidden(value='') Select Interest... 
-                            option(value='' + sp.specialID) #{sp.specialname}
+                        //- p
+                        //-   | Only For Exclusive membership for interbranch leave it unfilled  
+
+                //-INTERESTED AREA      
+                    //- .col-md-6
+                    //-   .form-group
+                    //-     label.control-label Interested Area <span class='r'>*</span> 
+                    //-     select.form-control.required(name='specs')
+                    //-       each sp in specs
+                    //-         option.hidden(value='') Select Interest... 
+                    //-         option(value='' + sp.specialID) #{sp.specialname}
+                //-STUDENT DISCOUNT    
                     //-     label.checkbox
                     //-       | Are you a Student?
                     //-       input#student(type='checkbox' value='.10')
@@ -265,6 +270,16 @@ html(lang='en')
                       | Success! Your application has been sent for approval.
                 center
                   button.btn.btn-primary(type='button', data-dismiss='modal') Close
+    #modal_details.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog.modal-sm
+        .modal-content.modal-popup
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+            h2(style='color:black; margin-left:15px;') Details: 
+            .modal-body
+              p(style="font-size: 12pt") <b>Membership Type:</b> Details ng Membership Type
+             
     //- // Back top
     a.go-top(href='#back-top')
       i.fa.fa-angle-up
@@ -397,6 +412,14 @@ script.
            $('#branchCol').css('display', 'none')
          }
        })
+
+      $('#membership').on('change', function(){
+        let selected = $('#membership').val()
+        if($(`.membershipOption[value='${selected}']`)){
+          $('#detailsCol').css('display', 'block')
+        }
+      })
+       
      })
 
       
