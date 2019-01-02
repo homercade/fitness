@@ -203,7 +203,7 @@ router.post('/trainee/reschedule', (req, res) => {
   db.query(query, [req.body.reschedDate, req.body.reschedTime, req.body.reschedId], (err, results) => {
     if (err) {
       console.log(err)
-      res.redirect('trainee')
+      res.redirect('accepted')
     }
   })
 })
@@ -268,7 +268,7 @@ function viewHistory(req, res, next) {
   `
   db.query(query, [req.session.trainer.trainerid, req.query.id], (err, results) => {
     if (err) res.send(err)
-    console.log(results, 'HERE IT IS')
+    console.log('HISTORY: ',results)
     results.forEach((results) => {
 
       var end = moment(results.sessionTime, 'hh:mm a').add(1, 'hour').format('hh:mm A')

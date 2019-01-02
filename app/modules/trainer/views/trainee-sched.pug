@@ -25,7 +25,11 @@ block main
               input.hidden#userid(type=text value = general.userid)
               input.hidden#sessionForSchedCount(type=text value = general.sessionForSched)
               input.hidden#sessioncount(type=text value = general.session_count)
-            
+          
+              input.hidden#trainerschedule(type="text" value=`${hello.trainerschedule}`)
+              input.hidden#trainertimestart(type="text" value=`${hello.trainertimestart}`)
+              input.hidden#trainertimeend(type="text" value=`${hello.trainertimeend}`)
+      
           .col-md-4.centered
             .profile-pic
               p
@@ -77,6 +81,12 @@ include ../../../templates/foot
 
 //- INITIALIZE CALENDAR
 script.
+  $(document).ready(function(){
+    
+    console.log(trainerschedule, trainertimestart, trainertimeend)
+  })
+  
+script.
 
   $(document).ready(function () {
 
@@ -94,9 +104,13 @@ script.
     $.post(`/trainer/trainee/viewSched?id=${$('#userid').val()}`).done(function (data) {  
      
       var evs = []
-      var delId
-      var schedStatus
-      var date = new Date();
+      var delId;
+      var schedStatus;
+      let trainerschedule = `[${$('#trainerschedule').val()}]`;
+      let trainerscheduleArray = JSON.parse(trainerschedule);
+      let trainertimestart = $('#trainertimestart').val();
+      let trainertimeend = $('#trainertimeend').val();
+      //- console.log(trainerschedule, trainerscheduleArray)
 
       for (i = 0; i < data.length; i++) {
         let name = `${data[i].userfname} ${data[i].userlname}`
@@ -121,7 +135,8 @@ script.
           content: content,
           eventSessionId: data[i].sessionID,
           scheduleStatus: data[i].scheduleStatus,
-          schedule: `${moment(data[i].sessionDate).format('MMM DD, YYYY')} (${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')})`
+          schedule: `${moment(data[i].sessionDate).format('MMM DD, YYYY')} (${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')})`,
+          constraint: 'businessHours'
           }
 
           evs.push(desc)
@@ -148,6 +163,11 @@ script.
         validRange: {
           start: now
         },
+        businessHours: [{
+          dow: trainerscheduleArray, 
+          start: trainertimestart,
+          end: trainertimeend 
+        }],
         allDaySlot: false,
         weekMode: 'liquid',
         editable: true,
@@ -222,6 +242,44 @@ script.
             }
           })
         },
+        eventDrop: function (event, delta, revertFunc) {
+
+          //- var newDate
+          var newDate = moment(event.start).format('YYYY-MM-DD')
+          var newTimeStart = moment(event.start).format('hh:mm a')
+          var newTimeEnd = moment(event.end).format('hh:mm a')
+
+          swal({
+            type: 'warning',
+            title: 'Reschedule?',
+            html: `Are you sure you want to move the Schedule to <br>${moment(newDate).format('MMM D')}, ${moment(newTimeStart, 'hh:mm a').format('h:mm')} - ${moment(newTimeEnd, 'hh:mm a').format('h:mm A')}?`,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirm'
+          }).then((result) =>{
+            if(result.value){
+              
+              $.post('/trainer/trainee/reschedule',{
+                reschedDate : newDate,
+                reschedTime : newTimeStart,
+                reschedId : event.id
+              }).done(
+                swal({
+                  type: 'success',
+                  title: 'Rescheduling was succesful!',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  location.reload();
+                })
+              )
+            }
+            else{
+              revertFunc();
+            }
+          })
+        },
         selectable: true,
         selectHelper: true,
         allowOutsideClick: false,
@@ -249,9 +307,6 @@ script.
             container: 'body'
           })
         },
-        //- viewRender: function(jsEvent){
-        //-   $('#p').val()
-        //- }
         select: function (startDate, jsEvent, view) {
 
           var schedCount = $('#sessionForSchedCount').val()

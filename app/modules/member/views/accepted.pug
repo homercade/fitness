@@ -2,38 +2,43 @@ include ../../../templates/mem-head
 block main   
 
   .container
+    //- INITIALIZE TRAINER DETAILS
+    input.hidden#trainerschedule(type="text" value=`${pt[0].trainerschedule}`)
+    input.hidden#trainertimestart(type="text" value=`${pt[0].trainertimestart}`)
+    input.hidden#trainertimeend(type="text" value=`${pt[0].trainertimeend}`)
+    //- ACTUAL CONTENT
     section.wrapper.site-min-height(style='margin-top:15px;')
       .col-lg-12
         .row.content-panel
-            .col-md-5.profile-text.mt.mb.centered
-              h3 #{pt[0].memclassname} - #{pt[0].membershipname}
-              h6 Membership
-              h3 #{pt[0].session_count}
-              h6 Sessions Bought
-              button#buySession.btn.btn-theme(value = pt[0].userid)
-                i.fa.fa-shopping-cart
-                |
-                | Buy Session
-              input#sessionID.hidden(type="text" value = pt[0].sessionID)
-              input#sessionStatus.hidden(type="text" value = pt[0].sessionStatus)
-              
-                
-            .col-md-4.profile-text(style='margin-top:20px!important;')
-              h4(style='margin-left:0') You are currently assigned to <br><b>#{pt[0].trainerfname} #{pt[0].trainerlname}</b>
-              h5 Trainer Details: 
-              h6 
-                .li #{pt[0].branchname}
-                .li #{pt[0].trainergender} - #{pt[0].trainerbday} yrs old
-                .li #{pt[0].traineremail}
-                .li #{pt[0].trainermobile}
+          .col-md-5.profile-text.mt.mb.centered
+            h3 #{pt[0].memclassname} - #{pt[0].membershipname}
+            h6 Membership
+            h3 #{pt[0].session_count}
+            h6 Sessions Bought
+            button#buySession.btn.btn-theme(value = pt[0].userid)
+              i.fa.fa-shopping-cart
+              |
+              | Buy Session
+            input#sessionID.hidden(type="text" value = pt[0].sessionID)
+            input#sessionStatus.hidden(type="text" value = pt[0].sessionStatus)
 
-            .col-md-3.centered
-              .profile-pic
-                p
-                  img.img-circle.img-thumbnail(width=150 src='/assets/img/ui-sherman.jpg')
-                p
-                  button#changeTrainer.btn.btn-theme(type='button', value = pt[0].trainerid)
-                    | Change Trainer
+
+          .col-md-4.profile-text(style='margin-top:20px!important;')
+            h4(style='margin-left:0') You are currently assigned to <br><b>#{pt[0].trainerfname} #{pt[0].trainerlname}</b>
+            h5 Trainer Details: 
+            h6 
+              .li #{pt[0].branchname}
+              .li #{pt[0].trainergender} - #{pt[0].trainerbday} yrs old
+              .li #{pt[0].traineremail}
+              .li #{pt[0].trainermobile}
+
+          .col-md-3.centered
+            .profile-pic
+              p
+                img.img-circle.img-thumbnail(width=150 src='/assets/img/ui-sherman.jpg')
+              p
+                button#changeTrainer.btn.btn-theme(type='button', value = pt[0].trainerid)
+                  | Change Trainer
       .col-lg-12.mt
         .row.content-panel#content
           .panel-heading
@@ -48,7 +53,7 @@ block main
                 .row                    
                   .col-lg-9.mt(style='float:none; margin: 0 auto')
                     .panel-body
-                        #kalendaryo
+                      #kalendaryo
               #history.tab-pane
                 .row
                   .col-lg-12.mt
@@ -61,7 +66,7 @@ block main
                       tbody
                         each s in sessions
                           tr
-                            
+
                             td #{s.sessionDate} ( #{s.sessionTime} )
                             if s.description != null
                               td 
@@ -69,7 +74,7 @@ block main
                             else 
                               td 
                                 .label.label-success Succesful
-        
+
 .dateModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog.modal-sm
     .modal-content
@@ -105,7 +110,7 @@ block main
         button.confirm.btn.btn-primary(type='button' value) Confirm
 
 script.
- 
+
 include ../../../templates/foot
 
 script.
@@ -130,7 +135,7 @@ script.
     $.post('/member/fee').done(function(data){
       console.log(data)
       fee = data.fee
-      
+
     })
     $('#buySession').click(function () {
       let stat = $('#sessionStatus').val()
@@ -150,7 +155,7 @@ script.
           if (result.value) {
             let total = result.value * fee
             let amount = result.value
-            
+
               swal({
                 title: 'Are you sure?',
                 text: `This act is irreversible here. You must settle or cancel your balance of ₱ ${total}.00 on your chosen branch of us in-person`,
@@ -168,9 +173,9 @@ script.
 
                   .done(
                     swal({
-                        type: 'success',
-                        title: 'Success!',
-                        text: `You succesfully bought ${amount} session(s). Don't forget to settle your balance or this transaction will be void.` 
+                      type: 'success',
+                      title: 'Success!',
+                      text: `You succesfully bought ${amount} session(s). Don't forget to settle your balance or this transaction will be void.` 
                       })
                   )
                 }
@@ -188,11 +193,11 @@ script.
     })
   })
 
- 
+
 
 script.
   $(document).ready(function(){
-    
+
     $.post('/member/pt/schedule').done(function (data) {
       var evs = []
       var delId
@@ -200,7 +205,12 @@ script.
       var prefTime 
       var description
       var schedStatus
-      
+      let trainerschedule = `[${$('#trainerschedule').val()}]`;
+      let trainerscheduleArray = JSON.parse(trainerschedule);
+      let trainertimestart = $('#trainertimestart').val();
+      let trainertimeend = $('#trainertimeend').val();
+      console.log(trainerschedule, trainertimestart, trainertimeend)
+
       for (i = 0; i < data.length; i++) {
         let name = `${data[i].trainerfname} ${data[i].trainerlname}`
         let sessionDate = moment(data[i].sessionDate).format('YYYY-MM-DD')
@@ -211,7 +221,7 @@ script.
         let content = data[i].description
         schedStatus = data[i].scheduleStatus
         delId = data[i].PTid
-       
+
         console.log(name)
         console.log(start)
         console.log(end)
@@ -227,19 +237,15 @@ script.
           overlap: false,
           date: `${moment(data[i].sessionDate).format('MMM DD, YYYY')}`,
           content: content,
-          schedule: `${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')}`
+          schedule: `${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')}`,
+          constraint: 'businessHours'
+          
         }
         evs.push(desc)
       }
-      
-      console.log(evs, 'aasdfsdgds')
 
-      var date = new Date();
-      var d = date.getDate();
-      var m = date.getMonth();
-      var y = date.getFullYear();
       var now = moment().format('YYYY-MM-DD')
-    
+
       var calendar = $('#kalendaryo').fullCalendar({
         header: {
           left: 'prev,next today',
@@ -252,14 +258,18 @@ script.
         },
         allDaySlot: false,
         weekMode: 'liquid',
-        editable: false,
+        editable: true,
         eventOverlap: false,
-        eventStartEditable: false,
         eventDurationEditable: false,
         minTime: '08:00',
-        maxTime: '21:00',
+        maxTime: '22:00',
+        businessHours: [{
+          dow: trainerscheduleArray, 
+          start: trainertimestart,
+          end: trainertimeend 
+        }],
         eventClick: function (event, jsEvent, view) {
-         if (event.scheduleStatus == 1){
+          if (event.scheduleStatus == 1){
             swal({
             title: 'Reject Schedule?',
             type: 'warning',
@@ -305,7 +315,7 @@ script.
                     else{
                       alert('Please pick your preferred date.')
                     }
-                    
+
                   })
                 } else if (result.dismiss === swal.DismissReason.cancel) {
                   $('.timeModal').modal('show')
@@ -314,29 +324,29 @@ script.
                     prefTime = $('.t').val()
                     description = `Shedule Rejected. Prefers ${prefTime}.`
 
-                     $.post('/member/schedule/reject', {
-                       desc: description,
-                       rejId: event.id
+                      $.post('/member/schedule/reject', {
+                        desc: description,
+                        rejId: event.id
 
-                     }).done(
-                       swal({
-                         type: 'info',
-                         title: 'You rejected a Session',
-                         showConfirmButton: false,
-                         timer: 1500
-                       })
-                       .then(() => {
-                         location.reload();
-                       })
-                     )
+                      }).done(
+                        swal({
+                          type: 'info',
+                          title: 'You rejected a Session',
+                          showConfirmButton: false,
+                          timer: 1500
+                        })
+                        .then(() => {
+                          location.reload();
+                        })
+                      )
                   })
                 }
               })
             }
           })
-         }
+        }
         else {
-           swal({
+          swal({
             title: 'Undo rejection?',
             type: 'warning',
             showCancelButton: true,
@@ -362,23 +372,87 @@ script.
           })
         }
         },
+        eventDrop: function (event, delta, revertFunc) {
+
+          //- var newDate
+          var newDate = moment(event.start).format('YYYY-MM-DD')
+          var newTimeStart = moment(event.start).format('hh:mm a')
+          var newTimeEnd = moment(event.end).format('hh:mm a')
+
+          swal({
+            type: 'warning',
+            title: 'Reschedule?',
+            html: `Are you sure you want to move the Schedule to <br>${moment(newDate).format('MMM D')}, ${moment(newTimeStart, 'hh:mm a').format('h:mm')} - ${moment(newTimeEnd, 'hh:mm a').format('h:mm A')}?`,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirm'
+          }).then((result) =>{
+            if(result.value){
+              
+              $.post('/member/trainee/reschedule',{
+                reschedDate : newDate,
+                reschedTime : newTimeStart,
+                reschedId : event.id
+              }).done(
+                swal({
+                  type: 'success',
+                  title: 'Rescheduling was succesful!',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  location.reload();
+                })
+              )
+            }
+            else{
+              revertFunc();
+            }
+          })
+        },
         selectable: true,
         selectHelper: true,
         allowOutsideClick: false,
         events: evs,
         eventRender: function(event, element) {
-            if (event.scheduleStatus == 2) {
-            element.css({
-              'background-color': '#ff6961',
-              'border-color': '#ff6961'
-            })
-              element.popover({
-              title: `You Rejected`,
-              trigger: 'hover',
-              placement: 'top',
-              content: event.content,
-              container: 'body'
-            })
+          if (event.scheduleStatus == 2) {
+          element.css({
+            'background-color': '#ff6961',
+            'border-color': '#ff6961'
+          })
+            element.popover({
+            title: `You Rejected`,
+            trigger: 'hover',
+            placement: 'top',
+            content: event.content,
+            container: 'body'
+          })
+          }
+          element.popover({
+            title: event.date,
+            trigger: 'hover',
+            placement: 'top',
+            content: event.schedule,
+            container: 'body'
+          })
+        },
+        selectable: true,
+        selectHelper: true,
+        allowOutsideClick: false,
+        events: evs,
+        eventRender: function(event, element) {
+          if (event.scheduleStatus == 2) {
+          element.css({
+            'background-color': '#ff6961',
+            'border-color': '#ff6961'
+          })
+            element.popover({
+            title: `You Rejected`,
+            trigger: 'hover',
+            placement: 'top',
+            content: event.content,
+            container: 'body'
+          })
           }
           element.popover({
             title: event.date,
@@ -395,9 +469,9 @@ script.
           var view = $('#kalendaryo').fullCalendar('getView')
 
           if (view.name == 'month') {
-           
-              $('#kalendaryo').fullCalendar('changeView', 'agendaDay')
-              $('#kalendaryo').fullCalendar('gotoDate', startDate)
+
+            $('#kalendaryo').fullCalendar('changeView', 'agendaDay')
+            $('#kalendaryo').fullCalendar('gotoDate', startDate)
 
           } else {
             return
@@ -437,8 +511,7 @@ script.
     })
   })
 
-  
-  
-  
-  
- 
+
+
+
+

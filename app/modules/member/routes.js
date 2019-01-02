@@ -548,7 +548,27 @@ function personalTrainer(req, res, next) {
         return next();
     })
 }
+// Reschedule
 
+router.post('/trainee/reschedule', (req, res) => {
+    const query = `
+    UPDATE tbppt SET 
+    sessionDate = ?, 
+    sessionTime = ?, 
+    scheduleStatus = '1', 
+    description = NULL 
+    WHERE PTid = ?`
+  
+    db.query(query, [req.body.reschedDate, req.body.reschedTime, req.body.reschedId], (err, results) => {
+      if (err) {
+        console.log(err)
+        res.redirect('trainee')
+      }
+    })
+  })
+
+
+// Change Trainer
 router.post('/change', ( req,res ) => {
     const query = ` 
     INSERT INTO tblchange (status, memid, trainid, sender, description) VALUES (2, ?, ?, 'Member', ?)

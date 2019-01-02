@@ -12,21 +12,21 @@ block main
         .col-lg-4.mt
           section.panel
             .panel-body
-              
-                .white-panel
-                  .white-header
-                    h5 Profile
-                  p
-                    img.img-circle(src='assets/img/ui-zac.jpg', width='80')
-                  p
-                    b #{pr.userfname} #{pr.userlname}
-                  .row
-                    .col-md-6
-                      p.small.mt MEMBER SINCE
-                      p #{pr.acceptdate}
-                    .col-md-6
-                      p.small.mt TOTAL SPEND
-                      p ₱ #{total}.00
+
+              .white-panel
+                .white-header
+                  h5 Profile
+                p
+                  img.img-circle(src='assets/img/ui-zac.jpg', width='80')
+                p
+                  b #{pr.userfname} #{pr.userlname}
+                .row
+                  .col-md-6
+                    p.small.mt MEMBER SINCE
+                    p #{pr.acceptdate}
+                  .col-md-6
+                    p.small.mt TOTAL SPEND
+                    p ₱ #{total}.00
         .col-lg-4.mt
           section.panel
             .panel-body
@@ -36,8 +36,8 @@ block main
                     h5 Price per Session today
                   .row
                     h1 ₱ #{fee.fee}.00
-                      
-                  
+
+
 
 
 include ../../../templates/foot
@@ -47,14 +47,16 @@ script.
 
     $.post('/member/event/view').done(function (data) {
 
-      var evs = []
-      var cls = []
-      var evsId 
+      var events = []
+      var eventId 
       var type
-      //- var joined
-      console.log(data)
+      var now = moment().format('YYYY-MM-DD')
+    
+      console.log("DATA:", data)
+      console.log("EVENTS:", events)
 
       for (i = 0; i < data.length; i++) {
+
         //- events
         let name = `${data[i].eventclassname}`
         let dateStart = moment(data[i].startdate).format('YYYY-MM-DD')
@@ -63,16 +65,15 @@ script.
         let timeEnd = moment(data[i].endtime, 'hh:mm A').format('HH:mm')
         let start = `${dateStart} ${timeStart}`
         let end = `${dateEnd} ${timeEnd}`
-        evsId = data[i].eventclassid
+        eventId = data[i].eventclassid
         type = data[i].type
 
         //- class
-
         let days = `[${data[i].days}]`  
-        var array = JSON.parse(days)
-    
-        var desc = {
-          id: evsId,
+        let daysArray = JSON.parse(days)
+        console.log(data[i].days, days, daysArray)
+        let eventDesc = {
+          id: eventId,
           title: name,
           start: start,
           end: end,
@@ -80,64 +81,46 @@ script.
           color: '#966fd6'
         }
 
-        var desc2 = {
-          id: evsId,
+        let classDesc = {
+          id: eventId,
           title: name,
           start: timeStart,
           end: timeEnd,
           type: data[i].type,
-          dow: array
+          dow: daysArray
         }
-        evs.push(desc)
-        cls.push(desc2)
+        events.push(eventDesc, classDesc)
       }
-      console.log(evs, 'evs')
-      console.log(array, '<<<<')
-     
-      var date = new Date();
-      var d = date.getDate();
-      var m = date.getMonth();
-      var y = date.getFullYear();
-      var now = moment().format('YYYY-MM-DD')
 
-      //- $('#kalendaryo').fullCalendar({
-      //-   events: evs
-      //- })
-    
-      
-       $('#kalendaryo').fullCalendar({
+      $('#kalendaryo').fullCalendar({
         header: {
           left: 'prev,next',
           center: 'title',
           right: 'month,agendaWeek,agendaDay'
         },
         selectable: true,
-        events: evs,
-        eventRender: function(event, element) {
+        events: events,
+        eventRender: (event, element) => {
           if (event.type == 2) {
             element.css({
-                'background-color': '#ffb347',
-                'border-color': '#ffb347'
+              'background-color': '#ffb347',
+              'border-color': '#ffb347'
             });
           }
         },
         select: function (startDate, jsEvent, view) {
-          var view = $('#kalendaryo').fullCalendar('getView')
+          let view = $('#kalendaryo').fullCalendar('getView')
           if (view.name != 'month') {
-           
           } else if (view.name == 'month') {
-    
             $('#kalendaryo').fullCalendar('changeView', 'agendaDay')
             $('#kalendaryo').fullCalendar('gotoDate', startDate)
-           
           } else {
             return
           }
         },
-        viewRender: function(view, element){
+        viewRender: (view, element) => {
           $('#kalendaryo').fullCalendar( 'rerenderEvents' )
         },
       })
-      $('#kalendaryo').fullCalendar('renderEvents', cls)
     })
   })
