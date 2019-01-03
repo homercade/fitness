@@ -872,15 +872,17 @@ function viewInt(req, res, next) {
 }
 
 // //view update regular to suspended
-// function viewSusp(req, res, next) {
-//   db.query("UPDATE tblmembership m join tbluser u on m.usersid=u.userid SET m.status='Suspended', u.userpassword=NULL where m.expirydate= CURDATE()", (err, results, fields) => {
-//     if (err)
-//       console.log(err);
-//     else {
-//       return next()
-//     };
-//   })
-// };
+function viewSusp(req, res, next) {
+  db.query(`UPDATE tblmembership m join tbluser u 
+    on m.usersid=u.userid SET m.status='Suspended', 
+    u.userpassword=NULL where m.expirydate < CURDATE()`, (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      return next()
+    };
+  })
+};
 
 //view to payment
 function viewPay(req, res, next) {
@@ -2006,8 +2008,8 @@ router.get('/income', income);
 router.get('/payment', viewPay, payment);
 router.get('/pending', check,viewUpdate, viewPend, pending);
 router.get('/personal', viewPer,personal);
-router.get('/regular',viewMemChangeOr,viewMemChange,regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewReg, regular);
-router.get('/interregular',viewMemChangeOr,viewMemChange,Nulling,viewSp,viewExcB,viewExcc,viewAss,viewInt, Interregular);
+router.get('/regular',viewSusp,viewMemChangeOr,viewMemChange,regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewReg, regular);
+router.get('/interregular',viewSusp,viewMemChangeOr,viewMemChange,Nulling,viewSp,viewExcB,viewExcc,viewAss,viewInt, Interregular);
 router.get('/events',viewEve, Events);
 router.get('/walkins',viewWal, walkins);
 router.get('/trainsessions', sessionsToday, trainSessions);
