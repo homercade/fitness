@@ -93,6 +93,17 @@ function hello(req, res, next) {
   })
 }
 
+router.post('/trainer/newsched', (req, res) => {
+  const query = `UPDATE tbltrainer SET trainerschedule = ? WHERE trainerid = ?`
+  db.query(query, [req.body.newsched, req.body.id], (err, out) => {
+    if (err) {
+      console.error(err)
+    }
+    res.send(out)
+  })
+})
+
+
 //******************************************************* */
 //                     TRAINEE.
 //******************************************************* */

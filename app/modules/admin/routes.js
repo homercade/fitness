@@ -312,7 +312,6 @@ function addid(req, res, next) {
   db.query(`SELECT (branchID+1)id FROM tblbranch ORDER BY branchID DESC LIMIT 1`, function (err, results, fields) {
     if (err) return res.send(err)
     req.newid = results[0].id
-    console.log('puta')
     console.log(req.newid)
     return next();
   })
@@ -754,7 +753,6 @@ function useraddid(req, res, next) {
   db.query(`SELECT (userid+1)id FROM tbluser ORDER BY userid DESC LIMIT 1`, function (err, results, fields) {
     if (err) return res.send(err)
     req.newuserid = results[0].id
-    console.log('puta')
     console.log(req.newuserid)
     return next();
   })
@@ -1461,7 +1459,7 @@ router.post('/view/notif', (req, res) => {
   })
 })
 router.post('/view/notif/payment', (req, res) => {
-  db.query(`SELECT * FROM puta.tblsession where amount IS NOT NULL`, (err, out) => {
+  db.query(`SELECT * FROM tblsession where amount IS NOT NULL`, (err, out) => {
     if(err) console.log(err)
     console.log(out)
     res.send(out)
