@@ -109,3 +109,27 @@ script.
     $('.preloader').fadeOut(500); 
   });
 
+//- Notifications
+
+script.
+  $('.bell').click(function(){
+    $('.badge').css("display","none")
+    let s = !{JSON.stringify(s)}
+    console.log(s)
+    if (s.user) {
+      alert("USER")
+    }
+    else if (s.member) {
+      alert("MEMBER")
+    }
+    else if (s.trainer) {
+      alert("TRAINER")
+    }
+    else if (s.staff ){
+      alert("STAFF")
+    }
+  })
+
+  
+ 
+  

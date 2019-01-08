@@ -16,7 +16,6 @@ router.get('/dashboard', indexController);
 router.post('/event/view', (req, res)=>{
 
     var now = moment().format('MM/DD/YYYY')
-    var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD')
 
     db.query('select * from tbleventclass', (err, out) => {
         for( i = 0; i < out.length; i++){
@@ -192,7 +191,7 @@ function notification (req,res,next){
     SELECT * FROM tblnotification 
     JOIN tblnotificationdesc on tblnotification.notifdescid = tblnotificationdesc.notifdescid 
     JOIN tbluser on tbluser.userid = tblnotification.memid
-    WHERE memid = ? AND tblnotificationdesc.notifdescid = 1 OR tblnotificationdesc.notifdescid = 2 OR tblnotificationdesc.notifdescid = 3
+    WHERE memid = ? AND (tblnotificationdesc.notifdescid = 1 OR tblnotificationdesc.notifdescid = 2 OR tblnotificationdesc.notifdescid = 3)
     order by notifid desc limit 3
         `
     db.query(query, [ req.session.member.userid ], ( err,results ) => {
@@ -203,17 +202,13 @@ function notification (req,res,next){
             req.notifs = results
             return next()
         }
-       else{
-        console.log('walang notifs gago')
-        req.notifs = results
-        return next()
-       }
+        else {
+            console.log('walang notifs gago')
+            req.notifs = results
+            return next()
+        }
     })
 }
-
-
-
-
 
 
 
@@ -366,7 +361,7 @@ router.post('/class/resign', (req, res) => {
 
 // VIEW
 function viewEvent(req, res, next) {
-    db.query('select * from tbleventclass where type = 2 AND status is NULL', function (err, results, fields) {
+    db.query('select * from tbleventclass where type = 2 AND status = 0', function (err, results, fields) {
         if (err) return res.send(err);     
         results.forEach((results) => {
             results.startdate = moment(results.startdate,'MM/DD/YYYY').format('MMM DD, YYYY');
@@ -484,6 +479,33 @@ function checkForChange(req, res, next){
         }
         return next();
     })
+}
+
+function checkFinishedSession(req, res, next) {
+    const today = moment().format('YYYY-MM-DD')     
+    console.log("TODAY: ", today)
+    const query = `SELECT * from tbppt`;
+    const query2 = `UPDATE tblsession SET session_count = session_count - 1 where sessionID = ?`;
+    const query3 = `UPDATE tbppt SET scheduleStatus = 0 where PTid = ?`;
+
+    db.query(query, (err, results) => {
+        if (err) console.error(err)
+            results.forEach( result => {
+                const date = result.sessionDate
+                if ( date < today && result.scheduleStatus != 0){
+                    db.query(query2, [result.sessionID], (err) => {
+                        if (err) console.error(err)
+                        console.log("SUCCESS")
+                        db.query(query3, [result.PTid], (err) => {
+                            if (err) console.error(err)
+                            console.log("SUCCESS")
+                        })
+                    })
+                }
+            })
+        console.log("TBPPT: ",results)
+        return next()
+    }) 
 }
 
 router.post('/buy', (req, res) => {
@@ -613,7 +635,8 @@ function dashboard(req, res, next) {
         notifs: req.notifs,
         profs: req.initial,
         total :req.total,
-        fee :req.fee
+        fee :req.fee,
+        s: req.session
     })
     return next();
 }
@@ -621,7 +644,8 @@ function dashboard(req, res, next) {
 function profile(req, res, next) {
     res.render('member/views/profile', {
         notifs: req.notifs,
-        profs: req.initial
+        profs: req.initial,
+        s: req.session
     })
     return next();
 }
@@ -632,7 +656,8 @@ function events(req, res, next) {
         joinedEvents: req.joinedEvents,
         eventIds: req.eventIds,
         profs: req.initial,
-        eves: req.viewEvent
+        eves: req.viewEvent,
+        s: req.session
 
     });
     return next();
@@ -644,7 +669,8 @@ function classes(req, res, next) {
         joinedClasses: req.joinedClasses,
         classIds: req.classIds,
         classes: req.viewClass, 
-        profs: req.initial 
+        profs: req.initial ,
+        s: req.session
     });
     return next();
 }
@@ -660,7 +686,8 @@ function trainer(req, res, next) {
     res.render('member/views/trainer', {
         notifs: req.notifs,
         profs: req.initial,
-        trainers: req.viewTrainers
+        trainers: req.viewTrainers,
+        s: req.session
     })
 }
 
@@ -668,7 +695,8 @@ function trainer(req, res, next) {
 function pending(req, res, next) {
     res.render('member/views/pending', {
         notifs: req.notifs,
-        profs: req.initial
+        profs: req.initial,
+        s: req.session
     });
     return next();
 }
@@ -678,7 +706,8 @@ function accepted(req, res, next) {
         notifs: req.notifs,
         profs: req.initial,
         pt :req.pt,
-        sessions : req.sessions
+        sessions : req.sessions,
+        s: req.session
     });
     return next();
 }
@@ -686,19 +715,19 @@ function accepted(req, res, next) {
 function change(req, res, next) {
     res.render('member/views/change', {
         notifs: req.notifs,
-        profs: req.initial
+        profs: req.initial,
+        s: req.session
+        
     });
     return next();
 }
 
 // ------------- GET ---------------//
-router.get('/',  initial, notification, totalPayment, fee, dueEvents, dueDate,  dashboard);
+router.get('/',  initial, notification, totalPayment, fee, dueEvents, dueDate,  dashboard, checkFinishedSession);
 router.get('/profile', notification, initial, profile);
 router.get('/events', notification, joinedEvents, viewEvent, initial, events);
 router.get('/trainers', notification, initial, check, viewTrainers, trainer);
 router.get('/classes', notification, joinedClasses, viewClass, initial, classes);
-// router.get('/billing', initial, notification, billing);
-// trainer
 router.get('/pending', notification, initial, pending);
 router.get('/accepted', notification, viewHistory, checkForChange, personalTrainer, initial, accepted);
 router.get('/change', notification, initial, change);

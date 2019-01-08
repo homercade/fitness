@@ -238,9 +238,7 @@ router.post('/schedule/update', (req, res) => {
     db.query(`UPDATE tblsession SET session_count = session_count - 1 where sessionID = ?`, [req.body.id], (err, out) => {
       db.query(`UPDATE tbppt SET scheduleStatus = 0 where PTid = ?`, [req.body.ptid], (err, out) => {})
     })
-  } else {
-    db.query(`UPDATE tbppt SET scheduleStatus = 0 where PTid = ?`, [req.body.ptid], (err, out) => {})
-  }
+  } 
 })
 
 //Change trainee
@@ -340,7 +338,8 @@ function dashboard(req, res, next) {
   console.log(req.notifs, '<<<<< NOTIFS')
   res.render('trainer/views/dashboard', {
     hello: req.trainer,
-    notifs: req.notifs
+    notifs: req.notifs,
+    s: req.session
   });
   return next();
 }
@@ -349,7 +348,8 @@ function trainee(req, res, next) {
   res.render('trainer/views/trainee', {
     trainee: req.viewTrainee,
     hello: req.trainer,
-    notifs: req.notifs
+    notifs: req.notifs,
+    s: req.session
   });
   return next();
 }
@@ -358,7 +358,8 @@ function pending(req, res, next) {
   res.render('trainer/views/pending', {
     hello: req.trainer,
     pends: req.viewPend,
-    notifs: req.notifs
+    notifs: req.notifs,
+    s: req.session
   });
   return next();
 }
@@ -366,7 +367,8 @@ function pending(req, res, next) {
 function notrainee(req, res, next) {
   res.render('trainer/views/no-trainee', {
     hello: req.trainer,
-    notifs: req.notifs
+    notifs: req.notifs,
+    s: req.session
   });
   return next();
 }
@@ -377,7 +379,8 @@ function traineeSched(req, res, next) {
     hello: req.trainer,
     general: req.general,
     sessions: req.sessions,
-    notifs: req.notifs
+    notifs: req.notifs,
+    s: req.session
   })
   return next();
 }
@@ -385,7 +388,8 @@ function traineeSched(req, res, next) {
 function change(req, res, next) {
   res.render('trainer/views/change', {
     hello: req.trainer,
-    notifs: req.notifs
+    notifs: req.notifs,
+    s: req.session
   })
   return next();
 }

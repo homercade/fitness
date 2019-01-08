@@ -7,13 +7,12 @@ block main
 				img.img-circle.xs(src='../../assets/img/icon.png', style='border:3px solid white;', alt='')
 				b(style='font-size:15pt;margin-left: 10px; letter-spacing: 1px;') A-Team Fitness
 			span#header_inbox_bar.dropdown
-				a.dropdown-toggle(data-toggle='dropdown', href='#')
+				a.bell.dropdown-toggle(data-toggle='dropdown', href='#')
 					i.fa.fa-bell
 					span.badge.bg-theme #{notifs.length}
 				ul.dropdown-menu.extended.inbox
 					li
-						p You have new notifications
-					
+						p All Notifications
 					if notifs.length != 0
 						each n in notifs
 							li
@@ -30,12 +29,14 @@ block main
 									else 
 										span.message
 											| No Data
-									
 					else 
 						li
 							a(href='/')
 								span.subject
-									span.time No data to show
+									span.time You have No Notifications
+					
+					li
+						a(href='#' style="text-align: center") See All Notifications
 
 					//- li
 					//- 	a(href='/') See all pending request
@@ -76,3 +77,5 @@ block main
 			//- a(href='/member/billing')
 			//- 	span.li_news
 			//- 	| Billing
+
+

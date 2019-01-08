@@ -200,6 +200,16 @@ include ../../../templates/foot
 //- CHANGE AVAILABILITY
 script.
   $(document).ready(function(){
+
+    
+    //- if (!localStorage.getItem("reload")) {
+    //-   localStorage.setItem("reload", "true");
+    //-   location.reload();
+    //- }
+    //- else {
+    //-   localStorage.removeItem("reload");
+    //- }
+    
     $('#changeAvailabilty').click(function(){
       $('#changeAvailabiltyBody').css("display","block")
       $('#kalendaryo').css("display", "none")
@@ -266,13 +276,6 @@ script.
 
   $(document).ready(function () {
 
-    if (!localStorage.getItem("reload")) {
-      localStorage.setItem("reload", "true");
-      location.reload();
-    }
-    else {
-      localStorage.removeItem("reload");
-    }
     
     var now = moment().format('YYYY-MM-DD')
     var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD')
@@ -359,12 +362,16 @@ script.
 
         }
         else{
+          alert('hi1')
           if ( $('#sessioncount').val() != 0 ){
+            alert('hi2')
             $.post('/trainer/schedule/update', {
             ptid : data[i].PTid,
             status : schedStatus,
             id: $('#sessionid').val()
-            })
+            }).done(
+              location.reload()
+            )
           }
         }
       }
