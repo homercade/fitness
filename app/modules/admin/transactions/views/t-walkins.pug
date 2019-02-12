@@ -27,12 +27,12 @@ block main
                   tbody 
                     each wa in walk     
                       tr
-                        td #{wa.userfname} #{wa.userfname}
+                        td #{wa.userfname} #{wa.userlname}
                         td #{wa.usermobile}
                         td
-                          button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.pay-modal' data-id=wa.userid)
-                            | PAY
-                          button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.view-modal.modal' data-fname=wa.userfname + " " + wa.userlname data-fee=wa.amount data-mob=wa.usermobile)
+                          //- button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.pay-modal' data-id=wa.userid)
+                          //-   | PAY
+                          button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.view-modal.modal' data-id=wa.userid data-fname=wa.userfname + " " + wa.userlname data-fee=wa.amount data-mob=wa.usermobile)
                             i.fa.fa-search
               
 
@@ -127,8 +127,8 @@ block main
     .modal-content
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-        h4.modal-title Bill Breakdown
-      form(action='POST', method='')
+        h4.modal-title Payment Breakdown
+      form(action='/payment/walkin', method='POST')
         .modal-body
           .container-fluid
             .row
@@ -195,27 +195,29 @@ block main
                           strong Total
                       td.text-right
                         strong#fee
-      .modal-footer
-        button.btn.btn-default(type='button', data-dismiss='modal') Close
-        button.btn.btn-primary(type='button') Print
-
-.pay-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-  .modal-dialog.modal-sm
-    form(action='/payment', method='POST')
-      .modal-content
-        .modal-header
-          button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-          h4.modal-title  Payment
-        .modal-body
-          .container-fluid
-            .row
-              p You are about to pay a member of his bills. Do you wish to proceed?
-            br
-            input.id(type='text' name='id' )
-            input.memid(type='text' name='memrateid' )
+                      input#id(type='text' name='uid' )
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='submit') Pay
+          button.btn.btn-primary(type='button') Print
+          button.btn.btn-danger(type='submit') Pay
+
+//- .pay-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+//-   .modal-dialog.modal-sm
+//-     form(action='/payment', method='POST')
+//-       .modal-content
+//-         .modal-header
+//-           button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+//-           h4.modal-title  Payment
+//-         .modal-body
+//-           .container-fluid
+//-             .row
+//-               p You are about to pay a member of his bills. Do you wish to proceed?
+//-             br
+//-             input.id(type='text' name='id' )
+
+//-         .modal-footer
+//-           button.btn.btn-default(type='button', data-dismiss='modal') Close
+//-           button.btn.btn-primary(type='submit') Pay
 include ../../../../templates/foot
 
 
@@ -234,6 +236,7 @@ script.
       var addr = button.data('addr');
       var em = button.data('em');
       var mob = button.data('mob');
+      var id = button.data('id');
       let modal = $(this);
 
       modal.find('.modal-body #fname').text(`${fname}`);
@@ -242,6 +245,7 @@ script.
       modal.find('.modal-body #addr').text(`${addr}`);
       modal.find('.modal-body #em').text(`${em}`);
       modal.find('.modal-body #mob').text(`${mob}`);
+      modal.find('.modal-body #id').val(`${id}`);
     })
 
   

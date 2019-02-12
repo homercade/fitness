@@ -889,8 +889,7 @@ function viewPay(req, res, next) {
   db.query(`select u.* , r.*, ct.*, cl.* ,m.* 
     from tbluser u join tblmembership m 
     ON m.usersid=u.userid inner join tblmemrates r 
-    ON r.memrateid=m.membershiprateid inner join t
-    blmemclass cl on r.memclass=cl.memclassid inner join 
+    ON r.memrateid=m.membershiprateid inner join tblmemclass cl on r.memclass=cl.memclassid inner join 
     tblcat ct on ct.membershipID=r.memcat where m.status="Paid"`, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewPay = results;
@@ -971,6 +970,16 @@ router.post('/payment',(req, res) => {
  
          });
 
+//payment2
+router.post('/payment/walkin',(req, res) => {
+      db.query(`UPDATE tbluser u 
+        join tblpayment p on p.userid=u.userid 
+        SET p.paymentdate=CURDATE()
+        where p.paymentdate is null and p.userid= ?`, [req.body.uid], (err, results, fields) => {
+          res.redirect('/walkins');
+          });
+          });
+ 
 
 //freezing
 router.post('/freeze',(req, res) => {
@@ -1118,20 +1127,20 @@ function viewClass2 (req, res, next){
   })
 }
 
-function viewClass2 (req, res, next){
-  db.query(`SELECT * from tbleventclass where tbleventclass.type = 2 AND status IS NULL `, (err, results) => {
-    if (err) console.log(err)
-    if (results.length != 0){
-      results.forEach((results) => {
-      results.starttime = moment(results.starttime, 'HH:mm:ss').format('hh:mm A')
-      results.endtime = moment(results.endtime, 'HH:mm:ss').format('hh:mm A')
-      })
-      req.viewClass2 = results
-      return next()
-    }
-    return next()
-  })
-}
+// function viewClass2 (req, res, next){
+//   db.query(`SELECT * from tbleventclass where tbleventclass.type = 2 AND status IS NULL `, (err, results) => {
+//     if (err) console.log(err)
+//     if (results.length != 0){
+//       results.forEach((results) => {
+//       results.starttime = moment(results.starttime, 'HH:mm:ss').format('hh:mm A')
+//       results.endtime = moment(results.endtime, 'HH:mm:ss').format('hh:mm A')
+//       })
+//       req.viewClass2 = results
+//       return next()
+//     }
+//     return next()
+//   })
+// }
 
 
 //creating event
@@ -1562,7 +1571,7 @@ router.post('/changememin', (req, res) => {
 
 //view receipts
 function viewReceipt(req, res, next) {
-  db.query(`select u.*,p.* from tbluser u join tblpayment p on p.userid = u.userid `, function (err, results, fields) {
+  db.query(`select u.*,p.* from tbluser u join tblpayment p on p.userid = u.userid where p.paymentdate is not null order by p.paymentdate desc `, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewReceipt = results;
        //moments dateadded

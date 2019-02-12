@@ -40,7 +40,7 @@ block main
 														| Change Membership
 												td 
 													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='.OR-modal',data-name=re.userfname + " " + re.userlname,
-													data-date=re.paymentdate, data-class=re.classification,data-price=re.amount,data-dat=re.paymentdate)
+													data-date=re.paymentdate, data-m=re.classification,data-price=re.amount,data-dat=re.paymentdate)
 														|View Bill
 				// /content-panel
 
@@ -168,7 +168,7 @@ block main
 			.modal-content
 				.modal-header
 					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-					h4.modal-title Bill Breakdown
+					h4.modal-title Payment Breakdown
 				form(action='/pending/update', method='POST')
 					.modal-body
 						.container-fluid
@@ -212,7 +212,7 @@ block main
 											br
 											div
 											div(style='background-color:#ffbb00;color:white;padding:10px;')
-												.pull-left  Total Due :
+												.pull-left  Total :
 												.pull-right.price
 												.clearfix
 									table.table
@@ -224,11 +224,11 @@ block main
 										tbody
 											tr
 												td.text-center -
-												td.m
+												td.m 
 												td.text-right.price
 											tr
 												td(colspan='2' rowspan='4')
-												td.text-right
+												td.text-right 
 
 											tr
 												td.text-right.no-border
@@ -328,7 +328,26 @@ script.
 	
 		//r id = button.data('id')
 		var name = button.data('name')
-		//- var m = button.data('m')
+		var m = button.data('m')
+		if (m == 1){
+			m = "Membership"
+		}
+		else if (m == 2){
+			m = "Freeze"
+		}
+		else if (m == 3){
+			m = "Walkin"
+		}
+		else if (m == 4){
+			m = "Discounted Membership"
+		}
+		else if (m == 5){
+			m = "Session"
+		}
+		else if (m == 6){
+			m = "Change Membership"
+		}
+		console.log(m)
 		//- var ad = button.data('ad')
 		//- var ph = button.data('ph')
 		//- var e = button.data('e')
@@ -340,14 +359,13 @@ script.
 
 		//- modal.find('.modal-body #id').val(`${id}`)
 		modal.find('.modal-body #name').text(`${name}`)
-		//- modal.find('.modal-body .m').text(`${m}`)
+		modal.find('.modal-body .m').text(`${m}`)
 		//- modal.find('.modal-body .ad').text(`${ad}`)
 		//- modal.find('.modal-body .e').text(`${e}`)
 		//- modal.find('.modal-body .ph').text(`${ph}`)
 		modal.find('.modal-body .price').text(`₱ ${price}`)
 		modal.find('.modal-body .dat').text(`${dat}`)
 	})
-
 //- script.
 //- 	n = new Date();
 //- 	y = n.getFullYear();
