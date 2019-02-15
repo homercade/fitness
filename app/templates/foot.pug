@@ -110,23 +110,23 @@ script.
   });
 
 //- Notifications
-
 script.
   $('.bell').click(function(){
     $('.badge').css("display","none")
-    let s = !{JSON.stringify(s)}
-    console.log(s)
-    if (s.user) {
-      alert("USER")
+    const session = !{JSON.stringify(session)}
+  
+    if (session.user) {
+      console.log('admin')
     }
-    else if (s.member) {
-      alert("MEMBER")
+    else if (session.member) {
+     console.log('member')
     }
-    else if (s.trainer) {
-      alert("TRAINER")
+    else if (session.trainer) {
+      console.log('trainer')
+      $.post('/trainer/notification/mark/read')
     }
-    else if (s.staff ){
-      alert("STAFF")
+    else if (session.staff ){
+      console.log('staff')
     }
   })
 

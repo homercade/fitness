@@ -8,19 +8,38 @@ block main
 				b(style='font-size:15pt;margin-left: 10px; letter-spacing: 1px;') A-Team Fitness
 			span#header_inbox_bar.dropdown
 				a.bell.dropdown-toggle(data-toggle='dropdown', href='#')
-					i.fa.fa-bell
-					span.badge.bg-theme #{notifs.length}
+					i.fa.fa-bell 
+					- let hasUnreadNotifs = false
+					- let hasNotif = false
+					- let unreadNotifsCount = 0
+					each notif in notifs
+						if notif.notifstatus == 'unread'
+							- hasUnreadNotifs = true
+							- unreadNotifsCount += 1
+					if hasUnreadNotifs
+						span.badge.bg-theme #{unreadNotifsCount}
 				ul.dropdown-menu.extended.inbox
 					li
-						p You have new notifications
+						p All Notifications
 					each n in notifs
+						if n.notifdate <= notifs[0].today
+							- hasNotif = true
+							li
+								a(href='#')
+									span.subject
+										span.from(style='margin:0;') System
+										span.time #{n.notifdate}
+									span.message
+									| #{n.userfname} #{n.userlname} #{n.notifdesc}
+									span.message
+									| at #{n.notiftime}
+					if !hasNotif
 						li
-							a(href='/')
+							a(href='#')
 								span.subject
-									span.from(style='margin:0;') System
-									span.time #{n.notifdate}
 								span.message
-									| #{n.userfname} #{n.userfname} #{n.notifdesc}
+								| No notifications yet
+
 						//- li
 						//- 	a(href='/') See all pending request
 			div(style='float:right')
@@ -48,5 +67,6 @@ block main
 			a(href='/trainer/pending')
 				span.li_megaphone
 				| Pending Request
+
 
 

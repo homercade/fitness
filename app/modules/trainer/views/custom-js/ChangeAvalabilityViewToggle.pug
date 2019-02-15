@@ -1,0 +1,41 @@
+script.
+  $(document).ready(function(){
+
+    $('#changeAvailabilty').click(function(){
+      $('#changeAvailabiltyBody').css("display","block")
+      $('#kalendaryo').css("display", "none")
+      $('#changeAvailabilty').css("display", "none")
+      $('#cancel').css("display", "block")
+      const currSchedule = $('#trainerschedule').val()
+      let  currScheduleArray = currSchedule.split(',')
+      if (currScheduleArray.includes('0')){
+        $('#sun').prop('checked', true);
+      }
+      if (currScheduleArray.includes('1')){
+        $('#mon').prop('checked', true);
+      }
+      if (currScheduleArray.includes('2')){
+        $('#tue').prop('checked', true);
+      }
+      if (currScheduleArray.includes('3')){
+        $('#wed').prop('checked', true);
+      }
+      if (currScheduleArray.includes('4')){
+        $('#thur').prop('checked', true);
+      }
+      if (currScheduleArray.includes('5')){
+        $('#fri').prop('checked', true);
+      }
+      if (currScheduleArray.includes('6')){
+        $('#sat').prop('checked', true);
+      }
+    })
+
+    $('#cancel').click(function(){
+
+      $('#changeAvailabiltyBody').css("display","none")
+      $('#cancel').css("display", "none")
+      $('#kalendaryo').css("display", "block")
+      $('#changeAvailabilty').css("display", "block")
+    })
+  })

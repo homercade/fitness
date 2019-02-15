@@ -35,7 +35,6 @@ block main
                         data-lname          = pe.userlname,
                         data-gender         = pe.usergender,
                         data-bday           = pe.userbday,
-                        data-spec           = pe.specialname,
                         data-membershipname = pe.membershipname,
                         data-memclassname   = pe.memclassname
                         )
@@ -62,7 +61,6 @@ script.
       <b>Age:        </b>${bday} years old<br>
       <b>Gender:     </b>${$(this).data('gender')}<br>
       <b>Membership: </b>${$(this).data('memclassname')} - ${$(this).data('membershipname')}<br>
-      <b>Focus:      </b>${$(this).data('spec')}<br>
       `,
       type: 'info'
     })

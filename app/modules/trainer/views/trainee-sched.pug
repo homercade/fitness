@@ -1,68 +1,6 @@
 include ../../../templates/tr-head
-style.
-  .checkbox {
-    display: block;
-    position: relative;
-    padding-left: 35px;
-    padding-top: 5px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    font-size: 13.5px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
+include ./custom-stylesheets/checkbox
 
-  .checkbox input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .check {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 25px;
-    width: 25px;
-    background-color: #eee;
-    border-radius: 5px;
-  }
-
-  .checkbox:hover input~.check {
-    background-color: #ccc;
-  }
-
-  .checkbox input:checked~.check {
-    background-color: #ffbb00;
-  }
-
-  .check:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
-
-  .checkbox input:checked~.check:after {
-    display: block;
-  }
-
-  .checkbox .check:after {
-    left: 10px;
-    top: 6px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-  }
-  .input-group-addon {
-    background: transparent;
-    border: none;
-  }
 block main   
 
   .container
@@ -89,14 +27,14 @@ block main
               input.hidden#userid(type=text value = general.userid)
               input.hidden#sessionForSchedCount(type=text value = general.sessionForSched)
               input.hidden#sessioncount(type=text value = general.session_count)
-          
+
               input.hidden#trainerid(type="text" value=`${hello.trainerid}`)
               input.hidden#trainerschedule(type="text" value=`${hello.trainerschedule}`)
               input.hidden#trainertimestart(type="text" value=`${hello.trainertimestart}`)
               input.hidden#trainertimeend(type="text" value=`${hello.trainertimeend}`)
-              
+
               input.hidden#eventsHidden(type='text' value='')
-      
+
           .col-md-4.centered
             .profile-pic
               p
@@ -121,60 +59,58 @@ block main
                       h5 Sessions left to Schedule: 
                       h1#sessionForSched #{general.sessionForSched}
                     .panel-body
-                      button#changeAvailabilty.btn.btn-theme() Change Availabilty
-                      br
-                      br
+
+                      button#changeAvailabilty.btn.btn-theme(style="margin: 15px auto") Change Availability
+                      button#cancel.btn.btn-default(style="display:none; margin: 15px auto") Cancel
+
                       p 
                         small
                           i Hint: Change days where you are available or not. This is important since your trainee is bound to your given schedule of availability. Not changing when you are not available is solely your fault.                       
-                    
-                  .col-lg-9.mt
-                      .panel-body
-                        #kalendaryo
-                      .panel-body#changeAvailabiltyBody(style="display:none")
-                        .input-group
-                          span.input-group-addon
-                            | Work Days:
-                          label.checkbox
-                            | Monday
-                            input#mon.schedCheck(type='checkbox', name='sched[]' ,value=1)
-                            span.check
-                          label.checkbox
-                            | Tuesday
-                            input#tue.schedCheck(type='checkbox', name='sched[]', value=2)
-                            span.check
-                          label.checkbox
-                            | Wednesday
-                            input#wed.schedCheck(type='checkbox', name='sched[]', value=3)
-                            span.check
-                          span.input-group-addon
-                          label.checkbox
-                            | Thursday
-                            input#thur.schedCheck(type='checkbox', name='sched[]',value=4)
-                            span.check
-                          label.checkbox
-                            | Friday
-                            input#fri.schedCheck(type='checkbox', name='sched[]',value=5)
-                            span.check
-                          label.checkbox
-                            | Saturday
-                            input#sat.schedCheck(type='checkbox', name='sched[]',value=6)
-                            span.check
-                          span.input-group-addon
-                          label.checkbox
-                            | Sunday
-                            input#sun.schedCheck(type='checkbox', name='sched[]', value=0)
-                            span.check
-                        center
-                          br
-                          p
-                            small 
-                              i Note: Days that are disabled have scheduled events. 
-                          br
-                          button#changeAvailabiltySaveBtn.btn.btn-theme() Save
-                      
-                      
 
+                  .col-lg-9.mt
+                    .panel-body
+                      #kalendaryo
+                    .panel-body#changeAvailabiltyBody(style="display:none")
+                      .input-group
+                        span.input-group-addon
+                          | Work Days:
+                        label.checkbox
+                          | Monday
+                          input#mon.schedCheck(type='checkbox', name='sched[]' ,value=1)
+                          span.check
+                        label.checkbox
+                          | Tuesday
+                          input#tue.schedCheck(type='checkbox', name='sched[]', value=2)
+                          span.check
+                        label.checkbox
+                          | Wednesday
+                          input#wed.schedCheck(type='checkbox', name='sched[]', value=3)
+                          span.check
+                        span.input-group-addon
+                        label.checkbox
+                          | Thursday
+                          input#thur.schedCheck(type='checkbox', name='sched[]',value=4)
+                          span.check
+                        label.checkbox
+                          | Friday
+                          input#fri.schedCheck(type='checkbox', name='sched[]',value=5)
+                          span.check
+                        label.checkbox
+                          | Saturday
+                          input#sat.schedCheck(type='checkbox', name='sched[]',value=6)
+                          span.check
+                        span.input-group-addon
+                        label.checkbox
+                          | Sunday
+                          input#sun.schedCheck(type='checkbox', name='sched[]', value=0)
+                          span.check
+                      center
+                        br
+                        p
+                          small 
+                            i Note: Days that are disabled have scheduled events. 
+                        br
+                        button#changeAvailabilitySubmit.btn.btn-theme Save
               #history.tab-pane
                 .row
                   .col-lg-12.mt
@@ -198,65 +134,22 @@ block main
 include ../../../templates/foot
 
 //- CHANGE AVAILABILITY
-script.
-  $(document).ready(function(){
+include ./custom-js/ChangeAvalabilityViewToggle
 
-    
-    //- if (!localStorage.getItem("reload")) {
-    //-   localStorage.setItem("reload", "true");
-    //-   location.reload();
-    //- }
-    //- else {
-    //-   localStorage.removeItem("reload");
-    //- }
-    
-    $('#changeAvailabilty').click(function(){
-      $('#changeAvailabiltyBody').css("display","block")
-      $('#kalendaryo').css("display", "none")
-      const currSchedule = $('#trainerschedule').val()
-      let  currScheduleArray = currSchedule.split(',')
-      if (currScheduleArray.includes('0')){
-        $('#sun').prop('checked', true);
-      }
-      if (currScheduleArray.includes('1')){
-        $('#mon').prop('checked', true);
-      }
-      if (currScheduleArray.includes('2')){
-        $('#tue').prop('checked', true);
-      }
-      if (currScheduleArray.includes('3')){
-        $('#wed').prop('checked', true);
-      }
-      if (currScheduleArray.includes('4')){
-        $('#thur').prop('checked', true);
-      }
-      if (currScheduleArray.includes('5')){
-        $('#fri').prop('checked', true);
-      }
-      if (currScheduleArray.includes('6')){
-        $('#sat').prop('checked', true);
-      }
-    })
-  })
-  
 //- SAVE CHANGE AVAILABILITY
 script.
   $(document).ready(function(){
-    $('#changeAvailabiltySaveBtn').click(function(){
-      console.log(Array.from($('#eventsHidden').val()))
-      return;
-      let checkboxes = $('.schedCheck');
-      let finalSched = [];
-      let id = $('#trainerid').val();
-      for(let i=0;i<checkboxes.length;i++){
-        if(checkboxes[i].checked){
-          finalSched.push(checkboxes.eq(i).val())
-        }
+    $('#changeAvailabilitySubmit').click(function(){
+      const checkboxes = $('.schedCheck');
+      const finalSched = [];
+      const id = $('#trainerid').val();
+      for( let i=0; i<checkboxes.length; i++ ){
+        checkboxes[i].checked && finalSched.push(checkboxes.eq(i).val())
       }
-      console.log(id,finalSched)
-      $.post('/trainer/trainer/newsched',{ 
-        newsched : finalSched.toString(),
-        id: id
+      const newsched = finalSched.toString()
+      $.post('/trainer/trainer/newsched', { 
+        newsched,
+        id
       }).done( 
         swal({
           type: 'success',
@@ -276,74 +169,73 @@ script.
 
   $(document).ready(function () {
 
-    
-    var now = moment().format('YYYY-MM-DD')
-    var yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD')
+    const today = moment().format('YYYY-MM-DD')
+    const yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD')
 
     $.post(`/trainer/trainee/viewSched?id=${$('#userid').val()}`).done(function (data) {  
-     
-      var evs = []
-      var delId;
-      var schedStatus;
-      let trainerschedule = `[${$('#trainerschedule').val()}]`;
-      let trainerscheduleArray = JSON.parse(trainerschedule);
-      let trainertimestart = $('#trainertimestart').val();
-      let trainertimeend = $('#trainertimeend').val();
-      //- console.log(trainerschedule, trainerscheduleArray)
+
+      const evs = []
+      const trainerschedule = `[${$('#trainerschedule').val()}]`
+      const trainerscheduleArray = JSON.parse(trainerschedule)
+      const trainertimestart = $('#trainertimestart').val()
+      const trainertimeend = $('#trainertimeend').val()
+      const colorDisabled = "rgba(255, 187, 0, 0.2)"
+      let schedStatus;
+      let delId
 
       for (let i = 0; i < data.length; i++) {
+        const scheduleForPopover = `${moment(data[i].sessionDate).format('MMM DD, YYYY')} 
+          (${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')})`
         let name = `${data[i].userfname} ${data[i].userlname}`
         let sessionDate = moment(data[i].sessionDate).format('YYYY-MM-DD')
         let timeStart = moment(data[i].sessionTime, 'hh:mm a').format('HH:mm')
         let timeEnd = moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('HH:mm')
-        let dateDay = moment(data[i].sessionDate, 'YYYY-MM-DD').format('dddd')
-        console.log(dateDay)
-        let day = ''
+        let sessionDay = moment(data[i].sessionDate, 'YYYY-MM-DD').format('dddd')
         let start = `${sessionDate} ${timeStart}`
         let end = `${sessionDate} ${timeEnd}`
         let content = data[i].description
         schedStatus = data[i].scheduleStatus
         delId = data[i].PTid
 
-        if (dateDay == 'Monday'){
-          day = '1'
+        if (sessionDay === 'Monday'){
           $('.schedCheck[value=1]').prop('disabled',true)
-          $('.schedCheck[value=1]').siblings($('.checkbox input:checked~.check')).css("background-color","rgba(255, 187, 0, 0.2)")
+          $('.schedCheck[value=1]').siblings($('.checkbox input:checked~.check'))
+            .css("background-color", colorDisabled)
         }
-        if (dateDay == 'Tuesday'){
-          day = '2'
+        if (sessionDay === 'Tuesday'){
           $('.schedCheck[value=2]').prop('disabled',true)
-          $('.schedCheck[value=2]').siblings($('.checkbox input:checked~.check')).css("background-color","rgba(255, 187, 0, 0.2)")
+          $('.schedCheck[value=2]').siblings($('.checkbox input:checked~.check'))
+            .css("background-color", colorDisabled)
         }
-        if (dateDay == 'Wednesday'){
-          day = '3'
+        if (sessionDay === 'Wednesday'){
           $('.schedCheck[value=3]').prop('disabled',true)
-          $('.schedCheck[value=3]').siblings($('.checkbox input:checked~.check')).css("background-color","rgba(255, 187, 0, 0.2)")
+          $('.schedCheck[value=3]').siblings($('.checkbox input:checked~.check'))
+            .css("background-color", colorDisabled)
         }
-        if (dateDay == 'Thursday'){
-          day = '4'
+        if (sessionDay === 'Thursday'){
           $('.schedCheck[value=4]').prop('disabled',true)
-          $('.schedCheck[value=4]').siblings($('.checkbox input:checked~.check')).css("background-color","rgba(255, 187, 0, 0.2)")
+          $('.schedCheck[value=4]').siblings($('.checkbox input:checked~.check'))
+            .css("background-color", colorDisabled)
         }
-        if (dateDay == 'Friday'){
-          day = '5'
+        if (sessionDay === 'Friday'){
           $('.schedCheck[value=5]').prop('disabled',true)
-          $('.schedCheck[value=5]').siblings($('.checkbox input:checked~.check')).css("background-color","rgba(255, 187, 0, 0.2)")
+          $('.schedCheck[value=5]').siblings($('.checkbox input:checked~.check'))
+            .css("background-color", colorDisabled)
         }
-        if (dateDay == 'Saturday'){
-          day = '6'
+        if (sessionDay === 'Saturday'){
           $('.schedCheck[value=6]').prop('disabled',true)
-          $('.schedCheck[value=6]').siblings($('.checkbox input:checked~.check')).css("background-color","rgba(255, 187, 0, 0.2)")
+          $('.schedCheck[value=6]').siblings($('.checkbox input:checked~.check'))
+            .css("background-color", colorDisabled)
         }
-        if (dateDay == 'Sunday'){
-          day = '0'
+        if (sessionDay === 'Sunday'){
           $('.schedCheck[value=0]').prop('disabled',true)
-          $('.schedCheck[value=0]').siblings($('.checkbox input:checked~.check')).css("background-color","rgba(255, 187, 0, 0.2)")
+          $('.schedCheck[value=0]').siblings($('.checkbox input:checked~.check'))
+            .css("background-color", colorDisabled)
         }
-             
+
         if (sessionDate > yesterday){
 
-          var desc = {
+          const desc = {
           id: delId,
           title: name,
           start: start,
@@ -354,20 +246,16 @@ script.
           eventSessionId: data[i].sessionID,
           scheduleStatus: data[i].scheduleStatus,
           schedule: `${moment(data[i].sessionDate).format('MMM DD, YYYY')} (${data[i].sessionTime} - ${moment(data[i].sessionTime, 'hh:mm a').add(1, 'h').format('hh:mm a')})`,
-          constraint: 'businessHours',
-          day: day
+          constraint: 'businessHours'
           }
-
+          
           evs.push(desc)
-
         }
         else{
-          alert('hi1')
           if ( $('#sessioncount').val() != 0 ){
-            alert('hi2')
             $.post('/trainer/schedule/update', {
-            ptid : data[i].PTid,
-            status : schedStatus,
+            ptid: data[i].PTid,
+            status: schedStatus,
             id: $('#sessionid').val()
             }).done(
               location.reload()
@@ -375,7 +263,8 @@ script.
           }
         }
       }
-    
+      console.log(evs)
+
       $('#kalendaryo').fullCalendar({
         header: {
           left: 'prev,next',
@@ -384,7 +273,7 @@ script.
         },
         defaultView: 'month',
         validRange: {
-          start: now
+          start: today
         },
         businessHours: [{
           dow: trainerscheduleArray, 
@@ -398,7 +287,7 @@ script.
         eventStartEditable: true,
         eventDurationEditable: false,
         minTime: '08:00',
-        maxTime: '21:00',
+        maxTime: '24:00',
         eventClick: function (event, jsEvent, view) {
           swal({
             title: 'Cancel Schedule?',
@@ -428,8 +317,6 @@ script.
           })
         },
         eventDrop: function (event, delta, revertFunc) {
-
-          //- var newDate
           var newDate = moment(event.start).format('YYYY-MM-DD')
           var newTimeStart = moment(event.start).format('hh:mm a')
           var newTimeEnd = moment(event.end).format('hh:mm a')
@@ -437,14 +324,15 @@ script.
           swal({
             type: 'warning',
             title: 'Reschedule?',
-            html: `Are you sure you want to move the Schedule to <br>${moment(newDate).format('MMM D')}, ${moment(newTimeStart, 'hh:mm a').format('h:mm')} - ${moment(newTimeEnd, 'hh:mm a').format('h:mm A')}?`,
+            html: `Are you sure you want to move the Schedule to <br>
+              ${moment(newDate).format('MMM D')}, ${moment(newTimeStart, 'hh:mm a').format('h:mm')} - 
+              ${moment(newTimeEnd, 'hh:mm a').format('h:mm A')}?`,
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Confirm'
           }).then((result) =>{
             if(result.value){
-              
               $.post('/trainer/trainee/reschedule',{
                 reschedDate : newDate,
                 reschedTime : newTimeStart,
@@ -455,46 +343,6 @@ script.
                   title: 'Rescheduling was succesful!',
                   showConfirmButton: false,
                   timer: 1500
-                }).then(() => {
-                  location.reload();
-                })
-              )
-            }
-            else{
-              revertFunc();
-            }
-          })
-        },
-        eventDrop: function (event, delta, revertFunc) {
-
-          //- var newDate
-          var newDate = moment(event.start).format('YYYY-MM-DD')
-          var newTimeStart = moment(event.start).format('hh:mm a')
-          var newTimeEnd = moment(event.end).format('hh:mm a')
-
-          swal({
-            type: 'warning',
-            title: 'Reschedule?',
-            html: `Are you sure you want to move the Schedule to <br>${moment(newDate).format('MMM D')}, ${moment(newTimeStart, 'hh:mm a').format('h:mm')} - ${moment(newTimeEnd, 'hh:mm a').format('h:mm A')}?`,
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirm'
-          }).then((result) =>{
-            if(result.value){
-              
-              $.post('/trainer/trainee/reschedule',{
-                reschedDate : newDate,
-                reschedTime : newTimeStart,
-                reschedId : event.id
-              }).done(
-                swal({
-                  type: 'success',
-                  title: 'Rescheduling was succesful!',
-                  showConfirmButton: false,
-                  timer: 1500
-                }).then(() => {
-                  location.reload();
                 })
               )
             }
@@ -531,49 +379,45 @@ script.
           })
         },
         select: function (startDate, jsEvent, view) {
-
+          console.log("stratday:", startDate._d)
           var schedCount = $('#sessionForSchedCount').val()
           var idForSched = $('#userid').val()
           var view = $('#kalendaryo').fullCalendar('getView')
 
-          if (view.name != 'month') {
+          if (view.name !== 'month') {
             if (schedCount > 0) {
-              var scheduleDate = moment(startDate).format('YYYY-MM-DD')
-              var scheduleDate2 = moment(scheduleDate, 'YYYY-MM-DD').format('MMM D YYYY')
-              timeStart = moment(startDate).format('hh:mm a')
-              timeEnd = moment(timeStart, 'hh:mm a').add(1, 'h').format('hh:mm a')
-             
+              
+              const sessionDate = moment(startDate).format('YYYY-MM-DD')
+              const scheduleToDisplay = moment(startDate).format('MMM D YYYY')
+              const timeStart = moment(startDate).format('hh:mm a')
+              const timeEnd = moment(timeStart, 'hh:mm a').add(1, 'h').format('hh:mm a')
+
               swal({
-                  title: 'Schedule a Personal Training Session on',
-                  html: `<b>${scheduleDate2}</b></br><b>${timeStart} - ${timeEnd}</b>`,
-                  type: 'info',
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Confirm'
+                title: 'Schedule a Personal Training Session on',
+                html: `<b>${scheduleToDisplay}</b></br><b>${timeStart} - ${timeEnd}</b>`,
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirm'
                 })
                 .then((result) => {
                   if (result.value) {
-
-                    $.post('/trainer/trainee/schedule', {
-                        othermember: $('#aydi').val(),
-                        idForSched: idForSched
+                    $ .post('/trainer/trainee/schedule', {
+                      othermember: $('#aydi').val(),
+                      idForSched: idForSched
                       })
-
                       .done(function (data) {
-                        var memid = data[0].userid
-                        var sessionid = data[0].sessionID
-                        var sessionDate = scheduleDate
-                        var sessionTime = timeStart
-
-                        $.post('/trainer/trainee/schedule/add', {
-                            memid: memid,
-                            sessionid: sessionid,
-                            sessionDate: sessionDate,
-                            sessionTime: sessionTime,
+                        const memid = data[0].userid
+                        const sessionid = data[0].sessionID
+                        const sessionTime = timeStart
+                        $ .post('/trainer/trainee/schedule/add', {
+                            memid,
+                            sessionid,
+                            sessionDate,
+                            sessionTime
                           })
-
-                          .done(
+                          .done(  
                             swal({
                               type: 'success',
                               title: 'You Succesfully Scheduled a Session',
@@ -594,7 +438,7 @@ script.
                 text: `This user haven't bought sessions to schedule yet.`,
               })
             }
-          } else if (view.name == 'month') {
+          } else if (view.name === 'month') {
             if (schedCount > 0) {
               $('#kalendaryo').fullCalendar('changeView', 'agendaDay')
               $('#kalendaryo').fullCalendar('gotoDate', startDate)
@@ -611,35 +455,32 @@ script.
         }
       })
     })
+  })
 
-
-        //- Change Trainer
-    $('#giveup').click(function(){
-    const text = ''
-      swal({
-        type: 'question',
-        title: 'Feedback Needed',
-        text: 'Please write the reason why you wanted give up your current trainee.',
-        input: 'textarea',
-        inputPlaceholder: 'Type your message here...',
-        confirmButtonText: 'Submit',
-        showCancelButton: true
-      }).then((result)=>{
-        if (result.value) {
-          $.post('/trainer/change',{
-            reason: result.value,
-            userid: $(this).val()
-          }).done(
-            swal(
-            'Submitted',
-            'Your request has been submitted. Please wait for the official decision.',
-            'info'
-            ).then(()=>{
-              location.href = '/trainer/change'
-            })
-          )
-        }
-      })
+  //- Change Trainer
+  $('#giveup').click(function(){
+    swal({
+      type: 'question',
+      title: 'Feedback Needed',
+      text: 'Please write the reason why you wanted give up your current trainee.',
+      input: 'textarea',
+      inputPlaceholder: 'Type your message here...',
+      confirmButtonText: 'Submit',
+      showCancelButton: true
+    }).then((result)=>{
+      if (result.value) {
+        $.post('/trainer/change',{
+          reason: result.value,
+          userid: $(this).val()
+        }).done(
+          swal(
+          'Submitted',
+          'Your request has been submitted. Please wait for the official decision.',
+          'info'
+          ).then(()=>{
+            location.href = '/trainer/change'
+          })
+        )
+      }
     })
-    
   })

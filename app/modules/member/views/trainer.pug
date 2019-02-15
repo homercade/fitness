@@ -21,7 +21,6 @@ block main
           .col-lg-4.col-md-4.col-sm-4.mb
             .content-panel.pn(style="background-color:gray; padding:0; color:white; padding-top: 20px;")
               h3 #{trainer.trainerfname} #{trainer.trainerlname}
-              h6(style="margin:0!important") #{trainer.specialname}
               - var fullname = trainer.trainerfname +" "+ trainer.trainerlname
               
               button.view.btn-block.btn-primary(
@@ -32,7 +31,6 @@ block main
                                       data-name      = fullname, 
                                       data-gender    = trainer.trainergender,
                                       data-branch    = trainer.branchname,
-                                      data-specs     = trainer.specialname,
                                       data-type      = trainer.type,
                                       data-timestart = trainer.trainertimestart,
                                       data-timeend   = trainer.trainertimeend,
@@ -134,7 +132,7 @@ script.
     var name     =  button.data('name')
     var gender   =  button.data('gender') 
     var branch   =  button.data('branch')  
-    var specs    =  button.data('specs')   
+    //- var specs    =  button.data('specs')   
     var workdays =  button.data('workdays')
     var timestart =  moment(button.data('timestart'), 'HH:mm:ss').format('hh:mm A')
     var timeend =  moment(button.data('timeend'), 'HH:mm:ss').format('hh:mm A')
@@ -149,7 +147,7 @@ script.
     modal.find('.modal-body #name').text(name)
     modal.find('.modal-body #gender').text(gender)
     modal.find('.modal-body #branch').text(branch)
-    modal.find('.modal-body #specs').text(specs)
+    //- modal.find('.modal-body #specs').text(specs)
     modal.find('.modal-body #workdays').text(workdays)
     modal.find('.modal-body #time').text(time)
     modal.find('.modal-body #type').text(type)

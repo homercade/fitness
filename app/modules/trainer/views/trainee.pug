@@ -31,7 +31,6 @@ block main
                         data-lname          = pe.userlname,
                         data-gender         = pe.usergender,
                         data-bday           = pe.userbday,
-                        data-spec           = pe.specialname,
                         data-membershipname = pe.membershipname,
                         data-memclassname   = pe.memclassname
                         )
@@ -52,10 +51,9 @@ script.
       swal({
         title: `${$(this).data('fname')} ${$(this).data('lname')}`,
         html: `
-        <b>Age:        </b>${bday} years old<br>
-        <b>Gender:     </b>${$(this).data('gender')}<br>
-        <b>Membership: </b>${$(this).data('memclassname')} - ${$(this).data('membershipname')}<br>
-        <b>Focus:      </b>${$(this).data('spec')}<br>
+        <b>Age:</b>        ${bday} years old<br>
+        <b>Gender:</b>     ${$(this).data('gender')}<br>
+        <b>Membership:</b> ${$(this).data('memclassname')} - ${$(this).data('membershipname')}<br>
         `,
         type: 'info'
       })
@@ -69,10 +67,10 @@ script.
       }).done(function (data) {
         length = data.length
         if (length != 0) {
-        location.href = `/trainer/change`
+          location.href = `/trainer/change`
         } 
         else {
-        location.href = `/trainer/trainee-sched?id=${id}`
+          location.href = `/trainer/trainee-sched?id=${id}`
         }
       })
     })
