@@ -17,17 +17,31 @@ block main
 											|  Name
 										th
 											i.fa.fa-edit
+											|  Classification
+										th
+											i.fa.fa-edit
 											|  Action
 									tbody 
 										each re in rec 
 											tr
 												td #{re.userfname} #{re.userlname}
+												td
+													if re.classification=='1'
+														| Membership
+													else if re.classification=='2'
+														| Freeze
+													else if re.classification=='3'
+														| Walkin
+													else if re.classification=='4'
+														| Discounted Membership
+													else if re.classification=='5'
+														| Session
+													else if re.classification=='6'
+														| Change Membership
 												td 
 													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='.OR-modal',data-name=re.userfname + " " + re.userlname,
-													data-date=re.paymentdate, data-class=re.classification)
-														i.fa.fa-search
-													button.btn.btn-danger.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Reject')
-														i.fa.fa-times
+													data-date=re.paymentdate, data-m=re.classification,data-price=re.amount,data-dat=re.paymentdate)
+														|View Bill
 				// /content-panel
 
 			// VIEW
@@ -154,7 +168,7 @@ block main
 			.modal-content
 				.modal-header
 					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-					h4.modal-title Bill Breakdown
+					h4.modal-title Payment Breakdown
 				form(action='/pending/update', method='POST')
 					.modal-body
 						.container-fluid
@@ -181,7 +195,7 @@ block main
 									br
 									.row
 										.col-md-9
-											h2.fullname
+											h2#name
 											address
 												strong.m
 												br
@@ -193,13 +207,13 @@ block main
 										.col-md-3
 											div
 												.pull-left DATE : 
-												.pull-right#date 
+												.pull-right.dat
 												.clearfix
 											br
 											div
 											div(style='background-color:#ffbb00;color:white;padding:10px;')
-												.pull-left  Total Due :
-												.pull-right.fee
+												.pull-left  Total :
+												.pull-right.price
 												.clearfix
 									table.table
 										thead
@@ -210,11 +224,11 @@ block main
 										tbody
 											tr
 												td.text-center -
-												td.m
-												td.text-right.fee
+												td.m 
+												td.text-right.price
 											tr
 												td(colspan='2' rowspan='4')
-												td.text-right
+												td.text-right 
 
 											tr
 												td.text-right.no-border
@@ -226,7 +240,7 @@ block main
 					.modal-footer
 						button.btn.btn-default(type='button', data-dismiss='modal') Close
 						button.btn.btn-primary(type='button') Print
-						button.btn.btn-danger(type='submit') Pay
+						//- button.btn.btn-danger(type='submit') Pay
 
 include ../../../../templates/foot
 //- script.
@@ -308,30 +322,50 @@ include ../../../../templates/foot
 //- 	})
 
 
-//- script.
-//- 	$('.OR-modal').on('show.bs.modal', function(event){
-//- 		var button = $(event.relatedTarget)      
+script.
+	$('.OR-modal').on('show.bs.modal', function(event){
+		var button = $(event.relatedTarget)      
 	
-//- 		var id = button.data('id')
-//- 		var fullname = button.data('fullname')
-//- 		var m = button.data('m')
-//- 		var ad = button.data('ad')
-//- 		var ph = button.data('ph')
-//- 		var e = button.data('e')
-//- 		var fee = button.data('fee')
+		//r id = button.data('id')
+		var name = button.data('name')
+		var m = button.data('m')
+		if (m == 1){
+			m = "Membership"
+		}
+		else if (m == 2){
+			m = "Freeze"
+		}
+		else if (m == 3){
+			m = "Walkin"
+		}
+		else if (m == 4){
+			m = "Discounted Membership"
+		}
+		else if (m == 5){
+			m = "Session"
+		}
+		else if (m == 6){
+			m = "Change Membership"
+		}
+		console.log(m)
+		//- var ad = button.data('ad')
+		//- var ph = button.data('ph')
+		//- var e = button.data('e')
+		var price = button.data('price')
+		var dat = button.data('dat')
 
-//- 		let modal = $(this)     
+		let modal = $(this)     
 
 
-//- 		modal.find('.modal-body #id').val(`${id}`)
-//- 		modal.find('.modal-body .fullname').text(`${fullname}`)
-//- 		modal.find('.modal-body .m').text(`${m}`)
-//- 		modal.find('.modal-body .ad').text(`${ad}`)
-//- 		modal.find('.modal-body .e').text(`${e}`)
-//- 		modal.find('.modal-body .ph').text(`${ph}`)
-//- 		modal.find('.modal-body .fee').text(`₱ ${fee}.00`)
-//- 	})
-
+		//- modal.find('.modal-body #id').val(`${id}`)
+		modal.find('.modal-body #name').text(`${name}`)
+		modal.find('.modal-body .m').text(`${m}`)
+		//- modal.find('.modal-body .ad').text(`${ad}`)
+		//- modal.find('.modal-body .e').text(`${e}`)
+		//- modal.find('.modal-body .ph').text(`${ph}`)
+		modal.find('.modal-body .price').text(`₱ ${price}`)
+		modal.find('.modal-body .dat').text(`${dat}`)
+	})
 //- script.
 //- 	n = new Date();
 //- 	y = n.getFullYear();
