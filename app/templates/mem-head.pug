@@ -8,40 +8,52 @@ block main
 				b(style='font-size:15pt;margin-left: 10px; letter-spacing: 1px;') A-Team Fitness
 			span#header_inbox_bar.dropdown
 				a.bell.dropdown-toggle(data-toggle='dropdown', href='#')
-					i.fa.fa-bell
-					span.badge.bg-theme #{notifs.length}
+					i.fa.fa-bell 
+					- let hasUnreadNotifs = false
+					- let hasNotif = false
+					- let unreadNotifsCount = 0
+					each notif in notifs
+						if notif.notifstatus == 'unread'
+							- hasUnreadNotifs = true
+							- unreadNotifsCount += 1
+					if hasUnreadNotifs
+						span.badge.bg-theme #{unreadNotifsCount}
 				ul.dropdown-menu.extended.inbox
 					li
-						p All Notifications
-					if notifs.length != 0
+						p(style="background-color:#FFF") 
+							| All Notifications 
+					if notifs.length !== 0
 						each n in notifs
-							li
-								a(href='/')
-									span.subject
-										span.from(style='margin:0;') System
-										span.time #{n.notifdate}
-									if n.notifdescid == 1 || n.notifdescid == 2
+							if n.status === 'unread'
+								li(style="background-color:#F1F2F7")
+									a(href='#')
 										span.message
-											| You have #{n.notifdesc}
-									else if n.notifdescid == 3
+										| <b> #{n.userfname} #{n.userlname} </b> #{n.notifdesc}
 										span.message
-											| #{n.notifdesc}
-									else 
+										| at #{n.notiftime}
+										span.subject
+											span.from
+											span.time  #{n.notifdate}
+							else 
+								li(style="background-color:#FFF")
+									a(href='#')
 										span.message
-											| No Data
-					else 
-						li
-							a(href='/')
+										| <b> #{n.userfname} #{n.userlname} </b> #{n.notifdesc}
+										span.message
+										| at #{n.notiftime}
+										span.subject
+											span.from
+											span.time  #{n.notifdate}
+					else
+						li(style="background-color: #FFF2E5; border-radius: 5px;")
+							a(href='#')
 								span.subject
-									span.time You have No Notifications
-					
-					li
-						a(href='#' style="text-align: center") See All Notifications
-
-					//- li
-					//- 	a(href='/') See all pending request
+								center
+									span.message
+									| No notifications yet
+						//- li
+						//- 	a(href='/') See all pending request
 			div(style='float:right')
-				- console.log(profs, '<<<< FRONT END INITIAL')
 				each pr in profs
 					span.sm(style='font-size: 12pt;')
 						| Hello, 

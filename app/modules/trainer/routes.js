@@ -20,60 +20,21 @@ router.post('/trainee/viewSched/all', (req, res) => {
   })
 })
 
-// function dueEvents (req, res, next) {
-//   var date = new Date()
-//   var now = moment(date).format('YYYY-MM-DD')
-//   var now2 = moment(date).format()
-
-//   const query = `
-//   SELECT * FROM tbppt 
-//   JOIN tbltrainer on tbltrainer.trainerid = tbppt.trainid
-//   JOIN tbluser on tbluser.userid = tbppt.memid
-//   WHERE trainid = ? AND scheduleStatus = 1
-//   `
-//   db.query(query, [req.session.trainer.trainerid], (err, results) => {
-//       console.log(results, '<<<<<< ETO')
-//       if (results.length != 0) {
-//         console.log(results, '<<<<<< ETO2 ')
-        
-//         for(var i=0; i<results.length; i++){
-//           var tomorrow = moment(results[i].sessionDate).subtract(1, 'day').format('YYYY-MM-DD')
-//           console.log(tomorrow, '<<<<<<< tomorrow')
-        
-//           if (tomorrow == now) {
-//             console.log(results[i].memid, '<<<<<< MEMID')
-//             db.query('INSERT INTO tblnotification (notifdescid, memid, notifstatus, notifdate) VALUES (9, ?, "unread", ?)',
-//             [results[i].memid, now2], (err, results) => {
-//               notification(req, res, next)
-//             })
-//           }else {
-//             console.log('noooo')
-//           }
-//         } 
-//       } else {
-//         console.log(results, 'WLAANG LANMAN?')
-//         notification(req, res, next)
-//     }
-//     notification(req, res, next)
-//   })
-// }
-
 function notification(req, res, next) {
   const query = `
     SELECT * FROM tblnotification 
     JOIN tblnotificationdesc on tblnotification.notifdescid = tblnotificationdesc.notifdescid 
     JOIN tbluser on tbluser.userid = tblnotification.memid
-    WHERE tblnotificationdesc.notifdescid = 9 AND tblnotification.forwhom = 'trainer'
-    order by notifid desc limit 3 
+    WHERE tblnotification.forwhom = 'trainer'
+      AND tblnotification.notifdate <= CURDATE()
+    ORDER BY notifdate DESC LIMIT 3
     `
   db.query(query, (err, results) => {
   
     results.forEach((results) => {
       results.notifdate = moment(results.notifdate).fromNow()
     })
-    const today = moment().format('YYYY-MM-DD')
-    req.notifs = [{today}, ...results]
-    console.log("EEEEEEEEEEEEEEEEEEEEEEEE",  req.notifs)
+    req.notifs = results
     return next()
   })
 }
@@ -206,9 +167,13 @@ router.post('/trainee/schedule/add', (req, res) => {
     SET sessionForSched = sessionForSched - 1 
     WHERE sessionID = ?`
 
-  const queryInsertNotification = `
+  const queryInsertNotificationTrainer = `
     INSERT INTO tblnotification (notifdescid, memid, ptid, notifstatus, notifdate, notiftime, forwhom) 
     VALUES (9, ?, ?, "unread", ?, ?, "trainer")`
+  
+  const queryInsertNotificationMember = `
+    INSERT INTO tblnotification (notifdescid, memid, ptid, notifstatus, notifdate, notiftime, forwhom) 
+    VALUES (10, ?, ?, "unread", ?, ?, "member")`
 
   const queryLatestInsert = `SELECT * from tbppt ORDER BY Ptid DESC LIMIT 1`
   
@@ -224,12 +189,22 @@ router.post('/trainee/schedule/add', (req, res) => {
       db.query(queryLatestInsert, (err, result) => {
         const latestInsertId = result[0].PTid
         const notificationDate = moment(req.body.sessionDate, 'YYYY-MM-DD').subtract(1, 'd').format('YYYY-MM-DD')
-        db.query(queryInsertNotification, [ 
+        //Add notification - trainer
+        db.query(queryInsertNotificationTrainer, [ 
           req.body.memid, 
           latestInsertId, 
           notificationDate,
           req.body.sessionTime
         ], (err) => {
+          //Add notification - member
+          db.query(queryInsertNotificationMember, [ 
+            req.body.memid, 
+            latestInsertId, 
+            notificationDate,
+            req.body.sessionTime
+          ], (err) => {
+            if (err) console.error(err)
+          })
           if (err) console.error(err)
         })
         if (err) console.error(err)

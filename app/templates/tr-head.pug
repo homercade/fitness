@@ -20,28 +20,38 @@ block main
 						span.badge.bg-theme #{unreadNotifsCount}
 				ul.dropdown-menu.extended.inbox
 					li
-						p All Notifications
-					each n in notifs
-						if n.notifdate <= notifs[0].today
-							- hasNotif = true
-							li
-								a(href='#')
-									span.subject
-										span.from(style='margin:0;') System
-										span.time #{n.notifdate}
-									span.message
-									| #{n.userfname} #{n.userlname} #{n.notifdesc}
-									span.message
-									| at #{n.notiftime}
-					if !hasNotif
-						li
+						p(style="background-color:#FFF") 
+							| All Notifications 
+					if notifs.length !== 0
+						each n in notifs
+							if n.status === 'unread'
+								li(style="background-color:#F1F2F7")
+									a(href='#')
+										span.message
+										| <b> #{n.userfname} #{n.userlname} </b> #{n.notifdesc}
+										span.message
+										| at #{n.notiftime}
+										span.subject
+											span.from
+											span.time  #{n.notifdate}
+							else 
+								li(style="background-color:#FFF")
+									a(href='#')
+										span.message
+										| <b> #{n.userfname} #{n.userlname} </b> #{n.notifdesc}
+										span.message
+										| at #{n.notiftime}
+										span.subject
+											span.from
+											span.time  #{n.notifdate}
+					else
+						li(style="background-color: #FFF2E5; border-radius: 5px;")
 							a(href='#')
 								span.subject
-								span.message
-								| No notifications yet
-
-						//- li
-						//- 	a(href='/') See all pending request
+								center
+									span.message
+										| No notifications yet
+					
 			div(style='float:right')
 				span.sm(style='font-size: 12pt;')
 					| Hello, 
@@ -49,7 +59,7 @@ block main
 				span.dropdown
 					img.img-circle.dropdown-toggle(data-toggle='dropdown', src='/assets/img/ui-zac.jpg', alt='')
 					ul.dropdown-menu.extended.tasks-bar(style='z-index:2000; position:absolute; top:30px;')
-					
+
 						li
 							a(href='/logout')
 								.task-info

@@ -173,26 +173,22 @@ function totalPayment(req, res, next) {
 // }
 
 function notification(req, res, next) {
-	const query = `
+  const query = `
     SELECT * FROM tblnotification 
     JOIN tblnotificationdesc on tblnotification.notifdescid = tblnotificationdesc.notifdescid 
     JOIN tbluser on tbluser.userid = tblnotification.memid
-    WHERE memid = ? AND (tblnotificationdesc.notifdescid = 1 OR tblnotificationdesc.notifdescid = 2 OR tblnotificationdesc.notifdescid = 3)
-    order by notifid desc limit 3
-        `
-	db.query(query, [req.session.member.userid], (err, results) => {
-		if (results.length != 0) {
-			results.forEach((results) => {
-				results.notifdate = moment(results.notifdate).fromNow()
-			})
-			req.notifs = results
-			return next()
-		} else {
-			console.log('walang notifs gago')
-			req.notifs = results
-			return next()
-		}
-	})
+    WHERE tblnotification.forwhom = 'member'
+        AND tblnotification.notifdate <= CURDATE()
+    ORDER BY notifdate DESC LIMIT 3
+    `
+  db.query(query, (err, results) => {
+  
+    results.forEach((results) => {
+      results.notifdate = moment(results.notifdate).fromNow()
+    })
+    req.notifs = results
+    return next()
+  })
 }
 
 

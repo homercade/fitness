@@ -109,6 +109,14 @@ script.
     $('.preloader').fadeOut(500); 
   });
 
+script.
+  $(window).on('scroll', function(e){ 
+    let scroll = $(window).scrollTop();
+    if(scroll > 50){
+         $('.dropdown.open .dropdown-toggle').dropdown('toggle');
+    }
+  });
+
 //- Notifications
 script.
   $('.bell').click(function(){
@@ -117,17 +125,20 @@ script.
   
     if (session.user) {
       console.log('admin')
+      $.post('/admin/notification/mark/read')
     }
     else if (session.member) {
-     console.log('member')
+      console.log('member')
+      $.post('/member/notification/mark/read')
     }
     else if (session.trainer) {
       console.log('trainer')
       $.post('/trainer/notification/mark/read')
     }
-    else if (session.staff ){
-      console.log('staff')
-    }
+    //- else if (session.staff ){
+    //-   console.log('staff')
+    //-   $.post('/member/notification/mark/read')
+    //- }
   })
 
   
