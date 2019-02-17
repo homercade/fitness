@@ -410,7 +410,7 @@ function viewTrainers(req, res, next) {
 	const query = `
         SELECT * 
         FROM tbltrainer
-        JOIN tblbranch on tbltrainer.trainerbranch = tblbranch.branchID  
+        left JOIN tblbranch on tbltrainer.trainerbranch = tblbranch.branchID 
     `
 	db.query(query, function (err, results, fields) {
 		if (err) return res.send(err);

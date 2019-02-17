@@ -193,7 +193,7 @@ html(lang='en')
                         select#membership.form-control.required(name='membership') 
                           each ct in cat
                             option.hidden(value='') Select Membership... 
-                            option.membershipOption(value=`${ct.memrateid}` memName=`${ct.membershipname}`) #{ct.memclassname} - #{ct.membershipname} (#{ct.memperiod} MONTHS) - ₱ #{ct.memfee}
+                            option.membershipOption(value=`${ct.memrateid}` ct_description=`${ct.memclassdesc}` ct_membershipdesc=`${ct.membershipdesc}` memName=`${ct.membershipname}`) #{ct.memclassname} - #{ct.membershipname} (#{ct.memperiod} MONTHS) - ₱ #{ct.memfee}
                         a#detailsCol(style="text-decoration:none; cursor:pointer; display:none" data-toggle="modal" data-target="#modal_details") 
                           i See details of selected Membership
                   .row
@@ -278,7 +278,12 @@ html(lang='en')
               span(aria-hidden='true') ×
             h2(style='color:black; margin-left:15px;') Details: 
             .modal-body
-              p(style="font-size: 12pt") <b>Membership Type:</b> Details ng Membership Type
+              p(style="font-size: 12pt") 
+                b Membership Type:
+                #membershipType Details ng Membership Type
+              p(style="font-size: 12pt") 
+                b Class Description:
+                #membershipDescription Details ng Class
              
     //- // Back top
     a.go-top(href='#back-top')
@@ -312,6 +317,14 @@ style.
   select.form-control.error {
     border: 1px solid #ff6961;
   }
+script.
+  $(document).ready(function(){
+    $('#membership').on('change', function(){
+      console.log($(`.membershipOption[value="${$(this).val()}"]`).attr('ct_description'))
+      $('#membershipType').text($(`.membershipOption[value="${$(this).val()}"]`).attr('ct_description'))
+      $('#membershipDescription').text($(`.membershipOption[value="${$(this).val()}"]`).attr('ct_membershipdesc'))
+    })
+  })
 script.
       $(document).ready(function(){
         

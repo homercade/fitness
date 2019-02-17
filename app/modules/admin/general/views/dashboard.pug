@@ -8,6 +8,7 @@ append head
 block main
    section#main-content
        section.wrapper.site-min-height
+          input#hiddenInput(type='text' style="opacity:0;color:white")
           .row
             .col-lg-9.main-chart
               .row.mtbox
@@ -93,6 +94,13 @@ include ../../../../templates/foot.pug
 
 script.
   $(document).ready(function () {
+    setInterval(function(){
+      $('#hiddenInput').trigger('focus')
+    },500)
+    $('#hiddenInput').on('change', function(){
+    alert($(this).val())
+    $('#hiddenInput').val('')
+    })
     $.post('/view/notif').done(function (data) {
       const toast = swal.mixin({
         toast: true,
