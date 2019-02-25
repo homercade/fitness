@@ -186,7 +186,7 @@ block main
               .col-md-12
                 .form-group
                   h4 Reason for Changing trainer:
-                  textarea.form-control(rows='3')
+                  textarea.form-control(rows='3' required onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
       .modal-footer
         //type submit dapat to
         button.send.btn.btn-primary(type='button' data-toggle='modal' data-target='#edit-modal') Send

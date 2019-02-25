@@ -84,11 +84,11 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name
-                      input.form-control(type='text' name='fname')
+                      input.form-control(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
                   .col-md-6
                     .form-group
                       label.control-label Last Name
-                      input.form-control(type='text' name='lname')
+                      input.form-control(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
                 .row
                   .col-md-6
                     .input-group
@@ -109,16 +109,16 @@ block main
                   .col-md-12
                     .form-group
                       label.control-label Address
-                      input.form-control(type='text' name='addr')
+                      input.form-control(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number
-                      input.form-control(type='text', value='+63' name='mobile')
+                      input.form-control(type='text' placeholder='09xxxxxxxxx' value='+63' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
-                      input.form-control(type='email' name='email')
+                      input.form-control(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
                 .row
                   .col-md-6
                     .form-group
@@ -195,11 +195,11 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Username
-                      input.form-control(type='text' name='username')
+                      input.form-control(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='25' required)
                   .col-md-6
                     .form-group
                       label.control-label Password
-                      input.form-control(type='password' name='password')
+                      input.form-control(type='password' name='password' required)
                 .row
                   .col-md-4
                     label(for='file') Display Image
@@ -276,12 +276,12 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name
-                      input#fname.form-control(type='text' name='fname')
+                      input#fname.form-control(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
                       input.hidden#id(type='text' name='id')
                   .col-md-6
                     .form-group
                       label.control-label Last Name
-                      input#lname.form-control(type='text' name='lname')
+                      input#lname.form-control(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
                 .row
                   .col-md-6
                     .input-group
@@ -302,16 +302,16 @@ block main
                   .col-md-12
                     .form-group
                       label.control-label Address
-                      input#addr.form-control(type='text' name='addr')
+                      input#addr.form-control(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number
-                      input#mob.form-control(type='text', value='+63' name='mobile')
+                      input#mob.form-control(type='text' placeholder='09xxxxxxxxx' value='+63' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
-                      input#email.form-control(type='email' name='email')
+                      input#email.form-control(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
                 .row  
                   .col-md-12(style="position:relative!important; height:60px!important")
                     .form-group
@@ -328,11 +328,11 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Username
-                      input.form-control(type='text' name='username')#username
+                      input.form-control(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='25' required)#username
                   .col-md-6
                     .form-group
                       label.control-label Password
-                      input.form-control(type='password' name='pass')#password
+                      input.form-control(type='password' name='pass' required)#password
                 .row  
                  
                   .col-md-4

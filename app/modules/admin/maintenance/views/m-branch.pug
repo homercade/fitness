@@ -67,15 +67,15 @@ block main
 													.col-md-12
 														.form-group
 															label.control-label Franchise Name
-															input.form-control(type='text' name='branchname' required)
+															input.form-control(type='text' name='branchname' onkeypress='return restrictCharacters(this, event, alphaOnlyD)' required)
 												.row
 													.col-md-8
 														.form-group
 															label.control-label Full Address
-															input#snum.form-control(type='text', placeholder='Street number and address..' name='street' required)
+															input#snum.form-control(type='text', placeholder='Street number and address..' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' name='street' required)
 													.col-md-4
 														.form-group
-															input.form-control(style='margin-top:17%;', type='text', placeholder='City..' name='city' required)
+															input.form-control(style='margin-top:17%;', type='text', placeholder='City..' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' name='city' required)
 													//- .col-md-12
 													//- 	.form-group
 													//- 		label.control-label Staff In-charge
@@ -103,15 +103,15 @@ block main
 													.col-md-12
 														.form-group
 															label.control-label Franchise Name
-															input#name.form-control(type='text' name='branch')
+															input#name.form-control(type='text' name='branch' onkeypress='return restrictCharacters(this, event, alphaOnlyD)' required)
 												.row
 													.col-md-8
 														.form-group
 															label.control-label Full Address
-															input#sname.form-control(type='text', placeholder='Street number and address..' name='street')
+															input#sname.form-control(type='text', placeholder='Street number and address..' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)' maxlength='105' name='street' required)
 													.col-md-4
 														.form-group
-															input#city.form-control(style='margin-top:17%;', type='text', placeholder='City..' name='city')
+															input#city.form-control(style='margin-top:17%;', type='text', placeholder='City..' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' name='city' required)
 													//- .col-md-12       
 													//- 	.form-group
 													//- 		label.control-label Staff In-charge
@@ -188,8 +188,8 @@ script.
 
 	let modal = $(this)     
 
-	modal.find('.modal-body #id').val(` ${id}`)
-	modal.find('.modal-body #oldid').val(` ${oldid}`)
+	modal.find('.modal-body #id').val(`${id}`)
+	modal.find('.modal-body #oldid').val(`${oldid}`)
 	})
 
 	$(document).ready(function(){

@@ -61,12 +61,12 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Membership Class Name
-                        input.form-control(type='text' name='classname' required)
+                        input.form-control(type='text' name='classname' required onkeypress='return restrictCharacters(this, event, alphaOnly)')
                   .row
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#prog-desc.form-control(style='resize:none', name='classdesc', rows='3')
+                        textarea#prog-desc.form-control(style='resize:none', name='classdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary(type='submit' id='btn-add-memclass') Add Membership Class
@@ -109,12 +109,12 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Class Name
-                        input#name.form-control(type='text' name='classname')
+                        input#name.form-control(type='text' name='classname' required onkeypress='return restrictCharacters(this, event, alphaOnly)')
                   .row
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#desc.form-control(style='resize:none', name='classdesc', rows='3')
+                        textarea#desc.form-control(style='resize:none', name='classdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary(type='submit' id='btn-edit-memclass') Save

@@ -90,7 +90,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Class Name
-                        input.form-control(type='text' name='classname' required)
+                        input.form-control(type='text' name='classname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                   .row
                     .col-md-12
                       label.control-label Description
@@ -115,7 +115,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Class Name
-                        input#name.form-control(type='text' name='classname' )
+                        input#name.form-control(type='text' name='classname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                   .row
                     .col-md-12
                       label.control-label Description

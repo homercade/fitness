@@ -84,20 +84,20 @@ block main
 											.col-md-6
 												.form-group
 													label.control-label First Name
-													input.form-control(type='text' name='sfirstName' required)
+													input.form-control(type='text' name='sfirstName' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
 											.col-md-6
 												.form-group
 													label.control-label Last Name
-													input.form-control(type='text' name='slastName' required)
+													input.form-control(type='text' name='slastName' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
 										.row
 											.col-md-6
 												.form-group
 													label.control-label Mobile Number
-													input.form-control(type='number', name='smobNum', placeholder='09xxxxxxxxxx' required)
+													input.form-control(type='text' name='smobNum', placeholder='09xxxxxxxxxx' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
 											.col-md-6
 												.form-group
 													label.control-label Email
-													input.form-control(type='email', name='semail' required)
+													input.form-control(type='email', name='semail' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
 										.row
 											.col-md-12
 												h5 Login Information
@@ -107,11 +107,11 @@ block main
 											.col-md-6
 												.form-group
 													label.control-label Username
-													input.form-control(type='text' name='username')
+													input.form-control(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15')
 											.col-md-6
 												.form-group
 													label.control-label Password
-													input.form-control(type='password' name='password')
+													input.form-control(type='password' name='password' maxlength='25')
 										.row
 											.col-md-4
 												| Upload your Image 
@@ -163,20 +163,20 @@ block main
 											.col-md-6
 												.form-group
 													label.control-label First Name
-													input.form-control#fname(type='text' name='sfirstName')
+													input.form-control#fname(type='text' name='sfirstName' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
 											.col-md-6
 												.form-group
 													label.control-label Last Name
-													input.form-control#lname(type='text' name='slastName')
+													input.form-control#lname(type='text' name='slastName' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
 										.row
 											.col-md-6
 												.form-group
 													label.control-label Mobile Number
-													input.form-control#mobile(type='text' name='smobNum')
+													input.form-control#mobile(type='text' name='smobNum' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
 											.col-md-6
 												.form-group
 													label.control-label Email
-													input.form-control#email(type='email' name='semail')
+													input.form-control#email(type='email' name='semail' onkeypress='return restrictCharacters(this, event, emailOnly)')
 									.row
 										.col-md-12
 											h5 Login Information
@@ -186,11 +186,11 @@ block main
 											.col-md-6
 												.form-group
 													label.control-label Username
-													input.form-control(type='text')
+													input.form-control(type='text' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15')
 											.col-md-6
 												.form-group
 													label.control-label Password
-													input.form-control(type='password')
+													input.form-control(type='password' maxlength='25')
 										.row
 											.col-md-4
 												| Upload your Image 

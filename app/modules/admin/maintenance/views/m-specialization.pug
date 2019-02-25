@@ -49,12 +49,12 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Specialty Name
-                        input.form-control(type='text' name='specialname' required)
+                        input.form-control(type='text' name='specialname' required onkeypress='return restrictCharacters(this, event, alphaOnly)')
                   .row
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#prog-desc.form-control(style='resize:none', name='specialdesc', rows='3')
+                        textarea#prog-desc.form-control(style='resize:none', name='specialdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary(type='submit' id='btn-add-special') Add Specialty
@@ -74,12 +74,12 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Specialty Name
-                        input#name.form-control(type='text' name='specialname')
+                        input#name.form-control(type='text' name='specialname' required onkeypress='return restrictCharacters(this, event, alphaOnly)')
                   .row
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#desc.form-control(style='resize:none', name='specialdesc', rows='3')
+                        textarea#desc.form-control(style='resize:none', name='specialdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary(type='submit' id='btn-edit-special') save

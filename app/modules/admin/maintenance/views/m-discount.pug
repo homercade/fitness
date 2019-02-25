@@ -81,7 +81,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Promo Name
-                        input#name.form-control(type='text' name='promoname' required)
+                        input#name.form-control(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='25')
                   .row
                     .col-md-6
                       .form-group
@@ -95,7 +95,7 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Discount (%)
-                        input#disc.form-control(type='number', min='0' name='discount' required)
+                        input#disc.form-control(type='text' maxlength='2' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' required)
                     .col-md-6
                       .form-group
                         label.control-label Status
@@ -115,7 +115,7 @@ block main
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3')
+                        textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
@@ -136,7 +136,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Name
-                        input#name.form-control(type='text' name='promoname')
+                        input#name.form-control(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='25')
                   .row
                     .col-md-6
                       .form-group
@@ -150,7 +150,7 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Discount (%)
-                        input#disc.form-control(type='number', min='0' name='discount')
+                        input#disc.form-control(type='text', min='1' max='100' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' required)
                     .col-md-6
                       .form-group
                         label.control-label Status

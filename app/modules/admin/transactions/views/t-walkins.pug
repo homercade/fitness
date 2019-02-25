@@ -49,16 +49,16 @@ block main
               .col-md-6
                 .form-group
                   label.control-label Fullname
-                  input.form-control(type="text" name="fname" placeholder='First Name')
+                  input.form-control(type="text" name="fname" placeholder='First Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
               .col-md-6
                 .form-group
                   label.control-labe(style="color:white") Lastname
-                  input.form-control(type="text" name="lname" placeholder='Last Name')
+                  input.form-control(type="text" name="lname" placeholder='Last Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
             .row
               .col-md-12
                 .form-group
                   label.control-label Contact
-                  input.form-control(type="text" name="mobile")
+                  input.form-control(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
           button.btn.btn-primary(type='submit') Add Walkins
@@ -76,16 +76,16 @@ block main
               .col-md-6
                 .form-group
                   label.control-label Full Name
-                  input.form-control(type="text" name="fname" placeholder='First Name')
+                  input.form-control(type="text" name="fname" placeholder='First Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
               .col-md-6
                 .form-group
                   label.control-labe(style="color:white") Full Name
-                  input.form-control(type="text" name="lname" placeholder='Last Name')
+                  input.form-control(type="text" name="lname" placeholder='Last Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
             .row
               .col-md-12
                 .form-group
                   label.control-label Contact
-                  input.form-control(type="text" name="contact")
+                  input.form-control(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
           button.btn.btn-primary(type='submit') Add Walkins

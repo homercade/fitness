@@ -1,3 +1,4 @@
+include ../../../templates/addon-scripts.pug
 doctype html
 html(lang='en')
   head
@@ -95,7 +96,7 @@ html(lang='en')
             p.wow.fadeInUp(data-wow-delay='0.6s')
               | Sta. Mesa, MNL, Philippines
             p.copyright-text
-              | Copyright © 2018 HJRD
+              | Copyright © 2018 HJRDV
               br
               |  Designed by
               a(rel='nofollow', href='#', target='_parent') 
@@ -129,11 +130,11 @@ html(lang='en')
                     .col-md-6
                       .form-group
                         label#fname.control-label.required First Name <span class='r'>*</span> 
-                        input.form-control(type='text' name='fname' required)
+                        input.form-control(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
                     .col-md-6
                       .form-group
                         label.control-label Last Name <span class='r'>*</span> 
-                        input.form-control(type='text' name='lname' required)
+                        input.form-control(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
                   .row
                     .col-md-6
                       .input-group
@@ -154,20 +155,20 @@ html(lang='en')
                     .col-md-9
                       .form-group
                         label.control-label Address <span class='r'>*</span>
-                        input.form-control(type='text' name='str' placeholder='Street Name..' required)
+                        input.form-control(type='text' name='str' placeholder='Street Name..' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
                     .col-md-3 
                       .form-group
                         label.control-label(style="color:white") Address  
-                        input.form-control(type='text' name='city' placeholder='City..' required)
+                        input.form-control(type='text' name='city' placeholder='City..' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                   .row
                     .col-md-6
                       .form-group
                         label.control-label Mobile Number <span class='r'>*</span> 
-                        input.form-control(type='number', placeholder='09xxxxxxxxx' name='mobile' required)
+                        input.form-control(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
                     .col-md-6
                       .form-group
                         label.control-label Email  
-                        input.email.form-control(type='email' name='email' value='')
+                        input.email.form-control(type='email' name='email' value='' pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' onkeypress='return restrictCharacters(this, event, emailOnly)')
                         #prompt2
                 .row
                   .col-md-12
@@ -179,7 +180,7 @@ html(lang='en')
                     .col-md-12
                       .form-group
                         label.control-label Username <span class='r'>*</span> 
-                        input.username.form-control(type='text' name='username' required)
+                        input.username.form-control(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15' required)
                         #prompt
                 .row
                   .col-md-12
@@ -300,6 +301,8 @@ html(lang='en')
     script(src='../../../../landing/js/custom.js')
     script(src='../../../../assets/js/jquery.validate.js')
     script(src='../../../../assets/js/sweetalert2.all.min.js')
+
+
 style.
 
   .r {
@@ -452,12 +455,18 @@ script.
       }
       });
 
+      var date = new Date();
+      var cYear = date.getFullYear();
+      var cMonth = date.getMonth();
+      var cDate = date.getDate();
+
       $(".date").datepicker({
         changeMonth: true,
         changeYear: true,
         todayHighlight: true,
         maxViewMode: 2,
         startView: 2,
+        maxDate: new Date(cYear, cMonth, cDate),
         autoclose: true
       });
 

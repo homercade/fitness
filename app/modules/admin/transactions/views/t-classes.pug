@@ -62,7 +62,7 @@ block main
                     .col-md-3
                       .form-group
                         label.control-label Slot
-                        input.form-control(type='number' name='slot'  required)
+                        input.form-control(type='number' name='slot' min='1' onkeypress='return restrictCharacters(this, event, numOnly)' required)
                   .row
                     .col-md-6
                       .form-group
@@ -128,7 +128,7 @@ block main
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3'  required)
+                        textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3'  onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)' required)
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close

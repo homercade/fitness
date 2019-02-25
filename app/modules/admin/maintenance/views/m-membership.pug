@@ -87,11 +87,11 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Membership Amount (₱)
-                        input.form-control(type='number' name='memfee' required)
+                        input.form-control(type='text' name='memfee' required onkeypress='return restrictCharacters(this, event, floatOnly)')
                     .col-md-6
                       .form-group
                         label.control-label Membership Duration (Month/s)
-                        input.form-control(type='number' name='memdura' required)
+                        input.form-control(type='text' name='memdura' required onkeypress='return restrictCharacters(this, event, floatOnly)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary(type='submit' id='btn-add-rates') Add Rate
@@ -130,11 +130,11 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Membership Amount (₱)
-                        input.form-control(type='number' name='memfee' )
+                        input.form-control(type='text' name='memfee' onkeypress='return restrictCharacters(this, event, floatOnly)' required)
                     .col-md-6
                       .form-group
                         label.control-label Membership Duration (Days)
-                        input.form-control(type='number' name='memdura')
+                        input.form-control(type='text' name='memdura' onkeypress='return restrictCharacters(this, event, floatOnly)' required)
                         input.hidden#id(type='text' name='id')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
