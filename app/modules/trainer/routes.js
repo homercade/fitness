@@ -218,17 +218,18 @@ router.post('/trainee/schedule/add', (req, res) => {
 //Reschedule schedule
 router.post('/trainee/reschedule', (req, res) => {
   const query = `
-    UPDATE tbppt SET 
-    sessionDate = ?, 
-    sessionTime = ?, 
-    scheduleStatus = '1', 
-    description = NULL 
+    UPDATE tbppt 
+    SET 
+      sessionDate = ?, 
+      sessionTime = ?, 
+      scheduleStatus = '1', 
+      description = NULL 
     WHERE PTid = ?`
 
   const queryRescheduleNotification = `
     UPDATE tblnotification SET
-    notifdate = ?, 
-    notiftime = ?
+      notifdate = ?, 
+      notiftime = ?
     WHERE ptid = ?`
     
   db.query(query, [req.body.reschedDate, req.body.reschedTime, req.body.reschedId], (err, results) => {
@@ -265,11 +266,26 @@ router.post('/trainee/schedule/delete', (req, res) => {
   })
 })
 
-//Update Schedule
+//Update Schedule if finished
 router.post('/schedule/update', (req, res) => {
+  const queryUpdateSession = `
+    UPDATE tblsession 
+    SET session_count = session_count - 1 
+    WHERE sessionID = ?`
+
+  const queryUpdateSchedule = `
+    UPDATE tbppt 
+    SET 
+      scheduleStatus = 0,
+      description = 'client is absent'
+    WHERE PTid = ?`
+
   if (req.body.status == 1) {
-    db.query(`UPDATE tblsession SET session_count = session_count - 1 where sessionID = ?`, [req.body.id], (err, out) => {
-      db.query(`UPDATE tbppt SET scheduleStatus = 0 where PTid = ?`, [req.body.ptid], (err, out) => {})
+    db.query(queryUpdateSession, [req.body.id], (err, out) => {
+      if (err) console.error(err)
+      db.query(queryUpdateSchedule, [req.body.ptid], (err, out) => {
+        if (err) console.error(err)
+      })
     })
   }
 })

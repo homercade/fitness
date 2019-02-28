@@ -57,22 +57,30 @@ block main
               #history.tab-pane
                 .row
                   .col-lg-12.mt
-                    table.table
-                      thead
-                        tr
-                          th Date & Time
-                          th Status
-                          th
-                      tbody
-                        each s in sessions
+                    if sessions != 0
+                      table.table
+                        thead
                           tr
-                            td #{s.sessionDate} ( #{s.sessionTime} )
-                            if s.description != null
-                              td 
-                                .label.label-danger Unsuccesful
-                            else 
-                              td 
-                                .label.label-success Succesful
+                            th Date & Time
+                            th Status
+                            th
+                        tbody
+                          each s in sessions
+                            tr
+                              td #{s.sessionDate} ( #{s.sessionTime} )
+                              if s.description === 'void'
+                                td 
+                                  .label.label-danger Unsuccesful
+                              else if s.description === 'succesful'
+                                td 
+                                  .label.label-success Succesful
+                              else 
+                                td 
+                                  .label.label-success(style="margin-right:5px") Succesful 
+                                  .label.label-warning Client is absent
+                                 
+                    else 
+                      h2(style="font-style:italic; text-align:center") No finished sessions yet. Schedule now!
 
 .dateModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog.modal-sm
@@ -377,6 +385,10 @@ script.
           var newDate = moment(event.start).format('YYYY-MM-DD')
           var newTimeStart = moment(event.start).format('hh:mm a')
           var newTimeEnd = moment(event.end).format('hh:mm a')
+          // Disable drag on today
+          if(newDate == moment().format('YYYY-MM-DD')){
+            return revertFunc()
+          }
 
           swal({
             type: 'warning',

@@ -5,6 +5,10 @@ append head
       margin-right:10px;
     }
 
+    #toast-container > div {
+      opacity: 1;
+    }
+
 block main
    section#main-content
        section.wrapper.site-min-height
@@ -93,41 +97,27 @@ block main
 include ../../../../templates/foot.pug
 
 script.
+
   $(document).ready(function () {
-    setInterval(function(){
-      $('#hiddenInput').trigger('focus')
-    },500)
-    $('#hiddenInput').on('change', function(){
-    alert($(this).val())
-    $('#hiddenInput').val('')
-    })
+    const oneHour = 3600000
+    const toastrOption = {
+      closeButton: true,
+      positionClass: "toast-bottom-left",
+      timeOut: oneHour,
+      extendedTimeOut: oneHour
+    }
+
     $.post('/view/notif').done(function (data) {
-      const toast = swal.mixin({
-        toast: true,
-        position: 'top',
-        showConfirmButton: true
-      });
-      toast({
-        type: 'info',
-        title: `${data.length} pending membership`,
-      }).then((result)=>{
-        if(result.value){
-          $.post('/view/notif/payment').done(function (data) {
-        const toast = swal.mixin({
-          toast: true,
-          position: 'top',
-          showConfirmButton: true
-        });
-        toast({
-          type: 'info',
-          title: `${data.length} purchased sessions`,
-        })
-      })
-        }
-      })
-      
+      if (data.length !== 0){
+        toastr.info(`You have ${data.length} pending membership`, 'Membership Request', toastrOption )
+      }
     })
 
+    $.post('/view/notif/payment').done(function (data) {
+      if (data.length !== 0){
+        toastr.info(`${data.length} clients purchased sessions`, 'Training Session', toastrOption )
+      }
+    })
 
   })
 
