@@ -1187,11 +1187,15 @@ function viewAss(req, res, next){
 
 //view trainer-client partners
 function viewPer(req, res, next){
-  db.query(`select u.*, t.*, j.* from tbluser u
-   join tbppt j on j.memid=u.userid 
-   inner join tbltrainer t on j.trainid=t.trainerid`,function(err, results, fields){
+  db.query(`
+    SELECT * from tbluser
+    JOIN tbppt on tbppt.memid = tbluser.userid
+    JOIN tbltrainer on tbltrainer.trainerid = tbppt.trainid
+    GROUP BY userid`,
+    
+    function(err, results, fields){
     if(err) return res.send(err);
-    req.viewPer = results;
+    req.viewPer = results; 
     return next();
   })
 }
@@ -1422,14 +1426,15 @@ function sessionsToday ( req,res,next ) {
     return next();
   })
 }
-// ACCEPT SCHEDULE
+// ACCEPT SCHEDULE CONFIRM
 router.post('/session/confirm', (req, res) => {
   db.query(`UPDATE tblsession SET session_count = session_count - 1 where sessionID = ?`, [ req.body.sessionid ], (err, out) => {
-    db.query(`UPDATE tbppt SET scheduleStatus = 0 where PTid = ?`, [ req.body.ptid ], (err, out) => {
+    db.query(`UPDATE tbppt SET scheduleStatus = 0, description = 'succesful' where PTid = ?`, [ req.body.ptid ], (err, out) => {
     })
   })
 })
-// ACCEPT SCHEDULE
+
+// ACCEPT SCHEDULE VOID
 router.post('/session/void', (req, res) => {
   db.query(`UPDATE tblsession SET sessionForSched = sessionForSched + 1 where sessionID = ?`, [ req.body.sessionid ], (err, out) => {
     db.query(`UPDATE tbppt SET scheduleStatus = 0, description = 'void' where PTid = ?`, [ req.body.ptid ], (err, out) => {
@@ -1440,10 +1445,10 @@ router.post('/session/void', (req, res) => {
 // ALL USERS
 router.post('/users', (req, res) => {
   db.query('SELECT * FROM tbluser', (err, out) => {
-      if(err) console.log(err)
-      if(out.length > 0){
-         res.send(out)
-      }
+    if(err) console.log(err)
+    if(out.length > 0){
+        res.send(out)
+    }
   })
 })
 
