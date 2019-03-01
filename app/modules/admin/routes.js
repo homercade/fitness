@@ -1760,6 +1760,10 @@ function branch(req, res) {
   });
 }
 
+function ORs(req, res) {
+  res.render('admin/maintenance/views/m-ORs')
+}
+
 function category(req, res) {
   res.render('admin/maintenance/views/m-category', {
     cats: req.viewCategory
@@ -1935,6 +1939,11 @@ function receipt(req, res) {
   })
 }
 
+function card(req, res) {
+  res.render('admin/transactions/views/t-cardassign')
+}
+
+
 
 
 //QUERIES
@@ -2009,6 +2018,7 @@ router.get('/specialization', viewSpecial, specs);
 router.get('/staff',viewBranches, viewStaff, staff);
 router.get('/trains', viewTrainer, viewspecialdrop, viewbranchdrop, trains);
 router.get('/memclass', viewHie, memclass);
+router.get('/ORs',ORs);
 
 //TRANSACTIONS
 // router.get('/t-class', t_class);
@@ -2027,6 +2037,7 @@ router.get('/t/classes',viewClass2,viewGt,viewGcl, GClasses);
 router.get('/pending/pt', viewPendingChange, pendingPtChange);
 router.get('/payment/session', viewPaymentSession, paymentSession);
 router.get('/receipt', viewReceipt,receipt);
+router.get('/card', card);
 
 //QUERIES
 router.get('/queries/classes', qClass, qClasses);
