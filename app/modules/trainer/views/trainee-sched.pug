@@ -27,6 +27,7 @@ block main
               input.hidden#userid(type=text value = general.userid)
               input.hidden#sessionForSchedCount(type=text value = general.sessionForSched)
               input.hidden#sessioncount(type=text value = general.session_count)
+              input.hidden#sessiondesc(type=text value = general.description)
 
               input.hidden#trainerid(type="text" value=`${hello.trainerid}`)
               input.hidden#trainerschedule(type="text" value=`${hello.trainerschedule}`)
@@ -114,23 +115,33 @@ block main
               #history.tab-pane
                 .row
                   .col-lg-12.mt
-                    table.table
-                      thead
-                        tr
-                          th Date & Time
-                          th Status
-                          th
-                      tbody
-                        each s in sessions
+                    if sessions != 0
+                      table.table
+                        thead
                           tr
-                            td #{s.sessionDate} ( #{s.sessionTime} )
-                            if s.description != null
-                              td 
-                                .label.label-danger Unsuccesful
-                            else 
-                              td 
-                                .label.label-success Succesful
-
+                            th Date & Time
+                            th Status
+                            th
+                        tbody
+                        
+                          each s in sessions
+                            tr
+                              td #{s.sessionDate} ( #{s.sessionTime} )
+                              if s.description === 'void'
+                                td 
+                                  .label.label-danger Unsuccesful
+                              else if s.description === 'succesful'
+                                td 
+                                  .label.label-success Succesful
+                              else 
+                                td 
+                                  .label.label-success(style="margin-right:5px") Succesful 
+                                  .label.label-success Client is absent
+                                 
+                    else 
+                      h2(style="font-style:italic; text-align:center") No finished sessions yet. Schedule now!
+                      
+                         
 include ../../../templates/foot
 
 //- CHANGE AVAILABILITY
@@ -252,7 +263,10 @@ script.
           evs.push(desc)
         }
         else{
-          if ( $('#sessioncount').val() != 0 ){
+          const hasSession = $('#sessioncount').val() != 0
+          const hasNoSchedDesc = $('#scheduledesc').val() == null
+
+          if ( hasSession && hasNoSchedDesc ){
             $.post('/trainer/schedule/update', {
             ptid: data[i].PTid,
             status: schedStatus,
@@ -288,6 +302,7 @@ script.
         eventDurationEditable: false,
         minTime: '08:00',
         maxTime: '24:00',
+        selectConstraint: 'businessHours', 
         eventClick: function (event, jsEvent, view) {
           swal({
             title: 'Cancel Schedule?',
@@ -320,6 +335,10 @@ script.
           var newDate = moment(event.start).format('YYYY-MM-DD')
           var newTimeStart = moment(event.start).format('hh:mm a')
           var newTimeEnd = moment(event.end).format('hh:mm a')
+          // Disable drag on today
+          if(newDate == moment().format('YYYY-MM-DD')){
+            return revertFunc()
+          }
 
           swal({
             type: 'warning',
@@ -356,7 +375,7 @@ script.
         allowOutsideClick: false,
         events: evs,
         eventLimit: true,
-        eventRender: function(event, element) {
+        eventRender: function(event, element, view) {
           if (event.scheduleStatus == 2) {
             element.css({
               'background-color': '#ff6961',
@@ -370,16 +389,27 @@ script.
               container: 'body'
             })
           }
-          element.popover({
-            title: event.title,
-            trigger: 'hover',
-            placement: 'top',
-            content: event.schedule,
-            container: 'body'
-          })
+          if (view.name == 'month'){
+            element.popover({
+              title: event.title,
+              trigger: 'hover',
+              placement: 'top',
+              content: event.schedule,
+              container: 'body'
+            })
+          }
         },
         select: function (startDate, jsEvent, view) {
-          console.log("stratday:", startDate._d)
+          const selectedDay = moment(startDate).format('YYYY-MM-DD')
+          if(selectedDay == moment().format('YYYY-MM-DD')){
+            swal({
+              type: 'warning',
+              title: 'You can\'t make a schedule today!',
+              showConfirmButton: false,
+              timer: 1000
+            })
+            return revertFunc()
+          }
           var schedCount = $('#sessionForSchedCount').val()
           var idForSched = $('#userid').val()
           var view = $('#kalendaryo').fullCalendar('getView')

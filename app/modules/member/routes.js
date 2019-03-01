@@ -14,7 +14,6 @@ router.get('/dashboard', indexController);
 //******************************************************* */
 
 router.post('/event/view', (req, res) => {
-
 	var now = moment().format('MM/DD/YYYY')
 
 	db.query('select * from tbleventclass', (err, out) => {
@@ -34,10 +33,11 @@ router.post('/event/view', (req, res) => {
 	})
 })
 
+
 function totalPayment(req, res, next) {
 	const query = `SELECT * from tblpayment join tbluser on tblpayment.userid = tbluser.userid where tbluser.userid = ?`
 	db.query(query, [req.session.member.userid], (err, results, fields) => {
-		if (err) console.log(err)
+		if (err) console.error(err)
 		let total = 0
 		for (i = 0; i < results.length; i++) {
 			total += results[i].amount
@@ -47,150 +47,68 @@ function totalPayment(req, res, next) {
 	})
 }
 
-// function dueEvents(req, res, next) {
-// 	var date = new Date()
-// 	var now = moment(date).format('YYYY-MM-DD')
-// 	var now2 = moment(date).format()
-
-// 	const query = `
-//     SELECT * FROM tbleventclass 
-//     JOIN tbluce on tbluce.intUCEClassId  = tbleventclass.eventclassid
-//     JOIN tbluser on tbluser.userid = tbluce.intUCEUserId
-//     where tbluser.userid = ? AND type = 2
-//     `
-// 	db.query(query, [req.session.member.userid], (err, results) => {
-
-// 		if (results.length != 0) {
-// 			var tomorrow = moment(results[0].enddate).subtract(1, 'day').format('YYYY-MM-DD')
-// 			if (results.length != 0) {
-// 				if (tomorrow == now) {
-// 					db.query('SELECT * FROM tblnotification where memid = ?', [req.session.member.userid], (err, results) => {
-// 						if (results.length != 0) {
-// 							if (moment(results[0].notifdate).format('YYYY-MM-DD') != now) {
-// 								db.query('INSERT INTO tblnotification (notifdescid, memid, notifstatus, notifdate) VALUES (6, ?, "unread", ?)',
-// 									[req.session.member.userid, now2], (err, results) => {
-// 										notification(req, res, next)
-// 									})
-// 							} else {
-// 								notification(req, res, next)
-// 							}
-// 						} else {
-// 							db.query('INSERT INTO tblnotification (notifdescid, memid, notifstatus, notifdate) VALUES (6, ?, "unread", ?)',
-// 								[req.session.member.userid, now2], (err, results) => {
-// 									notification(req, res, next)
-// 								})
-// 						}
-// 					})
-// 				}
-// 			} else {
-// 				notification(req, res, next)
-// 			}
-// 		} else {
-// 			notification(req, res, next)
-// 		}
-// 		return next()
-// 	})
-
-// }
-
-// function dueDate(req, res, next) {
-
-// 	var date = new Date()
-// 	var now = moment(date).format('YYYY-MM-DD')
-// 	var now2 = moment(date).format()
-
-// 	const query = `
-//     SELECT * FROM tblmembership 
-//     JOIN tbluser on tbluser.userid = tblmembership.usersid 
-//     WHERE usersid = ?
-//     `
-// 	db.query(query, [req.session.member.userid], (err, results) => {
-// 		if (results != 0) {
-// 			var week = moment(results[0].expirydate).subtract(7, 'days').format('YYYY-MM-DD')
-// 			var fourDays = moment(results[0].expirydate).subtract(4, 'days').format('YYYY-MM-DD')
-// 			var tomorrow = moment(results[0].expirydate).subtract(1, 'day').format('YYYY-MM-DD')
-
-// 			if (now == week) {
-// 				db.query('SELECT * FROM tblnotification where memid = ?', [req.session.member.userid], (err, results) => {
-// 					if (results.length != 0) {
-// 						if (moment(results[0].notifdate).format('YYYY-MM-DD') != now) {
-// 							db.query('INSERT INTO tblnotification (notifdescid, memid, notifstatus, notifdate) VALUES (1, ?, "unread", ?)',
-// 								[req.session.member.userid, now2], (err, results) => {
-// 									notification(req, res, next)
-// 								})
-// 						} else {
-// 							notification(req, res, next)
-// 						}
-// 					} else {
-// 						db.query('INSERT INTO tblnotification (notifdescid, memid, notifstatus, notifdate) VALUES (1, ?, "unread", ?)',
-// 							[req.session.member.userid, now2], (err, results) => {
-// 								notification(req, res, next)
-// 							})
-// 					}
-// 				})
-// 			} else if (now == fourDays) {
-// 				db.query('SELECT * FROM tblnotification where memid = ?', [req.session.member.userid], (err, results) => {
-// 					if (results.length != 0) {
-// 						if (moment(results[0].notifdate).format('YYYY-MM-DD') != now) {
-// 							db.query('INSERT INTO tblnotification (notifdescid, memid, notifstatus, notifdate) VALUES (2, ?, "unread", ?)',
-// 								[req.session.member.userid, now2], (err, results) => {
-// 									notification(req, res, next)
-// 								})
-// 						} else {
-// 							notification(req, res, next)
-// 						}
-// 					} else {
-// 						db.query('INSERT INTO tblnotification (notifdescid, memid, notifstatus, notifdate) VALUES (2, ?, "unread", ?)',
-// 							[req.session.member.userid, now2], (err, results) => {
-// 								notification(req, res, next)
-// 							})
-// 					}
-// 				})
-// 			} else if (tomorrow == now) {
-// 				db.query('SELECT * FROM tblnotification where memid = ?', [req.session.member.userid], (err, results) => {
-// 					if (results.length != 0) {
-// 						if (moment(results[0].notifdate).format('YYYY-MM-DD') != now) {
-// 							db.query('INSERT INTO tblnotification (notifdescid, memid, notifstatus, notifdate) VALUES (3, ?, "unread", ?)',
-// 								[req.session.member.userid, now2], (err, results) => {
-// 									notification(req, res, next)
-// 								})
-// 						} else {
-// 							notification(req, res, next)
-// 						}
-// 					} else {
-// 						db.query('INSERT INTO tblnotification (notifdescid, memid, notifstatus, notifdate) VALUES (3, ?, "unread", ?)',
-// 							[req.session.member.userid, now2], (err, results) => {
-// 								notification(req, res, next)
-// 							})
-// 					}
-// 				})
-// 			}
-// 		} else {
-// 			notification(req, res, next)
-// 		}
-// 		notification(req, res, next)
-// 	})
-// }
-
 function notification(req, res, next) {
-  const query = `
-    SELECT * FROM tblnotification 
-    JOIN tblnotificationdesc on tblnotification.notifdescid = tblnotificationdesc.notifdescid 
+	const query = `
+	SELECT * FROM tblnotification 
+	JOIN tblnotificationdesc on tblnotification.notifdescid = tblnotificationdesc.notifdescid 
     JOIN tbluser on tbluser.userid = tblnotification.memid
     WHERE tblnotification.forwhom = 'member'
-        AND tblnotification.notifdate <= CURDATE()
+		AND tblnotification.notifdate <= CURDATE()
     ORDER BY notifdate DESC LIMIT 3
-    `
-  db.query(query, (err, results) => {
-  
-    results.forEach((results) => {
-      results.notifdate = moment(results.notifdate).fromNow()
-    })
-    req.notifs = results
-    return next()
-  })
+		`
+	db.query(query, (err, results) => {
+		
+		results.forEach((results) => {
+			results.notifdate = moment(results.notifdate).fromNow()
+		})
+		req.notifs = results
+		return next()
+	})
 }
 
+router.post('/notification/mark/read', (req, res) => {
+  db.query('SELECT * FROM tblnotification WHERE forwhom = "member"', (err, results) =>{
+    results.forEach(result => {
+      if(result.notifstatus === 'unread') {
+        db.query('UPDATE tblnotification SET notifstatus = "read" WHERE notifid = ?', [result.notifid], (err) => {
+          if (err) console.error(err)
+        })
+      }
+    })
+    if (err) console.error(err)
+  })
+})
+	
+router.post('/create-notification', (req, res) => {
+	const dateTom = moment().add(1, 'day').format('MM/DD/YYYY')
+	const SELECT_EVENTS_STARTING_TOM = `SELECT * FROM tbleventclass WHERE startdate = ?`
+	const USERS_IN_THAT_EVENT = `SELECT intUCEUserID FROM tbluce WHERE intUCEClassID = ?`
+	const CHECK_NOTIF = `SELECT * FROM tblnotification WHERE memid = ? AND eventid = ?`
+	const INSERT_NOTIF = `INSERT INTO tblnotification (notifdescid, memid, eventid, notifstatus, notifdate, notiftime, forwhom) VALUES(?, ?, ?, ?, ?, ?, ?)`
+
+	db.query(SELECT_EVENTS_STARTING_TOM, dateTom, (err, events) => {
+		if(events.length > 0){
+			for(let i = 0; i < events.length; i++){
+				db.query(USERS_IN_THAT_EVENT, events[i].eventclassid, (err, users) => {
+					if(users.length > 0){
+						for(let j = 0; j < users.length; j++){
+							db.query(CHECK_NOTIF, [users[j].intUCEUserID, events[i].eventclassid], (err, results) => {
+								if(results.length == 0){
+									db.query(INSERT_NOTIF, [6, users[j].intUCEUserID, events[i].eventclassid, 'unread', moment().format('YYYY-MM-DD'), moment(events[i].starttime, 'HH:mm:ss').format('hh:mm a'), 'member'], (err, inserted) => {
+										if(err) console.error(err)
+									})
+								} else return res.send(true)
+								if(err) console.error(err)
+							})
+						}
+					} else return res.send(true)
+					if(err) console.error(err)
+				})
+			}
+		} else return res.send(true)
+		if(err) console.error(err) 
+	})
+})
 
 
 //******************************************************* */
@@ -232,15 +150,15 @@ function initial(req, res, next) {
 
 		if (results.length == 0) {
 			db.query(`
-            select * from tbluser 
-            join tblmembership on tblmembership.usersid = tbluser.userid
-            join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
-            join tblcat on tblcat.membershipID = tblmemrates.memcat
-            join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass 
-            join tblpayment on tblpayment.userid = tbluser.userid
-            where usertype= 2 and tbluser.userid = ?
-            group by tbluser.userid
-            `, [req.session.member.userid], (err, results, fields) => {
+				select * from tbluser 
+				join tblmembership on tblmembership.usersid = tbluser.userid
+				join tblmemrates on tblmemrates.memrateid = tblmembership.membershiprateid
+				join tblcat on tblcat.membershipID = tblmemrates.memcat
+				join tblmemclass on tblmemclass.memclassid = tblmemrates.memclass 
+				join tblpayment on tblpayment.userid = tbluser.userid
+				where usertype= 2 and tbluser.userid = ?
+				group by tbluser.userid
+				`, [req.session.member.userid], (err, results, fields) => {
 				if (err) return res.send(err)
 				results.forEach((results) => {
 					results.signdate = moment(results.signdate).format("LL");
@@ -252,17 +170,14 @@ function initial(req, res, next) {
 					results.paymentdate = moment(results.paymentdate).format("MMM DD, YYYY");
 				})
 				req.initial = results;
-				console.log(req.initial, '2nd query')
 				return next()
 			})
 		} else {
 			req.initial = results;
-			console.log(req.initial, '1st query')
 			return next()
 		}
 	})
 }
-
 
 router.post('/profile/edit', (req, res) => {
 	const query = `UPDATE tbluser SET useraddress = ?, usermobile = ?, useremail = ?, userusername = ?, userpassword = ? where userid = ?`
@@ -274,7 +189,7 @@ router.post('/profile/edit', (req, res) => {
 		req.body.password,
 		req.session.member.userid
 	], (err, out) => {
-		if (err) console.log(err)
+		if (err) console.error(err)
 	})
 })
 
@@ -457,12 +372,12 @@ function checkForChange(req, res, next) {
 	})
 }
 
+//Update Schedule if finished
 function checkFinishedSession(req, res, next) {
-	console.log({a: req, b: res})
 	const today = moment().format('YYYY-MM-DD')
 	const query = `SELECT * from tbppt`;
 	const query2 = `UPDATE tblsession SET session_count = session_count - 1 where sessionID = ?`;
-	const query3 = `UPDATE tbppt SET scheduleStatus = 0 where PTid = ?`;
+	const query3 = `UPDATE tbppt SET scheduleStatus = 0, description = 'client is absent' where PTid = ?  `;
 
 	db.query(query, (err, results) => {
 		if (err) console.error(err)
@@ -470,6 +385,7 @@ function checkFinishedSession(req, res, next) {
 			const date = result.sessionDate
 			
 			if (date < today && result.scheduleStatus != 0) {
+				
 				db.query(query2, [result.sessionID], (err) => {
 					if (err) console.error(err)
 					db.query(query3, [result.PTid], (err) => {
@@ -478,7 +394,6 @@ function checkFinishedSession(req, res, next) {
 				})
 			}
 		})
-		console.log("TBPPT: ", results)
 		return next()
 	})
 }
@@ -569,7 +484,7 @@ router.post('/trainee/reschedule', (req, res) => {
       if(err) console.error(err)
     })
 		if (err) {
-			console.log(err)
+			console.error(err)
 			res.redirect('trainee')
 		}
 	})
@@ -586,7 +501,7 @@ router.post('/change', (req, res) => {
 		req.body.trainerid,
 		req.body.reason
 	], (err, out) => {
-		if (err) console.log(err)
+		if (err) console.error(err)
 	})
 })
 
@@ -608,7 +523,7 @@ function viewHistory(req, res, next) {
 
 router.post('/fee', (req, res) => {
 	db.query('SELECT * from tblgenera where generalID = 5', (err, out) => {
-		if (err) console.log(err)
+		if (err) console.error(err)
 		res.send(out[0])
 	})
 })
@@ -617,40 +532,36 @@ router.post('/fee', (req, res) => {
 
 // ---------- F U N C T I O N S ---------- //
 function dashboard(req, res, next) {
-	res.render('member/views/dashboard', {
+	return res.render('member/views/dashboard', {
 		notifs: req.notifs,
 		profs: req.initial,
 		total: req.total,
 		fee: req.fee,
 		session: req.session
 	})
-	return next();
 }
 
 function profile(req, res, next) {
-	res.render('member/views/profile', {
+	return res.render('member/views/profile', {
 		notifs: req.notifs,
 		profs: req.initial,
 		session: req.session
 	})
-	return next();
 }
 
 function events(req, res, next) {
-	res.render('member/views/events', {
+	return res.render('member/views/events', {
 		notifs: req.notifs,
 		joinedEvents: req.joinedEvents,
 		eventIds: req.eventIds,
 		profs: req.initial,
 		eves: req.viewEvent,
 		session: req.session
-
 	});
-	return next();
 }
 
 function classes(req, res, next) {
-	res.render('member/views/classes', {
+	return res.render('member/views/classes', {
 		notifs: req.notifs,
 		joinedClasses: req.joinedClasses,
 		classIds: req.classIds,
@@ -658,11 +569,10 @@ function classes(req, res, next) {
 		profs: req.initial,
 		session: req.session
 	});
-	return next();
 }
 
 function trainer(req, res, next) {
-	res.render('member/views/trainer', {
+	return res.render('member/views/trainer', {
 		notifs: req.notifs,
 		profs: req.initial,
 		trainers: req.viewTrainers,
@@ -672,37 +582,34 @@ function trainer(req, res, next) {
 
 
 function pending(req, res, next) {
-	res.render('member/views/pending', {
+	return res.render('member/views/pending', {
 		notifs: req.notifs,
 		profs: req.initial,
 		session: req.session
 	});
-	return next();
 }
 
 function accepted(req, res, next) {
-	res.render('member/views/accepted', {
+	return res.render('member/views/accepted', {
 		notifs: req.notifs,
 		profs: req.initial,
 		pt: req.pt,
 		sessions: req.sessions,
 		session: req.session
 	});
-	return next();
 }
 
 function change(req, res, next) {
-	res.render('member/views/change', {
+	return res.render('member/views/change', {
 		notifs: req.notifs,
 		profs: req.initial,
 		session: req.session
 
 	});
-	return next();
 }
 
 // ------------- GET ---------------//
-router.get('/', initial, notification, totalPayment, fee,  dashboard, checkFinishedSession);
+router.get('/', initial, notification, totalPayment, fee, checkFinishedSession, dashboard);
 // router.get('/', initial, notification, totalPayment, fee, dueEvents, dueDate, dashboard, checkFinishedSession);
 router.get('/profile', notification, initial, profile);
 router.get('/events', notification, joinedEvents, viewEvent, initial, events);

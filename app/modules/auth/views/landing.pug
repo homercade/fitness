@@ -244,10 +244,12 @@ html(lang='en')
             button.close(type='button', data-dismiss='modal', aria-label='Close')
               span(aria-hidden='true') ×
             h2(style='color:black; margin-left:30px;') Login
-          form(action='/login', method='post')
-            .modal-body
+          form(action='/login', method='post', style="padding-top: 0")
+            .modal-body(style="padding-top: 0")
               .container-fluid
                 .row
+                  p#incorrectPassword(style="text-align: center; color: red; display: none; margin-bottom: 20px; line-height: 1.5; letter-spacing: 0;") 
+                    |The email or phone number you’ve entered doesn’t match any account.
                   .col-md-12
                     .form-group
                       label.control-label Username
@@ -329,178 +331,169 @@ script.
     })
   })
 script.
-      $(document).ready(function(){
-        
-        $('.username').keyup(function () {
-          var username = $(this).val()
-          if (username.length >= 4) {
-            $.post('/signup/users').done(function (data) {
-              console.log(data)
-              for (i = 0; i < data.length; i++) {
-                if (data[i].userusername != username) {
-                  $('#prompt').empty()
-                } else {
-                  $('.username').addClass('inv')
-                  $('.username.input.form-control').addClass('inv')
-                  $('#prompt').text('Username is already taken')
-                  $('#prompt').css({
-                    'color':'#ff6961',
-                    'font-weight':'bold'
-                  })
-                }
-              }
-            })
-          }
-          else{
-            $('#prompt').empty()
+  $(document).ready(function(){
+    $('.username').keyup(function () {
+      var username = $(this).val()
+      if (username.length >= 4) {
+        $.post('/signup/users').done(function (data) {
+          console.log(data)
+          for (i = 0; i < data.length; i++) {
+            if (data[i].userusername != username) {
+              $('#prompt').empty()
+            } else {
+              $('.username').addClass('inv')
+              $('.username.input.form-control').addClass('inv')
+              $('#prompt').text('Username is already taken')
+              $('#prompt').css({
+                'color':'#ff6961',
+                'font-weight':'bold'
+              })
+            }
           }
         })
-
-        $('.email').keyup(function () {
-          var email = $(this).val()
-          if (email.length >= 4) {
-            $.post('/signup/users').done(function (data) {
-              console.log(data)
-              for (i = 0; i < data.length; i++) {
-                if (data[i].useremail != email) {
-                } else {
-                  $('.email').addClass('inv')
-                  $('.email.input.form-control').addClass('inv')
-                  $('#prompt2').text('Email is already taken')
-                  $('#prompt2').css({
-                    'color':'#ff6961',
-                    'font-weight':'bold'
-                  })
-                }
-              }
-            })
-          }
-          $('#prompt2').empty()
-        })
-
-        
-        $(document).on("submit", "#form", function(e){
-          if ( $('.username').hasClass('inv') || $('.email').hasClass('inv')){
-            e.preventDefault()
-            return  false
-          }else{
-            continue
-          }
-        })
-
-      
-
-        //- var modals = [];
-        //- modals.push({title: 't1', text: 'text1', toast:true})
-        //- modals.push({title: 't2', text: 'text2', toast:true})
-        //- swal.queue(modals);
-
-      var getUrl = window.location
-      var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1]
-      if (`${baseUrl}?incorrect` == getUrl){
-
-        const toast = swal.mixin({
-          toast: true,
-          position: 'top',
-          showConfirmButton: false,
-          timer: 3000,
-          width: '1000px',
-        })
-        toast({
-          type: 'error',
-          title: 'Incorrect username or password'
-        })
-        $("#login").modal('show')
       }
+      else{
+        $('#prompt').empty() 
+      }
+    })
 
-       $('#membership').on('change', function(){
-         var selected = $('#membership').val()
-         if($(`.membershipOption[value='${selected}']`).attr('memName') == 'Exclusive'){
-           $('#branchCol').css('display', 'block')
-           $.post('/signup/query/branch').done(function(data){
-             console.log(data)
-             for(var i=0; i< data.length; i++){
-               $('#branch').append(`<option value='${data[i].branchID}'>${data[i].branchname}</option>`)
-             }
-           })
-         }
-         else{
-           $('#branchCol').css('display', 'none')
-         }
-       })
+    $('.email').keyup(function () {
+      var email = $(this).val()
+      if (email.length >= 4) {
+        $.post('/signup/users').done(function (data) {
+          console.log(data)
+          for (i = 0; i < data.length; i++) {
+            if (data[i].useremail != email) {
+            } else {
+              $('.email').addClass('inv')
+              $('.email.input.form-control').addClass('inv')
+              $('#prompt2').text('Email is already taken')
+              $('#prompt2').css({
+                'color':'#ff6961',
+                'font-weight':'bold'
+              })
+            }
+          }
+        })
+      }
+      $('#prompt2').empty()
+    })
 
-      $('#membership').on('change', function(){
-        let selected = $('#membership').val()
-        if($(`.membershipOption[value='${selected}']`)){
-          $('#detailsCol').css('display', 'block')
-        }
-      })
-       
-     })
+    
+    $(document).on("submit", "#form", function(e){
+      if ( $('.username').hasClass('inv') || $('.email').hasClass('inv')){
+        e.preventDefault()
+        return  false
+      }else{
+        continue
+      }
+    })
+
+  
+
+    //- var modals = [];
+    //- modals.push({title: 't1', text: 'text1', toast:true})
+    //- modals.push({title: 't2', text: 'text2', toast:true})
+    //- swal.queue(modals);
+
+  var getUrl = window.location
+  var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1]
+  $('#modal1')
+    .on('shown', function () {
+      $('body').on('wheel.modal mousewheel.modal', function () {
+        return false;
+      });
+    })
+    .on('hidden', function () {
+      $('body').off('wheel.modal mousewheel.modal');
+    });
+  if (`${baseUrl}?incorrect` == getUrl){
+    $('#incorrectPassword').css("display","block")
+    $("#login").modal('show')
+  }
+
+    $('#membership').on('change', function(){
+      var selected = $('#membership').val()
+      if($(`.membershipOption[value='${selected}']`).attr('memName') == 'Exclusive'){
+        $('#branchCol').css('display', 'block')
+        $.post('/signup/query/branch').done(function(data){
+          console.log(data)
+          for(var i=0; i< data.length; i++){
+            $('#branch').append(`<option value='${data[i].branchID}'>${data[i].branchname}</option>`)
+          }
+        })
+      }
+      else{
+        $('#branchCol').css('display', 'none')
+      }
+    })
+
+  $('#membership').on('change', function(){
+    let selected = $('#membership').val()
+    if($(`.membershipOption[value='${selected}']`)){
+      $('#detailsCol').css('display', 'block')
+    }
+  })
+    
+  })
 
       
 
 script.
       $(document).ready(function () {
-      $("#login").on("show", function () {
-      $("body").addClass("modal-open");
-      }).on("hidden", function () {
-      $("body").removeClass("modal-open")
-      });
-      $('#type').click(function () {
-      if ($(this).val() == 2) {
-      $('#branch').prop("disabled", false);
-      } else {
-      $('#branch').prop("disabled", true);
-      }
-      });
-
-      var date = new Date();
-      var cYear = date.getFullYear();
-      var cMonth = date.getMonth();
-      var cDate = date.getDate();
-
-      $(".date").datepicker({
-        changeMonth: true,
-        changeYear: true,
-        todayHighlight: true,
-        maxViewMode: 2,
-        startView: 2,
-        maxDate: new Date(cYear, cMonth, cDate),
-        autoclose: true
-      });
-
-      $(function () {
-      $("#student").click(function () {
-      if ($(this).is(":checked")) {
-      $("#2").show();
-      $("#1").hide();
-      } else {
-      $("#2").hide();
-      $("#1").show();
-      }
-      });
-      });
-
-      $('.needs-validation').validate({
-        rules:{
-          username: {
-            minlength: 4
-            },
-          mobile:{
-            maxlength: 11,
-            minlength: 11
-            },
-            
-        },
-        messages:{
-          username:{
-            minlength: 'Username shouldn\'t be less than four characters'
-          },
-          mobile:{
-            maxlength: 'Mobile number should be exactly 11 digits',
-            minlength: 'Mobile number should be exactly 11 digits'
+        $("#login")
+          .on("show", function () {
+            $("body").addClass("modal-open");
+          })
+          .on("hidden", function () {
+            $("body").removeClass("modal-open")
+          });
+        $('#type').click(function () {
+          if ($(this).val() == 2) {
+            $('#branch').prop("disabled", false);} 
+          else {
+            $('#branch').prop("disabled", true);
           }
-        }
-      });
+        });
+
+        $(".date").datepicker({
+          changeMonth: true,
+          changeYear: true,
+          todayHighlight: true,
+          maxViewMode: 2,
+          startView: 2,
+          autoclose: true
+        });
+
+        $(function () {
+          $("#student").click(function () {
+            if ($(this).is(":checked")) {
+              $("#2").show();
+              $("#1").hide(); } 
+            else {
+              $("#2").hide();
+              $("#1").show(); }
+            });
+        });
+
+        $('.needs-validation').validate({
+          rules:{
+            username: {
+              minlength: 4
+            },
+            mobile:{
+              maxlength: 11,
+              minlength: 11
+            },
+          },
+          messages:{
+            username:{
+              minlength: 'Username shouldn\'t be less than four characters'
+            },
+            mobile:{
+              maxlength: 'Mobile number should be exactly 11 digits',
+              minlength: 'Mobile number should be exactly 11 digits'
+            }
+          }
+        });
       });

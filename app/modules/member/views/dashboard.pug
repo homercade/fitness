@@ -45,6 +45,11 @@ include ../../../templates/foot
 script.
   $(document).ready(function () {
 
+    setInterval(function(){
+      $.post('/member/create-notification').done(function(){
+      })
+    }, 1000)
+
     $.post('/member/event/view').done(function (data) {
 
       var events = []

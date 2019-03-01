@@ -28,7 +28,7 @@ block main
 								li(style="background-color:#F1F2F7")
 									a(href='#')
 										span.message
-										| <b> #{n.userfname} #{n.userlname} </b> #{n.notifdesc}
+										| #{n.notifdesc}
 										span.message
 										| at #{n.notiftime}
 										span.subject
@@ -38,7 +38,7 @@ block main
 								li(style="background-color:#FFF")
 									a(href='#')
 										span.message
-										| <b> #{n.userfname} #{n.userlname} </b> #{n.notifdesc}
+										| #{n.notifdesc}
 										span.message
 										| at #{n.notiftime}
 										span.subject
@@ -50,9 +50,8 @@ block main
 								span.subject
 								center
 									span.message
-									| No notifications yet
-						//- li
-						//- 	a(href='/') See all pending request
+										| No notifications yet
+			
 			div(style='float:right')
 				each pr in profs
 					span.sm(style='font-size: 12pt;')
