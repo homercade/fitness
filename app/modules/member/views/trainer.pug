@@ -19,10 +19,9 @@ block main
         br
         each trainer in trainers
           .col-lg-4.col-md-4.col-sm-4.mb
-            .content-panel.pn(style="background-color:gray; padding:0; color:white; padding-top: 20px;")
+            .content-panel(style="background-color:gray; padding:0; color:white; padding-top: 20px;")
               h3 #{trainer.trainerfname} #{trainer.trainerlname}
               - var fullname = trainer.trainerfname +" "+ trainer.trainerlname
-              
               button.view.btn-block.btn-primary(
                                       style          = "position:relative; top:45px; padding:5px; font-weight: bold; border:none" 
                                       data-target    = '.apply-modal', 
@@ -74,10 +73,6 @@ block main
                     b Branch: 
                     |
                     <span id='branch'></span>
-                  h5 
-                    b Specialization: 
-                    |
-                    <span id='specs'></span>
                   h5 
                     b Trainer Type: 
                     |
@@ -132,13 +127,39 @@ script.
     var name     =  button.data('name')
     var gender   =  button.data('gender') 
     var branch   =  button.data('branch')  
-    //- var specs    =  button.data('specs')   
     var workdays =  button.data('workdays')
     var timestart =  moment(button.data('timestart'), 'HH:mm:ss').format('hh:mm A')
     var timeend =  moment(button.data('timeend'), 'HH:mm:ss').format('hh:mm A')
     var time = `${timestart} - ${timestart}`
-    var type =  button.data('type')
+    var type =  button.data('type') 
+    const hasWorkDays = workdays !== ''
+    let workDaysArrayString
 
+    if ( !hasWorkDays ) workDaysArrayString = "No definite schedule"
+    if ( hasWorkDays ) {
+      const workDaysToArray = workdays.split(',')
+      const workDaysArray = workDaysToArray.map(day => {
+        switch (day) {
+          case '1': return "Mon"
+            break
+          case '2': return "Tue"
+            break
+          case '3': return "Wed"
+            break
+          case '4': return "Thur"
+            break
+          case '5': return "Fri"
+            break
+          case '6': return "Sat"
+            break
+          case '0': return "Sun"
+            break
+        }
+      })
+
+      workDaysArrayString = workDaysArray.join(', ')
+    }
+   
     if (time == 'Invalid date - Invalid date'){
       time = '8:00 PM - 9:00 PM'
     }
@@ -147,8 +168,7 @@ script.
     modal.find('.modal-body #name').text(name)
     modal.find('.modal-body #gender').text(gender)
     modal.find('.modal-body #branch').text(branch)
-    //- modal.find('.modal-body #specs').text(specs)
-    modal.find('.modal-body #workdays').text(workdays)
+    modal.find('.modal-body #workdays').text(workDaysArrayString)
     modal.find('.modal-body #time').text(time)
     modal.find('.modal-body #type').text(type)
     modal.find('.modal-footer .apply').val(id)
