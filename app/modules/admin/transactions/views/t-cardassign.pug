@@ -41,22 +41,23 @@ block main
                         i.fa.fa-edit
                         |  Action
                   tbody
-                    tr
-                      td.hidden-phone {re.userfname} {re.userlname}
-                      td  {re.memclassname}-{re.membershipname}                    
-                      td
-                        button.freeze.btn.btn-primary.btn-xs(data-toggle='modal', data-target='.freeze-modal')
-                          i.fa.fa-plus
-                        //- button.edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.edit-modal')
-                        //-   i.fa.fa-edit
-                        //- button.train.btn.btn-warning.btn-xs(data-toggle='modal', data-target='.sorted' data-id=re.userid)
-                        //-   i.fa.fa-dumbbell
-                        //- button.train.btn.btn-primary.btn-xs(data-toggle='modal', data-target='#viewmodal')
-                        //-   i.fa.fa-arrow-alt-circle-up
-                        //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.suspend-modal')
-                        //-   i.fa.fa-exclamation-circle
-                        //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.delete-modal')
-                        //-   i.fa.fa-trash-alt 
+                    each c in car
+                      tr
+                        td.hidden-phone #{c.userfname} #{c.userlname}
+                        td  #{c.memclassname}-#{c.membershipname}                    
+                        td
+                          button.freeze.btn.btn-primary.btn-xs(data-toggle='modal', data-target='.freeze-modal' data-id=c.memberid)
+                            i.fa.fa-plus
+                          //- button.edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.edit-modal')
+                          //-   i.fa.fa-edit
+                          //- button.train.btn.btn-warning.btn-xs(data-toggle='modal', data-target='.sorted' data-id=re.userid)
+                          //-   i.fa.fa-dumbbell
+                          //- button.train.btn.btn-primary.btn-xs(data-toggle='modal', data-target='#viewmodal')
+                          //-   i.fa.fa-arrow-alt-circle-up
+                          //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.suspend-modal')
+                          //-   i.fa.fa-exclamation-circle
+                          //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.delete-modal')
+                          //-   i.fa.fa-trash-alt 
                           
 
 
@@ -67,14 +68,14 @@ block main
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Assign Card
-      form(action='/freeze', method='POST')
+      form(action='/card', method='POST')
         .modal-body
           .container-fluid
             .row
               .col-md-12
                 .form-group
                   label.control-label Card Number
-                  input.form-control(type="number" name="freezevalue" onkeypress='return restrictCharacters(this, event, numOnly)')
+                  input.form-control(type="number" name="cardnum" onkeypress='return restrictCharacters(this, event, numOnly)')
                   input.hidden#id(type="text" name="id")
               .modal-footer
                   button.btn.btn-primary(type='submit') Assign
@@ -258,7 +259,7 @@ script.
     var username = $(this).val()
     if (username.length >= 4) {
       $.post('/signup/users').done(function (data) {
-        console.log(data)
+        //- console.log(data)
         for (i = 0; i < data.length; i++) {
           if (data[i].userusername != username) {
             $('#prompt').empty()
@@ -283,7 +284,7 @@ script.
     var email = $(this).val()
     if (email.length >= 4) {
       $.post('/signup/users').done(function (data) {
-        console.log(data)
+        //- console.log(data)
         for (i = 0; i < data.length; i++) {
           if (data[i].useremail != email) {
           } else {

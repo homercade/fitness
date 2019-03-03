@@ -1158,6 +1158,7 @@ router.post('/event',(req, res) => {
    })
 
 
+
 //view of events
 function viewEve(req, res, next) {
   db.query(`select * from tbleventclass where type=2`, function (err, results, fields) {
@@ -1576,7 +1577,8 @@ router.post('/changememin', (req, res) => {
 
 //view receipts
 function viewReceipt(req, res, next) {
-  db.query(`select u.*,p.* from tbluser u join tblpayment p on p.userid = u.userid where p.paymentdate is not null order by p.paymentdate desc `, function (err, results, fields) {
+  db.query(`select u.*,p.* ,o.* from tbluser u join tblpayment p on p.userid = u.userid 
+    join tblor o on o.orid=p.or where p.paymentdate is not null order by p.paymentdate desc`, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewReceipt = results;
        //moments dateadded
@@ -1739,9 +1741,67 @@ function totalPayment (req, res, next) {
   })
 }
 
+//insert OR
+router.post('/OR', (req, res) => {
+  fullname= req.session.user.userfname + " " + req.session.user.userlname
+  db.query(`INSERT INTO tblor 
+    ( ornum,dateadded,addedby) 
+    VALUES ( ?, CURDATE(), ?)`, [req.body.OR, fullname], (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      res.redirect('/ORs');
+    }
+  });
+})
 
+//view OR
+function viewOR(req, res, next) {
+  db.query(`select * from tblor`, function (err, results, fields) {
+    if (err) return res.send(err);
+    req.viewOR = results;
+       //moments dateadded
+      for (var i = 0; i < req.viewOR.length; i++) {
+        req.viewOR[i].dateadded = moment(results[i].dateadded).format("LL");
+      }
+    return next();
+  })
+}
 
+//edit OR
+router.post('/OR/edit', (req, res) => {
+  db.query(`UPDATE tblor SET ornum = ? where orid=?`, [req.body.OR, req.body.edit], (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      res.redirect('/ORs');
+    }
+  });
+})
 
+ //view to aSSIGN
+ function viewCard(req, res, next) {
+  db.query(`select u.* , r.*, ct.*, cl.* ,m.*,b.* from tbluser u join tblmembership m ON m.usersid=u.userid 
+inner join tblmemrates r ON r.memrateid=m.membershiprateid 
+inner join tblmemclass cl on r.memclass=cl.memclassid
+ inner join tblcat ct on ct.membershipID=r.memcat inner join tblbranch b 
+ on b.branchID=u.branch `, function (err, results, fields) {
+    if (err) return res.send(err);
+    req.viewCard = results;
+    return next();
+  })
+}
+
+//edit Card
+router.post('/card', (req, res) => {
+  db.query(`UPDATE tblmembership SET cardnum= ? where memberid=?`, [req.body.cardnum, req.body.id], (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      res.redirect('/card');
+    }
+  });
+})
 
 //A-TEAM FITNESS FUNCTIONS
 
@@ -1766,7 +1826,9 @@ function branch(req, res) {
 }
 
 function ORs(req, res) {
-  res.render('admin/maintenance/views/m-ORs')
+  res.render('admin/maintenance/views/m-ORs',{
+    ors: req.viewOR
+  })
 }
 
 function category(req, res) {
@@ -1945,7 +2007,9 @@ function receipt(req, res) {
 }
 
 function card(req, res) {
-  res.render('admin/transactions/views/t-cardassign')
+  res.render('admin/transactions/views/t-cardassign',{
+    car: req.viewCard
+  })
 }
 
 
@@ -2003,6 +2067,18 @@ function rsales(req, res) {
   })
 }
 
+router.post('admin/dashboard', (req, res) => {
+  console.log('heyyy')
+   db.query('select u.* , r.*, ct.*, cl.* ,m.*,b.* from tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON r.memrateid=m.membershiprateid inner join tblmemclass cl on r.memclass=cl.memclassid inner join tblcat ct on ct.membershipID=r.memcat inner join tblbranch b on b.branchID=u.branch where cardnum=?', [req.body.cardNumber], (err, results) => {
+     if(err) console.log(err)
+
+     if(results.length > 0){
+        console.log('HEERE:::', results)
+        res.send(results)
+     }
+   })
+})
+
 
 //A-TEAM FITNESS GETS
 
@@ -2023,7 +2099,7 @@ router.get('/specialization', viewSpecial, specs);
 router.get('/staff',viewBranches, viewStaff, staff);
 router.get('/trains', viewTrainer, viewspecialdrop, viewbranchdrop, trains);
 router.get('/memclass', viewHie, memclass);
-router.get('/ORs',ORs);
+router.get('/ORs',viewOR,ORs);
 
 //TRANSACTIONS
 // router.get('/t-class', t_class);
@@ -2042,7 +2118,7 @@ router.get('/t/classes',viewClass2,viewGt,viewGcl, GClasses);
 router.get('/pending/pt', viewPendingChange, pendingPtChange);
 router.get('/payment/session', viewPaymentSession, paymentSession);
 router.get('/receipt', viewReceipt,receipt);
-router.get('/card', card);
+router.get('/card', viewCard,card);
 
 //QUERIES
 router.get('/queries/classes', qClass, qClasses);

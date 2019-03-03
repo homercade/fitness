@@ -12,7 +12,7 @@ append head
 block main
    section#main-content
        section.wrapper.site-min-height
-          input#hiddenInput(type='text' style="opacity:0;color:white")
+          input#hiddenInput(type='text' style="opacity:0;color:white" )
           .row
             .col-lg-9.main-chart
               .row.mtbox
@@ -121,6 +121,21 @@ script.
 
   })
 
+script.
+  $(document).ready(function () {
+    setInterval(function(){
+      $('#hiddenInput').trigger('focus')
+    },500)
 
-      
-   
+    const cardNumber =  $('#hiddenInput').val()
+    $('#hiddenInput').on('change', function(){
+    $.post('/dashboard', { cardNumber: cardNumber }).done(data => {
+      console.log({d: data})
+    })
+
+
+    swal('ID: ' + $(this).val(), 'The user is: usernameHere', 'success');
+    var cardVal = $(this).val();
+    $('#hiddenInput').val('')
+    })
+  })

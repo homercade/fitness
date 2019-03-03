@@ -40,7 +40,7 @@ block main
 														| Change Membership
 												td 
 													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='.OR-modal',data-name=re.userfname + " " + re.userlname,
-													data-date=re.paymentdate, data-m=re.classification,data-price=re.amount,data-dat=re.paymentdate)
+													data-date=re.paymentdate, data-m=re.classification,data-price=re.amount,data-dat=re.paymentdate data-or=re.ornum)
 														|View Bill
 				// /content-panel
 
@@ -185,6 +185,8 @@ block main
 											br
 											abbr(title='Phone') P:
 											|  0933 412 7526
+											br
+											strong.or
 									// /pull-left
 									.pull-right
 										h1
@@ -353,6 +355,7 @@ script.
 		//- var e = button.data('e')
 		var price = button.data('price')
 		var dat = button.data('dat')
+		var or = button.data('or')
 
 		let modal = $(this)     
 
@@ -365,6 +368,7 @@ script.
 		//- modal.find('.modal-body .ph').text(`${ph}`)
 		modal.find('.modal-body .price').text(`₱ ${price}`)
 		modal.find('.modal-body .dat').text(`${dat}`)
+		modal.find('.modal-body .or').text(`${or}`)
 	})
 //- script.
 //- 	n = new Date();

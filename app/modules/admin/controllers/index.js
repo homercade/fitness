@@ -10,6 +10,6 @@ module.exports = (req, res) => {
     });
     
     function render(users) {
-        res.render('admin/general/views/dashboard', { users: users });
+        res.render('admin/general/views/dashboard', { users: users ,session: req.session});
     }
 }

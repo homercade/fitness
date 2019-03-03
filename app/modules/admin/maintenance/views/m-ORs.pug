@@ -29,17 +29,18 @@ block main
                         i.fa.fa-edit
                         |  Action
                     tbody
-                      tr
-                        td 
-                        td 
-                        td
-                        td
-                          //- button#view.btn.btn-info.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='View Class', data-target='#viewmodal' data-name=cl.classname data-desc=cl.classdesc)
-                          //-     i.fa.fa-search
-                          button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Edit Class', data-target='#editmodal' )
-                              i.fa.fa-edit
-                          //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Remove Account Permanently' data-target='#deletemodal' data-id=cl.classID)
-                          //-     i.fa.fa-trash-alt
+                      each r in ors
+                        tr
+                          td #{r.ornum}
+                          td #{r.dateadded}
+                          td #{r.addedby}
+                          td
+                            //- button#view.btn.btn-info.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='View Class', data-target='#viewmodal' data-name=cl.classname data-desc=cl.classdesc)
+                            //-     i.fa.fa-search
+                            button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Edit Class', data-target='#editmodal' data-id=r.orid )
+                                i.fa.fa-edit
+                            //- button.btn.btn-danger.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Remove Account Permanently' data-target='#deletemodal' data-id=cl.classID)
+                            //-     i.fa.fa-trash-alt
               // /content-panel
 
     // MODAL DELETE
@@ -69,8 +70,8 @@ block main
         .modal-content
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-            h4#myModalLabel.modal-title Add Class
-          form(action='/', method='POST' autocomplete='off' id='add-class')
+            h4#myModalLabel.modal-title Add OR
+          form(action='/OR', method='POST' autocomplete='off' id='add-class')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -78,35 +79,30 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label OR Number
-                        input.form-control(type='text' name='classname' onkeypress='return restrictCharacters(this, event, alphanumericOnly)' maxlength='25' required)
+                        input.form-control(type='text' name='OR' onkeypress='return restrictCharacters(this, event, alphanumericOnly)' maxlength='50' required)
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(id='btn-add-class') Add Class
+              button.btn.btn-primary(id='btn-add-class') ADD Or
     // MODAL EDIT CLASS
     #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
         .modal-content
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-            h4#myModalLabel.modal-title Edit Class
-          form(action='/classes/edit', method='POST' id='edit-class')
+            h4#myModalLabel.modal-title EDIT OR
+          form(action='/OR/edit', method='POST' autocomplete='off' id='add-class')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
-                  input#id.hidden(type='text' name='id')
                   .row
                     .col-md-12
                       .form-group
-                        label.control-label Class Name
-                        input#name.form-control(type='text' name='classname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
-                  .row
-                    .col-md-12
-                      label.control-label Description
-                      .form-group
-                        textarea#desc.form-control(style='resize:none', name='classdesc', rows='3')
+                        label.control-label OR Number
+                        input.form-control(type='text' name='OR' onkeypress='return restrictCharacters(this, event, alphanumericOnly)' maxlength='50' required)
+                        input.hidden#id(name='edit')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-edit-class') Save
+              button.btn.btn-primary(type='submit') Save
     //- // MODAL VIEW
     //- #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
     //-   .modal-dialog
@@ -195,7 +191,7 @@ script.
       e.preventDefault();
 
       swal({
-        title: 'Add new Class?',
+        title: 'Add new OR?',
         type: 'info',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -229,23 +225,35 @@ script.
       })
     });
 
-        //sweet alert delete class
-      $(document).on('click', '#btn-del-class', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+ //-        //sweet alert delete class
+ //-      $(document).on('click', '#btn-del-class', function(e) {
+ //-      var form = $(this).parents('form');
+ //-      e.preventDefault();
 
-      swal({
-        title: 'Delete Class?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "Class Deleted!", "success");
-          $('#del-class').submit();
-        }                        
-      })
-    });
- 
+ //-      swal({
+ //-        title: 'Delete Class?',
+ //-        type: 'warning',
+ //-        showCancelButton: true,
+ //-        confirmButtonColor: '#3085d6',
+ //-        cancelButtonColor: '#d33',
+ //-        confirmButtonText: 'Yes'
+ //-      }).then((result) => {
+ //-        if (result.value) {
+ //-          swal("Success!", "Class Deleted!", "success");
+ //-          $('#del-class').submit();
+ //-        }                        
+ //-      })
+ //-    });
+ //- 
+
+
+
+script.
+
+  $('#editmodal').on('show.bs.modal', function(event){
+  var button = $(event.relatedTarget)      
+
+  var id = button.data('id')
+  let modal = $(this)  
+  modal.find('.modal-body #id').val(` ${id}`)
+    }) 
