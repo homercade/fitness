@@ -95,7 +95,7 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Discount (%)
-                        input#disc.form-control(type='text' maxlength='2' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' required)
+                        input#disc.form-control(type='number' maxlength='3' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' min=5 max=100 required)
                     .col-md-6
                       .form-group
                         label.control-label Status
@@ -150,7 +150,7 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Discount (%)
-                        input#disc.form-control(type='text', min='1' max='100' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' required)
+                        input#disc.form-control(type='number' maxlength='3' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' min=5 max=100 required)
                     .col-md-6
                       .form-group
                         label.control-label Status
@@ -236,7 +236,7 @@ script.
     });
 
     //sweet alert add promo
-      $(document).on('click', '#btn-add-promo', function(e) {
+      $(document).on('submit', '#btn-add-promo', function(e) {
       var form = $(this).parents('form');
       e.preventDefault();
 
@@ -256,7 +256,7 @@ script.
     });
 
         //sweet alert edit promo
-      $(document).on('click', '#btn-edit-promo', function(e) {
+      $(document).on('submit', '#btn-edit-promo', function(e) {
       var form = $(this).parents('form');
       e.preventDefault();
 

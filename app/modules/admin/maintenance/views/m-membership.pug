@@ -87,7 +87,7 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Membership Amount (₱)
-                        input.form-control(type='text' name='memfee' required onkeypress='return restrictCharacters(this, event, floatOnly)')
+                        input.form-control(type='number' name='memfee' required onkeypress='return restrictCharacters(this, event, floatOnly)' min=199 max=9999)
                     .col-md-6
                       .form-group
                         label.control-label Membership Duration (Month/s)
@@ -130,7 +130,7 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Membership Amount (₱)
-                        input.form-control(type='text' name='memfee' onkeypress='return restrictCharacters(this, event, floatOnly)' required)
+                        input.form-control(type='number' name='memfee' required onkeypress='return restrictCharacters(this, event, floatOnly)' min=199 max=9999)
                     .col-md-6
                       .form-group
                         label.control-label Membership Duration (Days)
@@ -198,7 +198,7 @@ script.
     })
 
         //sweet alert add rates
-      $(document).on('click', '#btn-add-rates', function(e) {
+      $(document).on('submit', '#btn-add-rates', function(e) {
       var form = $(this).parents('form');
       e.preventDefault();
 
@@ -218,7 +218,7 @@ script.
     });
 
         //sweet alert edit rates
-      $(document).on('click', '#btn-edit-rates', function(e) {
+      $(document).on('submit', '#btn-edit-rates', function(e) {
       var form = $(this).parents('form');
       e.preventDefault();
 
