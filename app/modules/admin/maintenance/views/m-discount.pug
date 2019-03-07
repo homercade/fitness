@@ -116,6 +116,10 @@ block main
                       label.control-label Description
                       .form-group
                         textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
+                  .row
+                    .col-md-4
+                      strong Promo Image 
+                      input#upload(type='file', name='img' ,accept="image/*")
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
@@ -295,4 +299,19 @@ script.
       })
     });
 
+
+script.
+  $(document).ready(function() {
+      $('#btn-add-promo').bind("click",function() 
+      { 
+          var imgVal = $('#upload').val(); 
+          if(imgVal=='') 
+          { 
+              alert("empty input file"); 
+              return false; 
+          } 
+
+
+      }); 
+  });
 

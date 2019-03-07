@@ -256,19 +256,40 @@ function viewSpecial(req, res, next) {
 
 //insert discount
 
-router.post('/discount', (req, res) => {
-  fullname= req.session.user.userfname + " " + req.session.user.userlname    
-  db.query(`INSERT INTO tblpromo 
-    (promoname,startdate,enddate,
-    discount,status,statusback,
-    Dateadded,Addedby,description,promotype) 
-    VALUES ( ?, ?, ?, ?, ?, 1, CURDATE(), ?, ?, ?)`, [req.body.promoname, req.body.startdate, req.body.enddate, req.body.discount, req.body.status, fullname, req.body.desc, req.body.type], (err, results, fields) => {
-    if (err)
-      console.log(err);
-    else {
-      res.redirect('/discount');
-    }
-  });
+// router.post('/discount', (req, res) => {
+//   fullname= req.session.user.userfname + " " + req.session.user.userlname    
+//   db.query(`INSERT INTO tblpromo 
+//     (promoname,startdate,enddate,
+//     discount,status,statusback,
+//     Dateadded,Addedby,description,promotype) 
+//     VALUES ( ?, ?, ?, ?, ?, 1, CURDATE(), ?, ?, ?)`, [req.body.promoname, req.body.startdate, req.body.enddate, req.body.discount, req.body.status, fullname, req.body.desc, req.body.type], (err, results, fields) => {
+//     if (err)
+//       console.log(err);
+//     else {
+//       res.redirect('/discount');
+//     }
+//   });
+// });
+
+//insert discount
+
+router.post('/discount', (req, res) => { 
+  console.log(req.files) 
+  promopic=`${req.body.promoname}.jpg`
+  fullname= req.session.user.userfname + " " + req.session.user.userlname
+  req.files.img.mv('public/assets/images/'+promopic, function(err){
+ db.query(`INSERT INTO tblpromo 
+(promoname,startdate,enddate,
+discount,status,statusback,
+Dateadded,Addedby,description,promotype,promopic) 
+VALUES ( ?, ?, ?, ?, ?, 1, CURDATE(), ?, ?, ?, ?)`, [req.body.promoname, req.body.startdate, req.body.enddate, req.body.discount, req.body.status, fullname, req.body.desc, req.body.type,promopic], (err, results, fields) => {
+if (err)
+  console.log(err);
+else {
+  res.redirect('/discount');
+}
+});
+});
 });
 
 //edit discount
