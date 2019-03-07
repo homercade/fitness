@@ -60,7 +60,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Add Rate
-          form(action='/membership', method='POST' autocomplete='off' id='add-rates')
+          form(action='/membership', method='POST' autocomplete='off' id='add-rate')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;' required)
@@ -94,7 +94,7 @@ block main
                         input.form-control(type='text' name='memdura' required onkeypress='return restrictCharacters(this, event, floatOnly)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-add-rates') Add Rate
+              button.btn.btn-primary(id='btn-add-rate') Add Rate
 
     // MODAL EDIT MEMBER
     #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -103,7 +103,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Edit Membership Info
-          form(action='/membership/edit', method='POST' id='edit-rates')
+          form(action='/membership/edit', method='POST' id='edit-rate')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -138,7 +138,7 @@ block main
                         input.hidden#id(type='text' name='id')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-edit-rates') Save
+              button.btn.btn-primary(id='btn-edit-rate') Save
 
     // MODAL DELETE
     #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -147,7 +147,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Remove Membership
-          form(action='/membership/delete', method='POST' id='del-rates')
+          form(action='/membership/delete', method='POST' id='del-rate')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -159,7 +159,7 @@ block main
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-default(type='submit' id='btn-del-rates') Delete
+              button.btn.btn-default(id='btn-del-rate') Delete
 
 include ../../../../templates/foot
 
@@ -197,64 +197,85 @@ script.
       modal.find('.modal-body #id').val(` ${id}`)
     })
 
-        //sweet alert add rates
-      $(document).on('submit', '#btn-add-rates', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+    $(document).on('click', '#btn-add-rate', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
 
+    swal({
+      title: 'Add this Category?',
+      text: 'This membership category will be added to the table.',
+      type: 'info', 
+      showCancelButton: true,
+      cancelButtonColor: '#d33',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+    if (result.value) {
       swal({
-        title: 'Add new Rate?',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "New Rate was added!", "success");
-          $('#add-rates').submit();
-        }                        
-      })
+        title: 'Success!',
+        text: 'Membership category added successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      $('#add-rate').submit();
+    }                        
+    })
     });
 
-        //sweet alert edit rates
-      $(document).on('submit', '#btn-edit-rates', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+    //sweet alert edit class
+    $(document).on('click', '#btn-edit-rate', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
 
+    swal({
+    title: 'Save Changes?',
+    text: 'Updating this record will overwrite the previous record.',
+    type: 'info',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
+    }).then((result) => {
+    if (result.value) {
       swal({
-        title: 'Save Changes?',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "Updated!", "success");
-          $('#edit-rates').submit();
-        }                        
-      })
+        title: 'Success!',
+        text: 'Membership category updated successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 5000
+      });
+      $('#edit-rate').submit();
+    }                        
+    })
     });
 
-        //sweet alert delete rates
-      $(document).on('click', '#btn-del-rates', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+    //sweet alert delete class
+    $(document).on('click', '#btn-del-rate', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
 
+    swal({
+      title: 'Delete Category?',
+      text: 'You can no longer access this record once deleted.',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+    if (result.value) {
       swal({
-        title: 'Delete Rate?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "Rate Deleted!", "success");
-          $('#del-rates').submit();
-        }                        
-      })
+        title: 'Success!',
+        text: 'Membership category deleted successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 5000
+      });
+    //- swal("Success!", "Class Deleted!", "success");
+      $('#del-rate').submit();
+    }                        
+    })
     });
 
 

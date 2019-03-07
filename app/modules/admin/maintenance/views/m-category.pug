@@ -54,7 +54,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Add Membership Category
-          form(action='/category', method='POST' autocomplete='off' id='add-categ')
+          form(action='/category', method='POST' autocomplete='off' id='add-cat')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -70,7 +70,7 @@ block main
                         textarea#prog-desc.form-control(style='resize:none', name='catdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-add-categ') Add Category
+              button.btn.btn-primary(type='submit' id='btn-add-cat') Add Category
     //VIEW MODAL
     #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -101,11 +101,11 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Edit Category
-          form(action='/category/edit', method='POST' id='edit-categ')
+          form(action='/category/edit', method='POST' id='edit-cat')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
-                  input#id(type='text' name='id')
+                  input.hidden#id(type='text' name='id')
                   .row
                     .col-md-12
                       .form-group
@@ -118,7 +118,7 @@ block main
                         textarea#desc.form-control(style='resize:none', name='catdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-edit-categ') Save
+              button.btn.btn-primary(type='submit' id='btn-edit-cat') Save
 
     // MODAL DELETE
     #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -127,7 +127,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Remove Category
-          form(action='/category/delete', method='POST' id='del-categ')
+          form(action='/category/delete', method='POST' id='del-cat')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -139,7 +139,7 @@ block main
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-default(type='submit' id='btn-del-categ') Delete
+              button.btn.btn-default(type='submit' id='btn-del-cat') Delete
 
 include ../../../../templates/foot
 
@@ -191,64 +191,85 @@ script.
         modal.find('.modal-body #id').val(` ${id}`)
     })
 
-        //sweet alert add cataegory
-      $(document).on('click', '#btn-add-categ', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+    $(document).on('click', '#btn-add-cat', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
 
+    swal({
+      title: 'Add this Category?',
+      text: 'This membership category will be added to the table.',
+      type: 'info', 
+      showCancelButton: true,
+      cancelButtonColor: '#d33',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+    if (result.value) {
       swal({
-        title: 'Add new Membership Category?',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "New Membership Category was added!", "success");
-          $('#add-categ').submit();
-        }                        
-      })
+        title: 'Success!',
+        text: 'Membership category added successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      $('#add-cat').submit();
+    }                        
+    })
     });
 
-        //sweet alert edit
-      $(document).on('click', '#btn-edit-categ', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+    //sweet alert edit class
+    $(document).on('click', '#btn-edit-cat', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
 
+    swal({
+    title: 'Save Changes?',
+    text: 'Updating this record will overwrite the previous record.',
+    type: 'info',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
+    }).then((result) => {
+    if (result.value) {
       swal({
-        title: 'Save Changes?',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "Updated!", "success");
-          $('#edit-categ').submit();
-        }                        
-      })
+        title: 'Success!',
+        text: 'Membership category updated successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 5000
+      });
+      $('#edit-cat').submit();
+    }                        
+    })
     });
 
-        //sweet alert delete category
-      $(document).on('click', '#btn-del-categ', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+    //sweet alert delete class
+    $(document).on('click', '#btn-del-cat', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
 
+    swal({
+      title: 'Delete Category?',
+      text: 'You can no longer access this record once deleted.',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+    if (result.value) {
       swal({
-        title: 'Delete Membership Category?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "Membership Category Deleted!", "success");
-          $('#del-categ').submit();
-        }                        
-      })
+        title: 'Success!',
+        text: 'Membership category deleted successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 5000
+      });
+    //- swal("Success!", "Class Deleted!", "success");
+      $('#del-cat').submit();
+    }                        
+    })
     });
 
 

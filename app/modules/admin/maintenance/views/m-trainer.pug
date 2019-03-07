@@ -206,7 +206,7 @@ block main
                     input.inputfile(type='file')
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
-            button.btn.btn-primary(type='submit' id='btn-add-trainer') Add Trainer
+            button.btn.btn-primary(id='btn-add-trainer') Add Trainer
   // MODAL VIEW MEMBER
   #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
     .modal-dialog
@@ -340,7 +340,7 @@ block main
                     input.inputfile(type='file')
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
-            button.btn.btn-primary(type='submit' id='btn-edit-trainer') Save
+            button.btn.btn-primary(id='btn-edit-trainer') Save
 
   // MODAL DELETE
   #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -362,7 +362,7 @@ block main
 
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
-            button.btn.btn-default(type='submit' id='btn-del-trainer') Delete
+            button.btn.btn-default(id='btn-del-trainer') Delete
 
 include ../../../../templates/foot
 
@@ -482,65 +482,86 @@ script.
 
   }) 
 
-    //sweet alert add trainer
     $(document).on('click', '#btn-add-trainer', function(e) {
     var form = $(this).parents('form');
     e.preventDefault();
 
     swal({
-      title: 'Add new Trainer?',
-      type: 'info',
+      title: 'Add this Trainer?',
+      text: 'This trainer will be added to the table.',
+      type: 'info', 
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
+      confirmButtonColor: '#3085d6',
       confirmButtonText: 'Yes'
     }).then((result) => {
-      if (result.value) {
-        swal("Success!", "New Trainer was added!", "success");
-        $('#add-trainer').submit();
-      }                        
+    if (result.value) {
+      swal({
+        title: 'Success!',
+        text: 'Trainer added successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      $('#add-trainer').submit();
+    }                        
     })
-  });
+    });
 
-    //sweet alert edit trainer
+    //sweet alert edit class
     $(document).on('click', '#btn-edit-trainer', function(e) {
     var form = $(this).parents('form');
     e.preventDefault();
 
     swal({
-      title: 'Save Changes?',
-      type: 'info',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes'
+    title: 'Save Changes?',
+    text: 'Updating this record will overwrite the previous record.',
+    type: 'info',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
     }).then((result) => {
-      if (result.value) {
-        swal("Success!", "Updated!", "success");
-        $('#edit-trainer').submit();
-      }                        
+    if (result.value) {
+      swal({
+        title: 'Success!',
+        text: 'Trainer updated successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 5000
+      });
+      $('#edit-trainer').submit();
+    }                        
     })
-  });
+    });
 
-    //sweet alert delete trainer
+    //sweet alert delete class
     $(document).on('click', '#btn-del-trainer', function(e) {
     var form = $(this).parents('form');
     e.preventDefault();
 
     swal({
       title: 'Delete Trainer?',
+      text: 'You can no longer access this record once deleted.',
       type: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes'
     }).then((result) => {
-      if (result.value) {
-        swal("Success!", "Trainer Deleted!", "success");
-        $('#del-trainer').submit();
-      }                        
+    if (result.value) {
+      swal({
+        title: 'Success!',
+        text: 'Trainer deleted successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 5000
+      });
+    //- swal("Success!", "Class Deleted!", "success");
+      $('#del-trainer').submit();
+    }                        
     })
-  });
+    });
 
 script.
   console.log($('#type').val())

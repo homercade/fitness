@@ -59,7 +59,7 @@ block main
 								.modal-header
 									button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 									h4#myModalLabel.modal-title Add Branch
-								form(action='/branch', method='POST' autocomplete='off')
+								form(action='/branch', method='POST' autocomplete='off' id='add-branch')
 									.modal-body
 										.container-fluid
 											.container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -86,7 +86,7 @@ block main
 
 									.modal-footer
 										button.btn.btn-default(type='button', data-dismiss='modal') Close
-										button.btn.btn-primary(type='submit') Add Branch
+										button.btn.btn-primary(id='btn-add-branch') Add Branch
 					// MODAL EDIT Branch
 					#editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
 						.modal-dialog
@@ -94,7 +94,7 @@ block main
 								.modal-header
 									button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 									h4#myModalLabel.modal-title Edit Branch Information
-								form(action='/branch/edit', method='POST')
+								form(action='/branch/edit', method='POST' id='edit-branch')
 									.modal-body
 										.container-fluid
 											.container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -122,7 +122,7 @@ block main
 
 									.modal-footer
 										button.btn.btn-default(type='button', data-dismiss='modal') Close
-										button.btn.btn-primary(type='submit') Save
+										button.btn.btn-primary(id='btn-edit-branch') Save
 
 					// MODAL DELETE
 					#deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -131,7 +131,7 @@ block main
 								.modal-header
 									button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 									h4#myModalLabel.modal-title Remove Branch
-								form(action='/branch/delete', method='POST')
+								form(action='/branch/delete', method='POST' id='del-branch')
 									.modal-body
 										.container-fluid
 											.container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -144,7 +144,7 @@ block main
 
 									.modal-footer
 										button.btn.btn-default(type='button', data-dismiss='modal') Close
-										button.btn.btn-default(type='submit') Delete
+										button.btn.btn-default(id='btn-del-branch') Delete
 
 include ../../../../templates/foot
 
@@ -193,6 +193,87 @@ script.
 	})
 
 	$(document).ready(function(){
-	$('#memdrop').addClass('active');
-	$('#branch').addClass('active');
+		$('#memdrop').addClass('active');
+		$('#branch').addClass('active');
+	});
+
+	$(document).on('click', '#btn-add-branch', function(e) {
+		var form = $(this).parents('form');
+		e.preventDefault();
+
+		swal({
+			title: 'Add this new branch?',
+			text: 'Branch will be added to this roster.',
+			type: 'info', 
+			showCancelButton: true,
+			cancelButtonColor: '#d33',
+			confirmButtonColor: '#3085d6',
+			confirmButtonText: 'Yes'
+		}).then((result) => {
+		if (result.value) {
+			swal({
+				title: 'Success!',
+				text: 'Branch added successfully!',
+				type: 'success',
+				showConfirmButton: false,
+				timer: 1500
+			});
+			$('#add-branch').submit();
+		}                        
+		})
+	});
+
+		//sweet alert edit class
+	$(document).on('click', '#btn-edit-branch', function(e) {
+		var form = $(this).parents('form');
+		e.preventDefault();
+
+		swal({
+		title: 'Save Changes?',
+		text: 'Updating this record will overwrite the previous record.',
+		type: 'info',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes'
+		}).then((result) => {
+		if (result.value) {
+			swal({
+				title: 'Success!',
+				text: 'Branch updated successfully!',
+				type: 'success',
+				showConfirmButton: false,
+				timer: 5000
+			});
+			$('#edit-branch').submit();
+		}                        
+		})
+	});
+
+		//sweet alert delete class
+	$(document).on('click', '#btn-del-branch', function(e) {
+		var form = $(this).parents('form');
+		e.preventDefault();
+
+		swal({
+			title: 'Delete Branch?',
+			text: 'You can no longer access this record once deleted.',
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes'
+		}).then((result) => {
+		if (result.value) {
+			swal({
+				title: 'Success!',
+				text: 'Branch deleted successfully!',
+				type: 'success',
+				showConfirmButton: false,
+				timer: 5000
+			});
+		//- swal("Success!", "Class Deleted!", "success");
+			$('#del-branch').submit();
+		}                        
+		})
 	});

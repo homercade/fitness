@@ -13,9 +13,8 @@ block main
                     | OR Number
                     button.btn.btn-theme(style='margin-left: 5px;', type='button', data-toggle='modal', data-target='#add')
                       i.fa.fa-dumbbell
-                      |  Add OR Number
+                      |  Add Number
                     tr
-                    
                       th
                         i.fa.fa-dumbbell
                         |  OR Number
@@ -70,8 +69,8 @@ block main
         .modal-content
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-            h4#myModalLabel.modal-title Add OR
-          form(action='/OR', method='POST' autocomplete='off' id='add-class')
+            h4#myModalLabel.modal-title Add Official Receipt
+          form(action='/OR', method='POST' autocomplete='off' id='add-or')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -82,15 +81,15 @@ block main
                         input.form-control(type='text' name='OR' onkeypress='return restrictCharacters(this, event, alphanumericOnly)' maxlength='50' required)
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(id='btn-add-class') ADD Or
+              button.btn.btn-primary(id='btn-add-or') Save
     // MODAL EDIT CLASS
     #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
         .modal-content
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-            h4#myModalLabel.modal-title EDIT OR
-          form(action='/OR/edit', method='POST' autocomplete='off' id='add-class')
+            h4#myModalLabel.modal-title Edit Official Receipt
+          form(action='/OR/edit', method='POST' autocomplete='off' id='edit-or')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -102,7 +101,7 @@ block main
                         input.hidden#id(name='edit')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit') Save
+              button.btn.btn-primary(id='btn-edit-or') Save
     //- // MODAL VIEW
     //- #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
     //-   .modal-dialog
@@ -257,3 +256,56 @@ script.
   let modal = $(this)  
   modal.find('.modal-body #id').val(` ${id}`)
     }) 
+  
+  $(document).on('click', '#btn-add-or', function(e) {
+  var form = $(this).parents('form');
+  e.preventDefault();
+
+  swal({
+    title: 'Add official receipt?',
+    text: 'The official receipt will be added to this table.',
+    type: 'info', 
+    showCancelButton: true,
+    cancelButtonColor: '#d33',
+    confirmButtonColor: '#3085d6',
+    confirmButtonText: 'Yes'
+  }).then((result) => {
+  if (result.value) {
+    swal({
+      title: 'Success!',
+      text: 'Receipt added successfully!',
+      type: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    });
+    $('#add-or').submit();
+  }                        
+  })
+  });
+
+  //sweet alert edit class
+  $(document).on('click', '#btn-edit-or', function(e) {
+  var form = $(this).parents('form');
+  e.preventDefault();
+
+  swal({
+  title: 'Save Changes?',
+  text: 'Updating this record will overwrite the previous one.',
+  type: 'info',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Yes'
+  }).then((result) => {
+  if (result.value) {
+    swal({
+      title: 'Success!',
+      text: 'Official receipt updated successfully!',
+      type: 'success',
+      showConfirmButton: false,
+      timer: 5000
+    });
+    $('#edit-or').submit();
+  }                        
+  })
+  });

@@ -53,7 +53,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Add Membership Category
-          form(action='/memclass', method='POST' automplete='off' id='add-memclass')
+          form(action='/memclass', method='POST' automplete='off' id='add-mcla')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -69,7 +69,7 @@ block main
                         textarea#prog-desc.form-control(style='resize:none', name='classdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-add-memclass') Add Membership Class
+              button.btn.btn-primary(type='submit' id='btn-add-mcla') Add Membership Class
     //VIEW MODAL
     #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -100,7 +100,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Edit Membership Class
-          form(action='/memclass/edit', method='POST' id='edit-memclass')
+          form(action='/memclass/edit', method='POST' id='edit-mcla')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -117,7 +117,7 @@ block main
                         textarea#desc.form-control(style='resize:none', name='classdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-edit-memclass') Save
+              button.btn.btn-primary(type='submit' id='btn-edit-mcla') Save
 
     // MODAL DELETE
     #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -126,7 +126,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Remove Category
-          form(action='/memclass/delete', method='POST' id='del-memclass')
+          form(action='/memclass/delete', method='POST' id='del-mcla')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
@@ -138,7 +138,7 @@ block main
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-default(type='submit' id='btn-del-memclass') Delete
+              button.btn.btn-default(type='submit' id='btn-del-mcla') Delete
 
 include ../../../../templates/foot
 script.
@@ -189,65 +189,83 @@ script.
         modal.find('.modal-body #id').val(`${id}`)
     })
 
-        //sweet alert add memclass
-      $(document).on('click', '#btn-add-memclass', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+    $(document).on('click', '#btn-add-mcla', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
 
+    swal({
+      title: 'Add this membership class?',
+      text: 'This membership class will be added to the table.',
+      type: 'info', 
+      showCancelButton: true,
+      cancelButtonColor: '#d33',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+    if (result.value) {
       swal({
-        title: 'Add new Membership Class?',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "New Membership Class was added!", "success");
-          $('#add-memclass').submit();
-        }                        
-      })
+        title: 'Success!',
+        text: 'Membership class added successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      $('#add-mcla').submit();
+    }                        
+    })
     });
 
-        //sweet alert edit memclass
-      $(document).on('click', '#btn-edit-memclass', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+    //sweet alert edit class
+    $(document).on('click', '#btn-edit-mcla', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
 
+    swal({
+    title: 'Save Changes?',
+    text: 'Updating this record will overwrite the previous record.',
+    type: 'info',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
+    }).then((result) => {
+    if (result.value) {
       swal({
-        title: 'Save Changes?',
-        type: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "Updated!", "success");
-          $('#edit-memclass').submit();
-        }                        
-      })
+        title: 'Success!',
+        text: 'Membership class updated successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 5000
+      });
+      $('#edit-mcla').submit();
+    }                        
+    })
     });
 
-        //sweet alert delete memclass
-      $(document).on('click', '#btn-del-memclass', function(e) {
-      var form = $(this).parents('form');
-      e.preventDefault();
+    //sweet alert delete class
+    $(document).on('click', '#btn-del-mcla', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
 
+    swal({
+      title: 'Delete Membership Class?',
+      text: 'You can no longer access this record once deleted.',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+    if (result.value) {
       swal({
-        title: 'Delete Membership Class?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.value) {
-          swal("Success!", "Membership Class Deleted!", "success");
-          $('#del-memclass').submit();
-        }                        
-      })
+        title: 'Success!',
+        text: 'Membership class deleted successfully!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 5000
+      });
+    //- swal("Success!", "Class Deleted!", "success");
+      $('#del-mcla').submit();
+    }                        
+    })
     });
-
-
-
