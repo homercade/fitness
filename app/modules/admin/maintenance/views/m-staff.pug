@@ -115,7 +115,7 @@ block main
 										.row
 											.col-md-4
 												| Upload your Image 
-												input(type='file', name='img' ,accept="image/*")
+												input#upload(type='file', name='img' ,accept="image/*")
 							.modal-footer
 								button.btn.btn-default(type='button', data-dismiss='modal') Close
 								button.btn.btn-primary(type='submit' id='btn-add-staff') Add Staff
@@ -363,9 +363,19 @@ script.
 	});
 
 
+script.
+	$(document).ready(function() {
+	    $('#btn-add-staff').bind("click",function() 
+	    { 
+	        var imgVal = $('#upload').val(); 
+	        if(imgVal=='') 
+	        { 
+	            alert("empty input file"); 
+	            return false; 
+	        } 
 
 
-
-
+	    }); 
+	});
 
 
