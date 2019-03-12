@@ -201,15 +201,11 @@ script.
     let memberships = []
     let membershipsWithDescription = []
     let memberCount = []
-    //- const memberCount = [20, 46, 51]
     
     $.post('/graph/membership/members').done(function (allMemberships) {
-      console.log(allMemberships)
       allMemberships.forEach(membership => {
         memberships.push(membership.memclassname)
       })
-      //- memberships.push(members.memclassname) 
-      console.log(memberships)
       memberships.forEach(membership => {
         $.post('/graph/membership/members/count', { membership }).done(count => {
           for (let key in count[0]) {
@@ -219,8 +215,6 @@ script.
           }
         })
       })
-      console.log({membershipsWithDescription})
-      console.log({memberCount})
     })
 
     setTimeout(() => {
