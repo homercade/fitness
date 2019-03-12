@@ -1369,6 +1369,7 @@ function viewPendingChange ( req,res,next ) {
     return next();
   })
 }
+
 // ACCEPT PENDING PT CHANGE
 router.post('/pending/pt/accept', (req, res) => {
   db.query(`DELETE from tblchange where changeID = ?`, [ req.body.changeid ], ( err,out ) => {
@@ -1381,14 +1382,13 @@ router.post('/pending/pt/accept', (req, res) => {
     })
   })
 })
+
 // REJECT PENDING PT CHANGE
 router.post('/pending/pt/reject', (req, res) => {
   db.query(`DELETE from tblchange where changeID = ?`, [ req.body.changeid ], ( err,out ) => {
     if(err) console.log(err)
   })
 })
-
-
 
 // VIEW SESSION PAYMENT REQUEST
 function viewPaymentSession ( req,res,next ) {
@@ -1484,7 +1484,6 @@ router.post('/view/event/participant', (req, res) => {
   `
   db.query(query, [ req.body.id ],(err, out) => {
     if(err) console.log(err)
-    console.log(out, 'RESULT FROM BE')
     res.send(out)
   })
 })
@@ -1493,17 +1492,40 @@ router.post('/view/event/participant', (req, res) => {
 router.post('/view/notif', (req, res) => {
   db.query(`select * from tblmembership where status = 'pending'`, (err, out) => {
     if(err) console.log(err)
-    console.log(out)
     res.send(out)
   })
 })
 router.post('/view/notif/payment', (req, res) => {
   db.query(`SELECT * FROM tblsession where amount IS NOT NULL`, (err, out) => {
     if(err) console.log(err)
-    console.log(out)
     res.send(out)
   })
 })
+
+// VIEW ALL ACTIVE MEMBERS
+router.post('/graph/membership/members', (req, res) => {
+  const query = `
+    SELECT memclassname FROM tblmemclass 
+  `
+  db.query(query, (err, out) => {
+    if(err) console.log(err)
+    res.send(out)
+  })
+}) 
+router.post('/graph/membership/members/count', (req, res) => {
+  const query = `
+    SELECT COUNT(*) FROM tblmembership 
+    JOIN tblmemrates ON tblmemrates.memrateid = tblmembership.membershiprateid
+    JOIN tblmemclass ON tblmemclass.memclassid = tblmemrates.memclass
+    WHERE tblmembership.status = 'Paid' AND tblmemclass.memclassname = ?
+  `
+  db.query(query, [req.body.membership], (err, out) => {
+    if(err) console.log(err)
+    res.send(out)
+  })
+}) 
+
+
 
 //change membership dropdowns
 function viewMemChange ( req,res,next ) {

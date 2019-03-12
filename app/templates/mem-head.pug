@@ -24,7 +24,7 @@ block main
 							| All Notifications 
 					if notifs.length !== 0
 						each n in notifs
-							if n.status === 'unread'
+							if n.notifstatus === 'unread'
 								li(style="background-color:#F1F2F7")
 									a(href='#')
 										span.message

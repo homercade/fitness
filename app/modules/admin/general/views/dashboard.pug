@@ -10,88 +10,94 @@ append head
     }
 
 block main
-   section#main-content
-       section.wrapper.site-min-height
-          input#hiddenInput(type='text' style="opacity:0;color:white" )
-          .row
-            .col-lg-9.main-chart
-              .row.mtbox
-                .col-md-2.col-sm-2.box0.col-md-offset-2
-                  a(href='')
-                    .box1
-                      span.li_heart
-                      h3 210
-                    p 210 Active Members
-                .col-md-2.col-sm-2.box0
-                  a(href='')
-                    .box1
-                      span.li_calendar
-                      h3 25
-                    p 25 Active Trainers
-                .col-md-2.col-sm-2.box0
-                  a(href='')
-                    .box1
-                      span.li_vynil
-                      h3 3
-                    p 3 Active Classes
-                .col-md-2.col-sm-2.box0
-                  a
-                    .box1
-                      span.li_bubble
-                      h3 0
-                    p 0 Messages
-      
-              //- .row
-              //-   section.wrapper
-              //-     .col-md-4.col-sm-4.mb
-              //-       .darkblue-panel.pn
-              //-         .darkblue-header
-              //-           h5 REVENUE
-              //-         .chart.mt
-              //-           .sparkline(data-type='line', data-resize='true', data-height='75', data-width='90%', data-line-width='1', data-line-color='#fff', data-spot-color='#fff', data-fill-color='', data-highlight-line-color='#fff', data-spot-radius='4', data-data='[200,135,667,333,526,996,564,123,890,464,655]')
-              //-             canvas(style='display: inline-block; width: 233px; height: 75px; vertical-align: top;', width='233', height='75')
-              //-         p.mt
-              //-           b $ 17,980
-              //-           br
-              //-           | Month Income
+  #navbar.hidden
+  section#main-content
+    section.wrapper.site-min-height
+      .row
+        .col-lg-9.main-chart
+          .row.mtbox
+            .col-md-2.col-sm-2.box0.col-md-offset-3
+              .box1
+                span.li_heart
+                h3 210
+              p 210 Active Members
+            .col-md-2.col-sm-2.box0
+              .box1
+                span.li_calendar
+                h3 25
+              p 25 Active Trainers
+            .col-md-2.col-sm-2.box0
+              .box1
+                span.li_vynil
+                h3 3
+              p 3 Active Classes
+          .row.mt
+            .col-md-1
+            .col-md-4.mb
+              .darkblue-panel.pn
+                .darkblue-header
+                  h5 TOP USER
+                p
+                  img.img-circle(src='assets/img/ui-zac.jpg', width='80')
+                footer
+                  p
+                    b Zac Snider
+                  .row
+                    .col-md-6
+                      h5.small.mt MEMBER SINCE
+                      p 2012
+                    .col-md-6
+                      h5.small.mt TOTAL SPEND
+                      p $ 47,60
+            .col-md-7.mb
+              canvas#memberByMembership
+          .row.mt
+            //- .col-lg-9.main-chart.charts
+            .col-md-12
+              canvas#memberByMonth
+            
 
-            .col-lg-3.ds
-              h3 
-                span.li_heart 
-                |  Membership
-              .desc
-                .thumb
-                  img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
-                .details
-                  h6  Gold Membership
-              .desc
-                .thumb
-                  img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
-                .details
-                  h6  Silver Membership
-              .desc
-                .thumb
-                  img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
-                .details
-                  h6  Bronze Membership
-              h3 
-                span.li_calendar 
-                |  Class List
-              .desc
-                .thumb
-                  img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
-                .details
-                  h6  Body Building
-              .desc
-                .thumb
-                  img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
-                .details
-                  h6 Aerobics
-              .desc
-                .thumb
-                  img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
-                .details
-                  h6 General Training
+
+        .col-lg-3.ds
+          h3 
+            span.li_heart 
+            |  Membership
+          .desc
+            .thumb
+              img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
+            .details
+              h6  Gold Membership
+          .desc
+            .thumb
+              img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
+            .details
+              h6  Silver Membership
+          .desc
+            .thumb
+              img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
+            .details
+              h6  Bronze Membership
+          h3 
+            span.li_calendar 
+            |  Class List
+          .desc
+            .thumb
+              img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
+            .details
+              h6  Body Building
+          .desc
+            .thumb
+              img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
+            .details
+              h6 Aerobics
+          .desc
+            .thumb
+              img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
+            .details
+              h6 General Training
+
+          //- Input for RFID
+          input#hiddenInput(type='text' style="opacity:0" )
 
 
 include ../../../../templates/foot.pug
@@ -133,9 +139,132 @@ script.
       console.log({d: data})
     })
 
-
     swal('ID: ' + $(this).val(), 'The user is: usernameHere', 'success');
     var cardVal = $(this).val();
     $('#hiddenInput').val('')
     })
+  })
+
+script.
+  $(document).ready(function(){
+    //- LINE CHART
+    //- dataset
+    const months = ['January', 'Feburuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    const monthsAbb = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+    const numberOfMembersApplied = [3, 0, 2, 1, 7, 2, 6, 0, 0, 1, 23, 0]
+
+    //- initialization
+    const chartMemberByMonth = document.getElementById('memberByMonth').getContext('2d')
+    const chartMemberByMembership = document.getElementById('memberByMembership').getContext('2d')
+
+    setTimeout(() => {
+      const chart1 = new Chart(chartMemberByMonth, {
+        type: 'line',
+        data: {
+          labels: monthsAbb,
+          datasets: [{
+            label: 'Members Registered',
+            data: numberOfMembersApplied,
+            backgroundColor: '#2F96B4',
+            borderColor: '#2F96B4',
+            fill: false,
+          }]
+        },
+        options: {
+          title: {
+            display: true,
+            text: 'Top Registers'
+          },
+          scales: {
+            xAxes: [{
+              gridLines: {
+                display: true,
+                drawBorder: true,
+                drawOnChartArea: false,
+              }
+            }],
+            yAxes: [{
+              gridLines: {
+                display: true,
+                drawBorder: true,
+              },
+              ticks: {
+                stepSize: 5
+              }
+            }]
+          }
+        }
+      })
+    }, 500)
+
+    //- PIE CHART
+    let memberships = []
+    let membershipsWithDescription = []
+    let memberCount = []
+    //- const memberCount = [20, 46, 51]
+    
+    $.post('/graph/membership/members').done(function (allMemberships) {
+      console.log(allMemberships)
+      allMemberships.forEach(membership => {
+        memberships.push(membership.memclassname)
+      })
+      //- memberships.push(members.memclassname) 
+      console.log(memberships)
+      memberships.forEach(membership => {
+        $.post('/graph/membership/members/count', { membership }).done(count => {
+          for (let key in count[0]) {
+            membership = `${membership} members count - ${count[0][key]}`
+            membershipsWithDescription.push(membership)
+            memberCount.push(count[0][key])
+          }
+        })
+      })
+      console.log({membershipsWithDescription})
+      console.log({memberCount})
+    })
+
+    setTimeout(() => {
+      const chart2 = new Chart(chartMemberByMembership, {
+        type: 'doughnut',
+        data: {
+          labels: membershipsWithDescription,
+          datasets: [{
+            label: 'Members Registered',
+            data: memberCount,
+            backgroundColor: [
+              '#ff6961',
+              '#FCCA83',
+              '#779ecb',
+              '#ffb3ba',
+              '#baffc9',
+              '#ffffba'
+              ],
+            borderColor: '#f2f2f2',
+            label: 'Dataset 1'
+          }]
+        },
+        options: {
+          title: {
+            display: true,
+            text: 'Top Registers'
+          },
+          legend: {
+            position: 'bottom',
+          },
+          tooltips: {
+            callbacks: {
+              label: function(tooltipItem, data) {
+                let dataset = data.datasets[tooltipItem.datasetIndex];
+                let total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                  return previousValue + currentValue;
+                });
+                let currentValue = dataset.data[tooltipItem.index];
+                let percentage = Math.floor(((currentValue/total) * 100)+0.5);         
+                return percentage + "%";
+              }
+            }
+          }
+        }
+      })
+    }, 500)
   })

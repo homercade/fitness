@@ -24,7 +24,8 @@ block main
 							| All Notifications 
 					if notifs.length !== 0
 						each n in notifs
-							if n.status === 'unread'
+							if n.notifstatus === 'unread'
+								- console.log('from ', n )
 								li(style="background-color:#F1F2F7")
 									a(href='#')
 										span.message
@@ -34,6 +35,7 @@ block main
 										span.subject
 											span.from
 											span.time  #{n.notifdate}
+								
 							else 
 								li(style="background-color:#FFF")
 									a(href='#')

@@ -13,15 +13,11 @@ script(src='/assets/js/jquery.nicescroll.js')
 script(src='/assets/js/jquery.validate.js')
 
 //- Data Table
-//- script(src='/assets/js/jquery.dataTables.min.js')
-//- script(src='/assets/js/dataTables.bootstrap.min.js')
-
 script(src='/assets/js/datatables.min.js')
 script(src='/assets/js/datatable/buttons.flash.min.js')
 script(src='/assets/js/datatable/buttons.html5.min.js')
 script(src='/assets/js/datatable/buttons.print.min.js')
 script(src='/assets/js/datatable/dataTables.buttons.min.js')
-
 
 //- Plugins
 script(src='/assets/js/moment.min.js')
@@ -31,17 +27,13 @@ script(src='/assets/js/bootstrap-timepicker.js')
 script(src='/assets/js/sweetalert2.all.min.js')
 script(src='/assets/js/select2.min.js')
 script(src='/assets/js/toastr.min.js')
+script(src='/assets/js/Chart.min.js')
 
 //- Custom script
 script(src='/assets/js/common-scripts.js')
+script(src='/assets/js/addon-scripts.js')
 script(src='/landing/js/custom.js')
 
-//- script(src='/assets/js/gritter/js/jquery.gritter.js')
-//- script(src='/assets/js/gritter-conf.js')
-script(src='/assets/js/sparkline-chart.js') 
-//- script(src='/assets/js/multiple-select.js')
-
-script(src='/assets/css/metisMenu.min.js') 
 script.
   $(document).ready(function () {
 
@@ -68,15 +60,14 @@ script.
       disableFocus: true
     });
 
-    
-
   });
 
 //- sticky navbar
 script.
   window.onscroll = function () {
     myFunction()
-  };
+  }
+
   var navbar = document.getElementById("navbar");
   var sticky = navbar.offsetTop;
 
@@ -102,7 +93,7 @@ script.
       $('body,html').animate({
         scrollTop: 0
       }, 700)
-    });
+    })
   })
 
 //- Slider
