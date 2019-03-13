@@ -12,21 +12,22 @@ block main
         .col-lg-4.mt
           section.panel
             .panel-body
-
-              .white-panel
-                .white-header
-                  h5 Profile
-                p
-                  img.img-circle(src='assets/img/ui-zac.jpg', width='80')
-                p
-                  b #{pr.userfname} #{pr.userlname}
-                .row
-                  .col-md-6
-                    p.small.mt MEMBER SINCE
-                    p #{pr.acceptdate}
-                  .col-md-6
-                    p.small.mt TOTAL SPEND
-                    p ₱ #{total}
+              .row
+                .white-panel
+                  .white-header
+                    h5 Profile
+                  p
+                    img.img-circle(src='assets/img/ui-zac.jpg', width='80')
+                  p
+                    b #{pr.userfname} #{pr.userlname}
+                  .row
+                    .col-md-6
+                      p.small.mt MEMBER SINCE
+                      p #{pr.acceptdate}
+                    .col-md-6
+                      p.small.mt TOTAL SPEND
+                      p ₱ #{total}
+        - console.log(fee)
         .col-lg-4.mt
           section.panel
             .panel-body

@@ -7,32 +7,38 @@ block main
 				.col-lg-12
 					section.panel
 						.panel-body
-							.container-fluid
-								h3 
-									i.fa.fa-wrench
-									|
-									| General Settings
-									hr
-							.container-fluid
-								h4 System Settings
-								br
-								form.form-horizontal.style-form
+							form.form-horizontal.style-form
+								.container-fluid
+									h3 
+										i.fa.fa-wrench
+										|
+										| General Settings
+										hr
+								.container-fluid
+									h4 System Settings
+									br
+									
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Gym Name *
+										label.col-sm-2.col-sm-2.control-label Gym Name 
 										.col-sm-10
 											input.form-control(type='text')
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Gym Address *
+										label.col-sm-2.col-sm-2.control-label Company Name 
+										.col-sm-10
+											input.form-control(type='text')
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Main Address 
 										.col-sm-6
-											input.form-control(type='text', placeholder='St. Name / Ave...')
-										.col-sm-4
-											input.form-control(type='text', placeholder='City...')
+											input.form-control(type='text', placeholder='4408 Old. Sta. Mesa St, Newton Plaza')
+										label.col-sm-1.col-sm-2.control-label City 
+										.col-sm-3
+											input.form-control(type='text', placeholder='Sta. Mesa Manila')
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Office Phone Number*
+										label.col-sm-2.col-sm-2.control-label Office Cellphone Number
 										.col-sm-10
 											input.form-control(type='text')
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Email*
+										label.col-sm-2.col-sm-2.control-label Email
 										.col-sm-10
 											input.form-control(type='text')
 									.row.mb
@@ -75,65 +81,70 @@ block main
 												input#student(type='checkbox', name='sched[]', value='Sunday')
 												span.check
 							
-							.container-fluid
-								br
-								br
-								h4 Admin Account
-								br
-								form.form-horizontal.style-form
+								.container-fluid
+									br
+									br
+									h4 Admin Account
+									br
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Admin Name*
+										label.col-sm-2.col-sm-2.control-label Admin Name
 										.col-sm-5
 											input.form-control(type='text' placeholder='First Name...')
 										.col-sm-5
 											input.form-control(type='text' placeholder='Last Name...')
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Admin Username*
+										label.col-sm-2.col-sm-2.control-label Admin Username
 										.col-sm-10
 											input.form-control(type='text')
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Admin Password*
+										label.col-sm-2.col-sm-2.control-label Admin Password
 										.col-sm-10
 											input.form-control(type='text')
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Retype Password*
+										label.col-sm-2.col-sm-2.control-label Retype Password
 										.col-sm-10
 											input.form-control(type='text')
 
-							.container-fluid
-								br
-								br
-								h4 Measurement & fees
-								br
-								form.form-horizontal.style-form
+								.container-fluid
+									br
+									br
+									h4 Measurement & fees
+									br
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Currency Symbol*
-										.col-sm-10
+										label.col-sm-2.col-sm-2.control-label Currency Symbol
+										.col-sm-4
+											input.form-control(type='text')
+										label.col-sm-2.col-sm-2.control-label Freezing Rate
+										.col-sm-4
 											input.form-control(type='text')
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Freezing Rate*
-										.col-sm-10
+										label.col-sm-2.col-sm-2.control-label Session Rate
+										.col-sm-4
+											input.form-control(type='text')
+										label.col-sm-2.col-sm-2.control-label Changing Membership Rate
+										.col-sm-4
 											input.form-control(type='text')
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Training Session Rate*
-										.col-sm-10
+										label.col-sm-2.col-sm-2.control-label Reactivation Rate
+										.col-sm-4
 											input.form-control(type='text')
-									
-
-							.container-fluid
-								br
-								br
-								h4 Header & Footer
-								br
-								form.form-horizontal.style-form
-									.row.mb
-										label.col-sm-2.col-sm-2.control-label Header Text*
-										.col-sm-10
+										label.col-sm-2.col-sm-2.control-label Training Session Rate
+										.col-sm-4
 											input.form-control(type='text')
-									.row.mb
-										label.col-sm-2.col-sm-2.control-label Footer Text*
-										.col-sm-10
-											input.form-control(type='text')
+										
+								//- .container-fluid
+								//- 	br
+								//- 	br
+								//- 	h4 Header & Footer
+								//- 	br
+								//- 	.row.mb
+								//- 		label.col-sm-2.col-sm-2.control-label Header Text
+								//- 		.col-sm-10
+								//- 			input.form-control(type='text')
+								//- 	.row.mb
+								//- 		label.col-sm-2.col-sm-2.control-label Footer Text
+								//- 		.col-sm-10
+								//- 			input.form-control(type='text')
 										
 
 include ../../../../templates/foot
