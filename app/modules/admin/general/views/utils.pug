@@ -7,7 +7,7 @@ block main
 				.col-lg-12
 					section.panel
 						.panel-body
-							form.form-horizontal.style-form
+							.form-horizontal.style-form
 								.container-fluid
 									h3 
 										i.fa.fa-wrench
@@ -17,93 +17,99 @@ block main
 								.container-fluid
 									h4 System Settings
 									br
-									
+
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Gym Name 
-										.col-sm-10
-											input.form-control(type='text')
+										.col-sm-4
+											input#gymname.form-control(type='text' value=utils.gymname)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Company Name 
-										.col-sm-10
-											input.form-control(type='text')
+										.col-sm-4
+											input#companyname.form-control(type='text' value=utils.companyname)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Main Address 
-										.col-sm-6
-											input.form-control(type='text', placeholder='4408 Old. Sta. Mesa St, Newton Plaza')
-										label.col-sm-1.col-sm-2.control-label City 
-										.col-sm-3
-											input.form-control(type='text', placeholder='Sta. Mesa Manila')
+										.col-sm-4
+											input#address.form-control(type='text', placeholder='4408 Old. Sta. Mesa St, Newton Plaza' value=value=utils.address) 
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label City 
+										.col-sm-4
+											input#city.form-control(type='text', placeholder='Sta. Mesa Manila' value=value=utils.city) 
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Office Cellphone Number
-										.col-sm-10
-											input.form-control(type='text')
+										.col-sm-4
+											input#phone.form-control(type='text' value=value=utils.phone)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Email
-										.col-sm-10
-											input.form-control(type='text')
+										.col-sm-4
+											input#email.form-control(type='email' value=utils.email)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Gym Logo
-										.col-sm-7
-											input.form-control(type='file')
-										.col-sm-3
+										.col-sm-4
+											input#logo.form-control(type='file' value='/sample/path' placeholder='/path/name/to/file')
 											p Acceptable file type (jpg., png)
 									.row.mb
-										.input-group
-											span.input-group-addon Work Days:
-											label.checkbox.u
-												| Monday
-												input#student(type='checkbox', name='sched[]', value='Monday')
-												span.check
-											label.checkbox.u
-												| Tuesday
-												input#student(type='checkbox', name='sched[]', value='Tuesday')
-												span.check
-											label.checkbox.u
-												| Wednesday
-												input#student(type='checkbox', name='sched[]', value='Wednesday')
-												span.check
-											span.input-group-addon
-											label.checkbox.u
-												| Thursday
-												input#student(type='checkbox', name='sched[]', value='Thursday')
-												span.check
-											label.checkbox.u
-												| Friday
-												input#student(type='checkbox', name='sched[]', value='Friday')
-												span.check
-											label.checkbox.u
-												| Saturday
-												input#student(type='checkbox', name='sched[]', value='Saturday')
-												span.check
-											span.input-group-addon
-											label.checkbox.u
-												| Sunday
-												input#student(type='checkbox', name='sched[]', value='Sunday')
-												span.check
-							
+										.col-sm-3
+											.input-group
+												span.input-group-addon#movetoerror(style="padding-left: 0; font-size: 13px;") Work Days:
+												label.checkbox.u
+													| Mon
+													input#mon.schedCheck(type='checkbox', name='sched[]' ,value=1)
+													span.check
+												label.checkbox.u
+													| Tue
+													input#tue.schedCheck(type='checkbox', name='sched[]', value=2)
+													span.check
+												label.checkbox.u
+													| Wed
+													input#wed.schedCheck(type='checkbox', name='sched[]', value=3)
+													span.check
+										.col-sm-3
+											.input-group
+												span.input-group-addon
+												label.checkbox.u(style='margin:0')
+													| Thur
+													input#thur.schedCheck(type='checkbox', name='sched[]',value=4)
+													span.check
+												label.checkbox.u(style='margin:0')
+													| Fri
+													input#fri.schedCheck(type='checkbox', name='sched[]',value=5)
+													span.check
+												label.checkbox.u(style='margin:0')
+													| Sat
+													input#sat.schedCheck(type='checkbox', name='sched[]',value=6)
+													span.check
+										.col-sm-3
+											.input-group
+												span.input-group-addon
+												label.checkbox.u(style='margin-left:-150px;')
+													| Sun
+													input#sun.schedCheck(type='checkbox', name='sched[]', value=0)
+													span.check
+
 								.container-fluid
 									br
 									br
 									h4 Admin Account
 									br
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Admin Name
-										.col-sm-5
-											input.form-control(type='text' placeholder='First Name...')
-										.col-sm-5
-											input.form-control(type='text' placeholder='Last Name...')
+										label.col-sm-2.col-sm-2.control-label Admin Username
+										.col-sm-2
+											input#userfname.form-control(type='text' value=admin.userfname, data-id=admin.userid)
+										.col-sm-2
+											input#userlname.form-control(type='text' value=admin.userlname)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Admin Username
-										.col-sm-10
-											input.form-control(type='text')
+										.col-sm-4
+											input#username.form-control(type='text' value=admin.userusername)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Admin Password
-										.col-sm-10
-											input.form-control(type='text')
+										.col-sm-4
+											input#password.form-control(type='password' value=admin.userpassword)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Retype Password
-										.col-sm-10
-											input.form-control(type='text')
+										.col-sm-4
+											input#confirmpassword.form-control(type='password' value=admin.userpassword)
+											p#prompt(style='display:none; color:red') Password did not match!
 
 								.container-fluid
 									br
@@ -113,38 +119,125 @@ block main
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Currency Symbol
 										.col-sm-4
-											input.form-control(type='text')
-										label.col-sm-2.col-sm-2.control-label Freezing Rate
-										.col-sm-4
-											input.form-control(type='text')
+											input#currsymbol.form-control(type='text' value=utils.currsymbol)
+									each rate in rates
+										.row.mb
+											label.col-sm-2.col-sm-2.control-label #{rate.genname}
+											.col-sm-4
+												input.form-control.rates(type='number', value=rate.fee, data-id=rate.generalID) 
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Session Rate
+										.col-sm-2
 										.col-sm-4
-											input.form-control(type='text')
-										label.col-sm-2.col-sm-2.control-label Changing Membership Rate
-										.col-sm-4
-											input.form-control(type='text')
-									.row.mb
-										label.col-sm-2.col-sm-2.control-label Reactivation Rate
-										.col-sm-4
-											input.form-control(type='text')
-										label.col-sm-2.col-sm-2.control-label Training Session Rate
-										.col-sm-4
-											input.form-control(type='text')
-										
-								//- .container-fluid
-								//- 	br
-								//- 	br
-								//- 	h4 Header & Footer
-								//- 	br
-								//- 	.row.mb
-								//- 		label.col-sm-2.col-sm-2.control-label Header Text
-								//- 		.col-sm-10
-								//- 			input.form-control(type='text')
-								//- 	.row.mb
-								//- 		label.col-sm-2.col-sm-2.control-label Footer Text
-								//- 		.col-sm-10
-								//- 			input.form-control(type='text')
-										
+											button#submit.btn.btn-primary Save
+								input#trainerschedule.hidden(value=utils.workdays)
 
 include ../../../../templates/foot
+
+script.
+	$(document).ready(function(){
+		const currSchedule = $('#trainerschedule').val()
+		let  currScheduleArray = currSchedule.split(',')
+		if (currScheduleArray.includes('0')){
+			$('#sun').prop('checked', true);
+		}
+		if (currScheduleArray.includes('1')){
+			$('#mon').prop('checked', true);
+		}
+		if (currScheduleArray.includes('2')){
+			$('#tue').prop('checked', true);
+		}
+		if (currScheduleArray.includes('3')){
+			$('#wed').prop('checked', true);
+		}
+		if (currScheduleArray.includes('4')){
+			$('#thur').prop('checked', true);
+		}
+		if (currScheduleArray.includes('5')){
+			$('#fri').prop('checked', true);
+		}
+		if (currScheduleArray.includes('6')){
+			$('#sat').prop('checked', true);
+		}
+	})
+
+script.
+	$(document).ready(function () {
+		$('#submit').click(function () {
+			const checkboxes = $('.schedCheck');
+			const finalSched = [];
+			for (let i = 0; i < checkboxes.length; i++) {
+				checkboxes[i].checked && finalSched.push(checkboxes.eq(i).val())
+			}
+			const newsched = finalSched.toString()
+			const gymname = $('#gymname').val()
+			const companyname = $('#companyname').val()
+			const address = $('#address').val()
+			const city = $('#city').val()
+			const phone = $('#phone').val()
+			const email = $('#email').val()
+			const logo = $('#logo').val()
+			const userid = $('#userfname').data('id')
+			const userfname = $('#userfname').val()
+			const userlname = $('#userlname').val()
+			const username = $('#username').val()
+			const password = $('#password').val()
+			const confirmpassword = $('#confirmpassword').val()
+			const currsymbol = $('#currsymbol').val()
+			const rates = $('.rates')
+
+			swal({
+				title: 'Are you sure?',
+				text: 'Utilites are used throughout the system',
+				type: 'warning',
+				showCancelButton: true,
+				cancelButtonColor: '#d33',
+				confirmButtonColor: '#3085d6',
+				confirmButtonText: 'Yes'
+			}).then((result) => {
+				if (result.value) {
+					swal({
+						title: 'Success!',
+						text: 'Class added successfully!',
+						type: 'success',
+						showConfirmButton: false,
+						timer: 1500
+					})
+
+					if (password == confirmpassword) {
+						for (i = 0; i < rates.length; i++) {
+							const rate = $(rates[i]).val()
+							const id = $(rates[i]).data('id')
+							console.log('here btch')
+							$.post('/edit/rates', {
+								rate,
+								id
+							})
+						}
+
+						$.post('/edit/utilities', {
+							gymname,
+							companyname,
+							address,
+							city,
+							phone,
+							email,
+							logo,
+							newsched,
+							userid,
+							userfname,
+							userlname,
+							username,
+							password,
+							currsymbol
+						})
+
+					} else {
+						$('#prompt').css('display', 'block')
+						$('html, body').animate({
+							scrollTop: $("#movetoerror").offset().top
+						}, 500);
+					}
+				}
+			})
+		})
+	})

@@ -31,8 +31,8 @@ script(src='/assets/js/Chart.min.js')
 
 //- Custom script
 script(src='/assets/js/common-scripts.js')
-script(src='/assets/js/addon-scripts.js')
 script(src='/landing/js/custom.js')
+//- script(src='/assets/js/addon-scripts.js')
 
 script.
   $(document).ready(function () {
@@ -53,6 +53,7 @@ script.
       startView: 2,
       autoclose: true
     });
+
     //- Time picker
     $('.time').timepicker({
       minuteStep: 5,
@@ -62,22 +63,6 @@ script.
 
   });
 
-//- sticky navbar
-script.
-  window.onscroll = function () {
-    myFunction()
-  }
-
-  var navbar = document.getElementById("navbar");
-  var sticky = navbar.offsetTop;
-
-  function myFunction() {
-    if (window.pageYOffset >= sticky) {
-      navbar.classList.add("sticky")
-    } else {
-      navbar.classList.remove("sticky");
-    }
-  }
 
 //- return to top with animation
 script.
@@ -103,37 +88,10 @@ script.
   });
 
 script.
-  $(window).on('scroll', function(e){ 
+  $(window).on('scroll', function(e){
     let scroll = $(window).scrollTop();
     if(scroll > 50){
          $('.dropdown.open .dropdown-toggle').dropdown('toggle');
     }
-  });
-
-//- Notifications
-script.
-  $('.bell').click(function(){
-    $('.badge').css("display","none")
-    const session = !{JSON.stringify(session)}
-  
-    if (session.user) {
-      console.log('admin')
-      $.post('/admin/notification/mark/read')
-    }
-    else if (session.member) {
-      console.log('member')
-      $.post('/member/notification/mark/read')
-    }
-    else if (session.trainer) {
-      console.log('trainer')
-      $.post('/trainer/notification/mark/read')
-    }
-    //- else if (session.staff ){
-    //-   console.log('staff')
-    //-   $.post('/member/notification/mark/read')
-    //- }
   })
 
-  
- 
-  

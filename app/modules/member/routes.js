@@ -323,10 +323,11 @@ router.post('/trainer/apply', (req, res) => {
 // VIEW
 function viewTrainers(req, res, next) {
 	const query = `
-        SELECT * 
-        FROM tbltrainer
-        left JOIN tblbranch on tbltrainer.trainerbranch = tblbranch.branchID 
-    `
+		SELECT * 
+		FROM tbltrainer
+		left JOIN tblbranch on tbltrainer.trainerbranch = tblbranch.branchID 
+		JOIN tblspecial on tblspecial.specialID = tbltrainer.trainerspecialization
+  `
 	db.query(query, function (err, results, fields) {
 		if (err) return res.send(err);
 		req.viewTrainers = results;
