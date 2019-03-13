@@ -49,7 +49,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Specialty Name
-                        input.form-control(type='text' name='specialname' required onkeypress='return restrictCharacters(this, event, alphaOnly)')
+                        input.form-control(type='text' name='specialname' required onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   .row
                     .col-md-12
                       label.control-label Description
@@ -195,7 +195,7 @@ script.
     })
 
         //sweet alert add specialty
-    $(document).on('click', '#btn-add-special', function(e) {
+    $(document).on('submit', '#btn-add-special', function(e) {
     var form = $(this).parents('form');
     e.preventDefault();
 

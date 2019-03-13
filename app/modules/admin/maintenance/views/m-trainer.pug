@@ -84,11 +84,11 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name
-                      input.form-control(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
+                      input.form-control(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two names.')
                   .col-md-6
                     .form-group
                       label.control-label Last Name
-                      input.form-control(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
+                      input.form-control(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between surnames.')
                 .row
                   .col-md-6
                     .input-group
@@ -109,12 +109,12 @@ block main
                   .col-md-12
                     .form-group
                       label.control-label Address
-                      input.form-control(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
+                      input.form-control(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number
-                      input.form-control(type='text' placeholder='09xxxxxxxxx' value='+63' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
+                      input.form-control(type='text' placeholder='09xxxxxxxxx' value='09' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' minlength='11' maxlength='11' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
@@ -390,6 +390,16 @@ script.
 
   $('.needs-validation').validate({
     rules:{
+      fname: {
+        minlength: 3,
+        maxlength: 35,
+        pattern: ^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$,
+      },
+      lname: {
+        minlength: 3,
+        maxlength: 35,
+        pattern: ^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$,
+      },
       username: {
         minlength: 4
         },
@@ -399,6 +409,16 @@ script.
         },
     },
     messages:{
+      fname: {
+        minlength: 'Please enter input at least to 2 characters only.',
+        maxlength: 'Please enter input not exceeding up to 35 characters only.',
+        pattern: 'Please avoid using leading or trailing spaces and multiple spaces between two words.'
+      },
+      lname: {
+        minlength: 3,
+        maxlength: 35,
+        pattern: ^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$,
+      },
       username:{
         minlength: 'Username shouldn\'t be less than four characters'
       },
@@ -482,7 +502,7 @@ script.
 
   }) 
 
-    $(document).on('click', '#btn-add-trainer', function(e) {
+    $(document).on('submit', '#btn-add-trainer', function(e) {
     var form = $(this).parents('form');
     e.preventDefault();
 

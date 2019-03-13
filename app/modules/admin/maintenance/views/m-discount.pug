@@ -81,7 +81,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Promo Name
-                        input#name.form-control(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='25')
+                        input#name.form-control(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' minlength='5' maxlength='50' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$', title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   .row
                     .col-md-6
                       .form-group
@@ -95,7 +95,7 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Discount (%)
-                        input#disc.form-control(type='number' maxlength='3' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' min=5 max=100 required)
+                        input#disc.form-control(type='number' maxlength='3' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' min=5 max=95 required)
                     .col-md-6
                       .form-group
                         label.control-label Status
@@ -116,14 +116,10 @@ block main
                       label.control-label Description
                       .form-group
                         textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
-                  .row
-                    .col-md-4
-                      strong Promo Image 
-                      input#upload(type='file', name='img' ,accept="image/*")
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(id='btn-add-promo') Add Discount
+              button.btn.btn-primary(type='submit' id='btn-add-promo') Add Discount
     // MODAL EDIT
     #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -140,21 +136,21 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Name
-                        input#name.form-control(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='25')
+                        input#name.form-control(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' minlength='5' maxlength='50' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$', title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   .row
                     .col-md-6
                       .form-group
                         label.control-label Start Date
-                        input#sdate.form-control.datee(type='text' name='startdate')
+                        input#sdate.form-control(type='date' name='startdate' required)
                     .col-md-6
                       .form-group
                         label.control-label End Date
-                        input#edate.form-control.datee(type='text' name='enddate')
+                        input.form-control(type='date' name='enddate' required)
                   .row
                     .col-md-6
                       .form-group
                         label.control-label Discount (%)
-                        input#disc.form-control(type='number' maxlength='3' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' min=5 max=100 required)
+                        input#disc.form-control(type='number' maxlength='3' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' min=5 max=95 required)
                     .col-md-6
                       .form-group
                         label.control-label Status
@@ -162,6 +158,19 @@ block main
                           option.hidden Select Status..
                           option(value='Active') Active
                           option(value='Inactive') Inactive
+                  .row
+                    .col-md-12
+                      .form-group
+                        label.control-label Type
+                        select.form-control(id='' name='type')
+                          option.hidden Select Type..
+                          option(value='Member') Member
+                          option(value='Non-Member') Non Member       
+                  .row
+                    .col-md-12
+                      label.control-label Description
+                      .form-group
+                        textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary(id='btn-edit-promo') Save
@@ -239,7 +248,8 @@ script.
     startDate: "today"
     });
 
-    $(document).on('click', '#btn-add-promo', function(e) {
+
+    $(document).on('submit', '#btn-add-promo', function(e) {
     var form = $(this).parents('form');
     e.preventDefault();
 
@@ -319,19 +329,3 @@ script.
     }                        
     })
     });
-
-script.
-  $(document).ready(function() {
-      $('#btn-add-promo').bind("click",function() 
-      { 
-          var imgVal = $('#upload').val(); 
-          if(imgVal=='') 
-          { 
-              alert("empty input file"); 
-              return false; 
-          } 
-
-
-      }); 
-  });
-
