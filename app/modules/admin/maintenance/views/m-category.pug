@@ -62,12 +62,12 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Category Name
-                        input.form-control(type='text' name='catname' required onkeypress='return restrictCharacters(this, event, alphaOnly)')
+                        input.form-control(type='text' name='catname' required onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   .row
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#prog-desc.form-control(style='resize:none', name='catdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
+                        textarea#prog-desc.form-control(style='resize:none', name='catdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary(type='submit' id='btn-add-cat') Add Category
@@ -161,8 +161,8 @@ script.
           console.log(desc)
 
           let modal = $(this)     
-          modal.find('.modal-body span#name').text(` ${name}`)  
-          modal.find('.modal-body span#desc').text(` ${desc}`)  
+          modal.find('.modal-body span#name').text(`${name}`)  
+          modal.find('.modal-body span#desc').text(`${desc}`)  
     })
 
 script.
@@ -173,8 +173,8 @@ script.
         var name = button.data('name')
         var id = button.data('id')
         let modal = $(this)     
-        modal.find('.modal-body #name').val(` ${name}`)
-        modal.find('.modal-body #desc').val(` ${desc}`)
+        modal.find('.modal-body #name').val(`${name}`)
+        modal.find('.modal-body #desc').val(`${desc}`)
         modal.find('.modal-body #id').val(` ${id}`)
     }) 
 script.
@@ -191,7 +191,7 @@ script.
         modal.find('.modal-body #id').val(` ${id}`)
     })
 
-    $(document).on('click', '#btn-add-cat', function(e) {
+    $(document).on('submit', '#btn-add-cat', function(e) {
     var form = $(this).parents('form');
     e.preventDefault();
 

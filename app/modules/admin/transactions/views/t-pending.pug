@@ -156,7 +156,7 @@ block main
 				.modal-header
 					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 					h4.modal-title Payment Breakdown
-				form(action='/pending/update', method='POST')
+				form(action='/pending/update', method='POST' id='pay-pend')
 					.modal-body
 						.container-fluid
 							.row
@@ -229,7 +229,7 @@ block main
 					.modal-footer
 						button.btn.btn-default(type='button', data-dismiss='modal') Close
 						button.btn.btn-primary(type='button') Print
-						button.btn.btn-danger(type='submit') Pay
+						button.btn.btn-danger(type='submit' id='pay-btn') Pay
 
 include ../../../../templates/foot
 //- script.
@@ -344,3 +344,16 @@ script.
 	d = n.getDate();
 
 	document.getElementById("date").innerHTML =m +"-" +d+"-"+y;
+
+	$(document).on('click', '#pay-btn', function(e) {
+		var form = $(this).parents('form');
+		e.preventDefault();
+			swal({
+				title: 'Success!',
+				text: 'Pending successfully paid!',
+				type: 'success',
+				showConfirmButton: false,
+				timer: 1500
+			});
+			$('#pay-pend').submit();
+		});

@@ -42,26 +42,26 @@ block main
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Add Walk-ins used
-      form(action='/walkin', method='POST')
+      form(action='/walkin', method='POST' id='pay-mod')
         .modal-body
           .container-fluid
             .row
               .col-md-6
                 .form-group
-                  label.control-label Fullname
-                  input.form-control(type="text" name="fname" placeholder='First Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                  label.control-label Full Name
+                  input.form-control(type="text" name="fname" placeholder='First Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' minlength='2' maxlength='25' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two names.')
               .col-md-6
                 .form-group
-                  label.control-labe(style="color:white") Lastname
-                  input.form-control(type="text" name="lname" placeholder='Last Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                  label.control-labe(style="color:white") Last Name
+                  input.form-control(type="text" name="lname" placeholder='Last Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' minlength='2' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
             .row
               .col-md-12
                 .form-group
                   label.control-label Contact
-                  input.form-control(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
+                  input.form-control(type='text' placeholder='09xxxxxxxxx' value='09' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' minlength='11' required)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='submit') Add Walkins
+          button.btn.btn-primary(type='submit'  id='add-btn') Add Walkins
 
 .edit-walkins-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog
@@ -69,7 +69,7 @@ block main
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4#myModalLabel.modal-title Add Walk-ins used
-      form(action='/freeze', method='POST')
+      form(action='/freeze', method='POST' id='pay-walk')
         .modal-body
           .container-fluid
             .row
@@ -268,3 +268,16 @@ script.
       modal.find('.modal-body .id').val(`${id}`);
       modal.find('.modal-body .memid').val(`${memid}`);
     })
+
+    $(document).on('submit', '#add-btn', function(e) {
+    var form = $(this).parents('form');
+    e.preventDefault();
+      swal({
+        title: 'Success!',
+        text: 'Walk-in successfully added!',
+        type: 'success',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      $('#add-walk').submit();
+    });

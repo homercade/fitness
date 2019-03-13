@@ -84,11 +84,11 @@ block main
 											.col-md-6
 												.form-group
 													label.control-label First Name
-													input.form-control(type='text' name='sfirstName' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+													input.form-control(type='text' name='sfirstName' onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' minlength='2' maxlength='25' required)
 											.col-md-6
 												.form-group
 													label.control-label Last Name
-													input.form-control(type='text' name='slastName' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+													input.form-control(type='text' name='slastName' onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' minlength='2' maxlength='25' required)
 										.row
 											.col-md-6
 												.form-group
@@ -163,20 +163,20 @@ block main
 											.col-md-6
 												.form-group
 													label.control-label First Name
-													input.form-control#fname(type='text' name='sfirstName' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+													input.form-control#fname(type='text' name='sfirstName' onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' minlength='2' maxlength='25' required)
 											.col-md-6
 												.form-group
 													label.control-label Last Name
-													input.form-control#lname(type='text' name='slastName' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+													input.form-control#lname(type='text' name='slastName' onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' minlength='2' maxlength='25' required)
 										.row
 											.col-md-6
 												.form-group
 													label.control-label Mobile Number
-													input.form-control#mobile(type='text' name='smobNum' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
+													input.form-control(type='text' name='smobNum', placeholder='09xxxxxxxxxx' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
 											.col-md-6
 												.form-group
 													label.control-label Email
-													input.form-control#email(type='email' name='semail' onkeypress='return restrictCharacters(this, event, emailOnly)')
+													input.form-control(type='email', name='semail' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
 									.row
 										.col-md-12
 											h5 Login Information
@@ -186,11 +186,11 @@ block main
 											.col-md-6
 												.form-group
 													label.control-label Username
-													input.form-control(type='text' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15')
+													input.form-control(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15')
 											.col-md-6
 												.form-group
 													label.control-label Password
-													input.form-control(type='password' maxlength='25')
+													input.form-control(type='password' name='password' maxlength='25')
 										.row
 											.col-md-4
 												| Upload your Image 
@@ -230,6 +230,11 @@ script.
 
 	$('.needs-validation').validate({
 		rules:{
+			sfirstName: {
+				minlength: 2,
+				maxlength: 25,
+				pattern: /^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$/
+				},
 			username: {
 				minlength: 4
 				},
@@ -239,12 +244,17 @@ script.
 				},
 		},
 		messages:{
+			sfirstName:{
+				minlength: 'Please lengthen this text at least to two characters.',
+				maxlength: 'Please lengthen this text at not exceeding from 25 characters.',
+				pattern: 'Please avoid using leading or trailing spaces and multiple spaces between two words.'
+			},
 			username:{
-				minlength: 'Username shouldn\'t be less than four characters'
+				minlength: 'Please enter at least 4 characters.'
 			},
 			smobNum:{
-				maxlength: 'Mobile number should be exactly 11 digits',
-				minlength: 'Mobile number should be exactly 11 digits'
+				maxlength: 'Please enter an 11-digit number.',
+				minlength: 'Please enter an 11-digit number.'
 			}
 		}
 	});
@@ -264,10 +274,10 @@ script.
 		var id = button.data('id')
 		let modal = $(this);     
 		modal.find('.modal-body span#email').text(` ${email}`)  
-		modal.find('.modal-body span#mobile').text(` ${mobile}`)
-		modal.find('.modal-body span#bra').text(` ${bra}`)
-		modal.find('.modal-body #fullna').val(` ${full}`)
-		modal.find('.modal-body #id').val(` ${id}`)
+		modal.find('.modal-body span#mobile').text(`${mobile}`)
+		modal.find('.modal-body span#bra').text(`${bra}`)
+		modal.find('.modal-body #fullna').val(`${full}`)
+		modal.find('.modal-body #id').val(`${id}`)
 	})
 
 	$('#editmodal').on('show.bs.modal', function(event){
@@ -286,11 +296,11 @@ script.
 
 		let modal = $(this);     
 
-		modal.find('.modal-body #email').val(` ${email}`)  
-		modal.find('.modal-body #mobile').val(` ${mobile}`)
-		modal.find('.modal-body #fname').val(` ${fname}`)
-		modal.find('.modal-body #lname').val(` ${lname}`)
-		modal.find('.modal-body #id').val(` ${id}`)
+		modal.find('.modal-body #email').val(`${email}`)  
+		modal.find('.modal-body #mobile').val(`${mobile}`)
+		modal.find('.modal-body #fname').val(`${fname}`)
+		modal.find('.modal-body #lname').val(`${lname}`)
+		modal.find('.modal-body #id').val(`${id}`)
 	})
 
 script.
@@ -303,7 +313,7 @@ script.
 	})
 
 	//sweet alert add staff
-		$(document).on('click', '#btn-add-staff', function(e) {
+		$(document).on('submit', '#btn-add-staff', function(e) {
 		var form = $(this).parents('form');
 		e.preventDefault();
 
@@ -380,11 +390,3 @@ script.
 			}                        
 		})
 	});
-
-
-
-
-
-
-
-

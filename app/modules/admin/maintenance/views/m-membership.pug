@@ -197,7 +197,7 @@ script.
       modal.find('.modal-body #id').val(` ${id}`)
     })
 
-    $(document).on('click', '#btn-add-rate', function(e) {
+    $(document).on('submit', '#btn-add-rate', function(e) {
     var form = $(this).parents('form');
     e.preventDefault();
 

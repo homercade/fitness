@@ -151,7 +151,7 @@ block main
           //- MODAL PAYMENT
 .pay-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog.modal-sm
-    form(action='/payment/freeze', method='POST')
+    form(action='/payment/freeze', method='POST' id='pay-freeze')
       .modal-content
         .modal-header
           button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
@@ -164,7 +164,7 @@ block main
             input.hidden.id(type='text' name='ids')
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='submit') Pay
+          button.btn.btn-primary(type='submit' id='pay-btn') Pay
 include ../../../../templates/foot
 
 
@@ -226,3 +226,16 @@ script.
       modal.find('.modal-body .id').val(`${id}`);
       modal.find('.modal-body .memid').val(`${memid}`);
     })
+
+  $(document).on('click', '#pay-btn', function(e) {
+  var form = $(this).parents('form');
+  e.preventDefault();
+    swal({
+      title: 'Success!',
+      text: 'Member successfully freezed!',
+      type: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    });
+    $('#pay-freeze').submit();
+  });

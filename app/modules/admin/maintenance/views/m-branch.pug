@@ -67,15 +67,15 @@ block main
 													.col-md-12
 														.form-group
 															label.control-label Franchise Name
-															input.form-control(type='text' name='branchname' onkeypress='return restrictCharacters(this, event, alphaOnlyD)' required)
+															input.form-control(type='text' name='branchname' onkeypress='return restrictCharacters(this, event, alphaOnlyD)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.' required)
 												.row
 													.col-md-8
 														.form-group
 															label.control-label Full Address
-															input#snum.form-control(type='text', placeholder='Street number and address..' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' name='street' required)
+															input#snum.form-control(type='text', placeholder='Street number and address..' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.' maxlength='105' name='street' required)
 													.col-md-4
 														.form-group
-															input.form-control(style='margin-top:17%;', type='text', placeholder='City..' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' name='city' required)
+															input.form-control(style='margin-top:17%;', type='text', placeholder='City..' onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.' maxlength='25' name='city' required)
 													//- .col-md-12
 													//- 	.form-group
 													//- 		label.control-label Staff In-charge
@@ -197,7 +197,7 @@ script.
 		$('#branch').addClass('active');
 	});
 
-	$(document).on('click', '#btn-add-branch', function(e) {
+	$(document).on('submit', '#btn-add-branch', function(e) {
 		var form = $(this).parents('form');
 		e.preventDefault();
 
