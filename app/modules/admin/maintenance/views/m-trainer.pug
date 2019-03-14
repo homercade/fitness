@@ -64,7 +64,7 @@ block main
         .modal-header
           button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
           h4#myModalLabel.modal-title Register a Trainer
-        form.needs-validation(action='/trains', method='POST', autocomplete='off' id='add-trainer' novalidate)
+        form.needs-validation(action='/trains', method='POST', autocomplete='off' id='add-trainer' novalidate enctype='multipart/form-data')
           .modal-body
             .container-fluid
               .row
@@ -358,9 +358,17 @@ block main
 
 include ../../../../templates/foot
 
+
 script.
   $(document).ready(function(){
-    $('.select').select2();
+     $(".date").datepicker({
+      changeMonth: true,
+      changeYear: true,
+      todayHighlight: true,
+      maxViewMode: 2,
+      startView: 2,
+      autoclose: true
+    })
   })
 script.
  

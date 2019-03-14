@@ -73,7 +73,7 @@ block main
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
             h4#myModalLabel.modal-title Add Promo
-          form(action='/discount', method='POST' autocomplete='off' id='add-promo')
+          form(action='/discount', method='POST' autocomplete='off' id='add-promo' enctype='multipart/form-data')
             .modal-body
               .container-fluid
                 .container-fluid(style='padding:1rem 4rem 1rem 4rem;')
