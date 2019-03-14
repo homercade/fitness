@@ -487,7 +487,7 @@ router.post('/trains', (req, res) => {
    [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, 
    req.body.mobile, req.body.email, `${req.body['sched[]']}`, 
    req.body.branchid, req.body.specialid, req.body.password, 
-   req.body.username, req.body.starttime, req.body.endtimem,pic], (err, results, fields) => {
+   req.body.username, req.body.starttime, req.body.endtime,pic], (err, results, fields) => {
     if (err)
       console.log(err);
     else {
@@ -548,14 +548,34 @@ function viewTrainer(req, res, next) {
 JOIN tblspecial s ON s.specialID =u.trainerspecialization`, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewTrainer = results;
-      // //moments time
-      // for (var i = 0; i < req.viewTrainer.length; i++) {
-      //   req.viewTrainer[i].trainertimestart = moment(results[i].trainertimestart,'HH:mm:ss').format("hh:ss A");
-      // }
-       //moments time
-      for (var i = 0; i < req.viewTrainer.length; i++) {
-        req.viewTrainer[i].trainertimeend = moment(results[i].trainertimeend,'HH:mm:ss').format("hh:ss A"); 
-      }
+      results.forEach(result => {
+        //- TIME
+        result.trainertimestart = moment(result.trainertimestart,'HH:mm:ss').format("hh:ss A")
+        result.trainertimeend = moment(result.trainertimeend,'HH:mm:ss').format("hh:ss A")
+        //- SCHED
+        const workDaysToArray = result.trainerschedule.split(',')
+        const workDaysArray = workDaysToArray.map(day => {
+          switch (day) {
+            case '1': return "Mon"
+              break
+            case '2': return "Tue"
+              break
+            case '3': return "Wed"
+              break
+            case '4': return "Thur"
+              break
+            case '5': return "Fri"
+              break
+            case '6': return "Sat"
+              break
+            case '0': return "Sun"
+              break
+          }
+        })
+        result.trainerschedule = workDaysArray.join(', ')
+      })
+      req.viewTrainer = results
+    
     return next();
   })
 }

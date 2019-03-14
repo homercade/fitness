@@ -49,8 +49,6 @@ block main
                       td #{tr.trainerschedule}
                       td #{tr.trainertimestart} - #{tr.trainertimeend}
                       td
-                        //- button#view.btn.btn-info.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='View Trainer', data-target='#viewmodal' data-sched=tr.trainerschedule data-mob=tr.trainermobile data-bra=tr.branchname data-spe=tr.specialname data-email=tr.traineremail data-addr=tr.traineraddress data-gen=tr.trainergender)
-                        //-   i.fa.fa-search
                         button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Edit Trainer', data-target='#editmodal' data-fname=tr.trainerfname data-mob=tr.trainermobile  data-lname=tr.trainerlname data-email=tr.traineremail data-addr=tr.traineraddress data-bday=tr.trainerbday data-id=tr.trainerid 
                         data-username=tr.trainerusername data-pass=tr.trainerpassword)
                           i.fa.fa-edit
@@ -64,7 +62,7 @@ block main
         .modal-header
           button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
           h4#myModalLabel.modal-title Register a Trainer
-        form.needs-validation(action='/trains', method='POST', autocomplete='off' id='add-trainer' novalidate enctype='multipart/form-data')
+        form.needs-validation(action='/trains', method='POST', autocomplete="off" id='add-trainer' novalidate enctype='multipart/form-data')
           .modal-body
             .container-fluid
               .row
@@ -76,11 +74,11 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name
-                      input.form-control(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two names.')
+                      input.form-control(type='text' name='fname' required)
                   .col-md-6
                     .form-group
                       label.control-label Last Name
-                      input.form-control(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between surnames.')
+                      input.form-control(type='text' name='lname' required)
                 .row
                   .col-md-6
                     .input-group
@@ -96,17 +94,17 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Date of Birth
-                      input.date.form-control(type='text' name='bday' )
+                      input.date.form-control(type='text' name='bday' required)
                 .row
                   .col-md-12
                     .form-group
                       label.control-label Address
-                      input.form-control(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                      input.form-control(type='text' name='addr' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number
-                      input.form-control(type='text' placeholder='09xxxxxxxxx' value='09' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' minlength='11' maxlength='11' required)
+                      input.form-control(type='number' name='mobile' maxlength='11' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
@@ -115,34 +113,27 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Branch
-                      select.form-control(name='branchid')
+                      select.form-control(name='branchid' required)
+                        option.hidden(value='') Select Branch... 
                         each br in drops
-                          option.hidden Select Branch... 
                           option(value=''+br.branchID) #{br.branchname}
                   .col-md-6(style="position:relative!important; height:60px!important")
                     .form-group
                       label.control-label Specialization
-                      select.select.form-control(name='specialid' )
+                      select.select.form-control(name='specialid' required)
+                        option.hidden(value='') Select Specialty... 
                         each sp in spes
                           option(value=''+sp.specialID) #{sp.specialname}
-                //- .row
-                //-   .col-md-12
-                //-     .form-group
-                //-       label.control-label Trainer Type
-                //-       select#type.form-control(name='Ttype' required)
-                //-         option.hidden(value='') Select Trainer Type... 
-                //-         option(value='Freelance') Freelance
-                //-         option.traintype(value='Regular') Regular
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Start Time
-                      input.form-control.time(type="time" name='starttime')
+                      input.form-control.time(type="time" name='starttime' value='' required)
 
                   .col-md-6
                     .form-group
                       label.control-label End Time
-                      input.form-control.time(type="time" name='endtime')
+                      input.form-control.time(type="time" name='endtime' value='' required)
 
                 .row#d
                   .input-group
@@ -187,15 +178,15 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Username
-                      input.form-control(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='25' required)
+                      input.form-control(type='text' name='username' maxlength='25' required)
                   .col-md-6
                     .form-group
                       label.control-label Password
-                      input.form-control(type='password' name='password' required)
+                      input.form-control(type='password' name='password' autocomplete="new-password" required)
                 .row
                   .col-md-4
                     | Upload your Image 
-                    input#upload(type='file', name='img' ,accept="image/*")
+                    input#upload(type='file', name='img' ,accept="image/*" required)
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
             button.btn.btn-primary(id='btn-add-trainer' type='submit') Add Trainer
@@ -268,12 +259,12 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name
-                      input#fname.form-control(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
+                      input#fname.form-control(type='text' name='fname' maxlength='35' required)
                       input.hidden#id(type='text' name='id')
                   .col-md-6
                     .form-group
                       label.control-label Last Name
-                      input#lname.form-control(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='35' required)
+                      input#lname.form-control(type='text' name='lname' maxlength='35' required)
                 .row
                   .col-md-6
                     .input-group
@@ -294,12 +285,12 @@ block main
                   .col-md-12
                     .form-group
                       label.control-label Address
-                      input#addr.form-control(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
+                      input#addr.form-control(type='text' name='addr' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number
-                      input#mob.form-control(type='text' placeholder='09xxxxxxxxx' value='+63' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
+                      input#mob.form-control(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
@@ -320,7 +311,7 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Username
-                      input.form-control(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='25' required)#username
+                      input.form-control(type='text' name='username' required)#username
                   .col-md-6
                     .form-group
                       label.control-label Password
@@ -355,6 +346,8 @@ block main
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
             button.btn.btn-default(id='btn-del-trainer') Delete
+  //- FROM UTILITIES
+  input#trainerschedule.hidden(value=utils.workdays)
 
 include ../../../../templates/foot
 
@@ -370,8 +363,35 @@ script.
       autoclose: true
     })
   })
+  
 script.
- 
+  $(document).ready(function () {
+    const currSchedule = $('#trainerschedule').val()
+    let currScheduleArray = currSchedule.split(',')
+    if (currScheduleArray.includes('0')) {
+      $('input[value="0"]').prop('checked', true);
+    }
+    if (currScheduleArray.includes('1')) {
+      $('input[value="1"]').prop('checked', true);
+    }
+    if (currScheduleArray.includes('2')) {
+      $('input[value="2"]').prop('checked', true);
+    }
+    if (currScheduleArray.includes('3')) {
+      $('input[value="3"]').prop('checked', true);
+    }
+    if (currScheduleArray.includes('4')) {
+      $('input[value="4"]').prop('checked', true);
+    }
+    if (currScheduleArray.includes('5')) {
+      $('input[value="5"]').prop('checked', true);
+    }
+    if (currScheduleArray.includes('6')) {
+      $('input[value="6"]').prop('checked', true);
+    }
+  })
+
+script.
 
   $('select#type').change(function(){
     if(this.value == "Regular") {
@@ -385,55 +405,39 @@ script.
     }
   });
   $(document).ready(function(){
-  $('#memdrop').addClass('active');
-  $('#trainer').addClass('active');
+    $('#memdrop').addClass('active');
+    $('#trainer').addClass('active');
 
-  $('.needs-validation').validate({
-    rules:{
-      fname: {
-        minlength: 3,
-        maxlength: 35,
-        pattern: ^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$,
-      },
-      lname: {
-        minlength: 3,
-        maxlength: 35,
-        pattern: ^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$,
-      },
-      username: {
-        minlength: 4
+    $('.needs-validation').validate({
+      rules:{
+        username: {
+          minlength: 4
         },
-      mobile:{
-        maxlength: 11,
-        minlength: 11
+        mobile:{
+          maxlength: 11,
+          minlength: 11
         },
-    },
-    messages:{
-      fname: {
-        minlength: 'Please enter input at least to 2 characters only.',
-        maxlength: 'Please enter input not exceeding up to 35 characters only.',
-        pattern: 'Please avoid using leading or trailing spaces and multiple spaces between two words.'
+        password:{
+          minlength: 4
+        },
       },
-      lname: {
-        minlength: 3,
-        maxlength: 35,
-        pattern: ^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$,
-      },
-      username:{
-        minlength: 'Username shouldn\'t be less than four characters'
-      },
-      mobile:{
-        maxlength: 'Mobile number should be exactly 11 digits',
-        minlength: 'Mobile number should be exactly 11 digits'
-      }
-    }
-    });
-
-  });
+      messages:{
+        username:{
+          minlength: 'Username shouldn\'t be less than four characters'
+        },
+        mobile:{
+          maxlength: 'Mobile number should be exactly 11 digits',
+          minlength: 'Mobile number should be exactly 11 digits'
+        },
+        password:{
+          minlength: 'Password shouldn\'t be less than four characters'
+        },
+      } 
+    })
+  })
 
   $('#viewmodal').on('show.bs.modal', function(event){
     var button = $(event.relatedTarget)      
-
 
     var bra = button.data('bra')
     var mob = button.data('mob')
@@ -442,7 +446,6 @@ script.
     var addr= button.data('addr')
     var email= button.data('email')
     var gen= button.data('gen')
-
 
     let modal = $(this)  
     modal.find('.modal-body #bra').text(`${bra}`)   
@@ -454,14 +457,10 @@ script.
     modal.find('.modal-body #gen').text(`${gen}`)
   }) 
 
-
-
 script.
 
   $('#editmodal').on('show.bs.modal', function(event){
     var button = $(event.relatedTarget)      
-
-
 
     var mob = button.data('mob')
     var bday = button.data('bday')
@@ -490,16 +489,9 @@ script.
 
   $('#deletemodal').on('show.bs.modal', function(event){
     var button = $(event.relatedTarget)      
-
-
-
     var id = button.data('id')
-
     let modal = $(this)  
-
-
     modal.find('.modal-body #id').val(` ${id}`)
-
   }) 
 
     $(document).on('submit', '#btn-add-trainer', function(e) {
@@ -577,54 +569,7 @@ script.
         showConfirmButton: false,
         timer: 5000
       });
-    //- swal("Success!", "Class Deleted!", "success");
       $('#del-trainer').submit();
     }                        
     })
     });
-
-script.
-  console.log($('#type').val())
-//- $('#type').click(function(){
-//-   alert($('#type').val())
-//- })
-
-script.
-  $(document).ready(function(){
-    $('#type').on('change', function(){
-      var selected = $('#type').val()
-      if($(`.traintype[value='${selected}']`) == 'Regular'){
-        $('#mawawala').css('display', 'block')
-        $('#mawawalas').css('display', 'block')
-        //- $.post('/signup/query/branch').done(function(data){
-        //-   console.log(data)
-        //-   for(var i=0; i< data.length; i++){
-        //-     $('#branch').append(`<option value='${data[i].branchID}'>${data[i].branchname}</option>`)
-        //-   }
-        //- })
-      }
-      else{
-        $('#mawawala').css('display', 'none')
-        $('#mawawalas').css('display', 'none')
-
-      }
-    })
-  })
-
-
-script.
-  $(document).ready(function() {
-      $('#btn-add-trainer').bind("click",function() 
-      { 
-          var imgVal = $('#upload').val(); 
-          if(imgVal=='') 
-          { 
-              alert("empty input file"); 
-              return false; 
-          } 
-
-
-
-
-      }); 
-  });
