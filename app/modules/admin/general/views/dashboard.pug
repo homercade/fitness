@@ -10,13 +10,13 @@ append head
     }
 
 block main
-  #navbar.hidden
+  //- #navbar.hidden
   section#main-content
     section.wrapper.site-min-height
       .row
         .col-lg-9.main-chart
-          .row.mtbox
-            .col-md-2.col-sm-2.box0.col-md-offset3
+          .row
+            .col-md-2.col-sm-2.box0.col-md-offset-3
               .box1
                 span.li_heart
                 h3 210
@@ -31,10 +31,7 @@ block main
                 span.li_vynil
                 h3 3
               p 3 Active Classes
-          .row.mt
-            //- .col-lg-9.main-chart.charts
-            .col-md-12.mb
-              canvas#memberByMembership
+          
           .row.mt
             .col-md-1
             .col-md-4.mb
@@ -55,8 +52,13 @@ block main
                       p $ 47,60
             .col-md-7
               canvas#memberByMonth
-
-
+          .row.mt
+            //- .col-lg-9.main-chart.charts
+            .col-md-2
+            .col-md-8
+              canvas#memberByMembership
+            .col-md-2
+              
         .col-lg-3.ds
           h3 
             span.li_heart 

@@ -7,7 +7,7 @@ block main
 				.col-lg-12
 					section.panel
 						.panel-body
-							.form-horizontal.style-form
+							form.form-horizontal.style-form.needs-validation(novalidate)
 								.container-fluid
 									h3 
 										i.fa.fa-wrench
@@ -21,32 +21,35 @@ block main
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Gym Name 
 										.col-sm-4
-											input#gymname.form-control(type='text' value=utils.gymname)
+											input#gymname.form-control(type='text' name='gymname' value=utils.gymname required)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Company Name 
 										.col-sm-4
-											input#companyname.form-control(type='text' value=utils.companyname)
+											input#companyname.form-control(type='text' name='companyname' value=utils.companyname required)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Main Address 
 										.col-sm-4
-											input#address.form-control(type='text', placeholder='4408 Old. Sta. Mesa St, Newton Plaza' value=value=utils.address) 
+											input#address.form-control(type='text', placeholder='4408 Old. Sta. Mesa St, Newton Plaza' name='address' value=utils.address required)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label City 
 										.col-sm-4
-											input#city.form-control(type='text', placeholder='Sta. Mesa Manila' value=value=utils.city) 
+											input#city.form-control(type='text', placeholder='Sta. Mesa Manila' name='city' value=utils.city required)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Office Cellphone Number
 										.col-sm-4
-											input#phone.form-control(type='text' value=value=utils.phone)
+											input#phone.form-control(type='text' name='phone' value=utils.phone required)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Email
 										.col-sm-4
-											input#email.form-control(type='email' value=utils.email)
+											input#email.form-control(type='email' name='email' value=utils.email required)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Gym Logo
 										.col-sm-4
-											input#logo.form-control(type='file' value='/sample/path' placeholder='/path/name/to/file')
-											p Acceptable file type (jpg., png)
+											input#logo.form-control(type='file' data-link=utils.logo name='logo' placeholder='/path/name/to/file')
+											if utils.logo !== undefined 
+												p Current Logo - #{utils.logo}
+											else
+												p Acceptable file type (jpg., png)
 									.row.mb
 										.col-sm-3
 											.input-group
@@ -85,6 +88,14 @@ block main
 													| Sun
 													input#sun.schedCheck(type='checkbox', name='sched[]', value=0)
 													span.check
+									.row.mb
+										label.col-sm-2.col-sm-2.control-label Business Hours
+										.col-sm-2
+											input#starttime.form-control(type='time' name='starttime' placeholder='Start Time' value=utils.starttime required)
+											p Opening Time
+										.col-sm-2
+											input#endtime.form-control(type='time' name='endtime' placeholder='Start Time' value=utils.endtime  required)
+											p Closing Time
 
 								.container-fluid
 									br
@@ -92,23 +103,23 @@ block main
 									h4 Admin Account
 									br
 									.row.mb
-										label.col-sm-2.col-sm-2.control-label Admin Username
+										label.col-sm-2.col-sm-2.control-label Admin Full Name
 										.col-sm-2
-											input#userfname.form-control(type='text' value=admin.userfname, data-id=admin.userid)
+											input#userfname.form-control(type='text' name='userfname' value=admin.userfname, data-id=admin.userid required)
 										.col-sm-2
-											input#userlname.form-control(type='text' value=admin.userlname)
+											input#userlname.form-control(type='text' name='userlname' value=admin.userlname required)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Admin Username
 										.col-sm-4
-											input#username.form-control(type='text' value=admin.userusername)
+											input#username.form-control(type='text' name='username' value=admin.userusername required)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Admin Password
 										.col-sm-4
-											input#password.form-control(type='password' value=admin.userpassword)
+											input#password.form-control(type='password' name='password' value=admin.userpassword required)
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Retype Password
 										.col-sm-4
-											input#confirmpassword.form-control(type='password' value=admin.userpassword)
+											input#confirmpassword.form-control(type='password' name='confirmpassword' value=admin.userpassword required)
 											p#prompt(style='display:none; color:red') Password did not match!
 
 								.container-fluid
@@ -119,22 +130,23 @@ block main
 									.row.mb
 										label.col-sm-2.col-sm-2.control-label Currency Symbol
 										.col-sm-4
-											input#currsymbol.form-control(type='text' value=utils.currsymbol)
+											input#currsymbol.form-control(type='text' value=utils.currsymbol required)
 									each rate in rates
 										.row.mb
 											label.col-sm-2.col-sm-2.control-label #{rate.genname}
 											.col-sm-4
-												input.form-control.rates(type='number', value=rate.fee, data-id=rate.generalID) 
+												input.form-control.rates(type='number', value=rate.fee, data-id=rate.generalID name=rate.generalID required) 
 									.row.mb
 										.col-sm-2
 										.col-sm-4
-											button#submit.btn.btn-primary Save
+											button#submit.btn.btn-primary(type='submit') Save
 								input#trainerschedule.hidden(value=utils.workdays)
 
 include ../../../../templates/foot
 
 script.
-	$(document).ready(function(){
+	$(function(){
+
 		const currSchedule = $('#trainerschedule').val()
 		let  currScheduleArray = currSchedule.split(',')
 		if (currScheduleArray.includes('0')){
@@ -161,82 +173,91 @@ script.
 	})
 
 script.
-	$(document).ready(function () {
-		$('#submit').click(function () {
-			const checkboxes = $('.schedCheck');
-			const finalSched = [];
-			for (let i = 0; i < checkboxes.length; i++) {
-				checkboxes[i].checked && finalSched.push(checkboxes.eq(i).val())
-			}
-			const newsched = finalSched.toString()
-			const gymname = $('#gymname').val()
-			const companyname = $('#companyname').val()
-			const address = $('#address').val()
-			const city = $('#city').val()
-			const phone = $('#phone').val()
-			const email = $('#email').val()
-			const logo = $('#logo').val()
-			const userid = $('#userfname').data('id')
-			const userfname = $('#userfname').val()
-			const userlname = $('#userlname').val()
-			const username = $('#username').val()
-			const password = $('#password').val()
-			const confirmpassword = $('#confirmpassword').val()
-			const currsymbol = $('#currsymbol').val()
-			const rates = $('.rates')
+	$(function () {
+		$('.needs-validation').validate({
 
-			swal({
-				title: 'Are you sure?',
-				text: 'Utilites are used throughout the system',
-				type: 'warning',
-				showCancelButton: true,
-				cancelButtonColor: '#d33',
-				confirmButtonColor: '#3085d6',
-				confirmButtonText: 'Yes'
-			}).then((result) => {
-				if (result.value) {
-					swal({
-						title: 'Success!',
-						text: 'Class added successfully!',
-						type: 'success',
-						showConfirmButton: false,
-						timer: 1500
-					})
-
-					if (password == confirmpassword) {
-						for (i = 0; i < rates.length; i++) {
-							const rate = $(rates[i]).val()
-							const id = $(rates[i]).data('id')
-							console.log('here btch')
-							$.post('/edit/rates', {
-								rate,
-								id
-							})
-						}
-
-						$.post('/edit/utilities', {
-							gymname,
-							companyname,
-							address,
-							city,
-							phone,
-							email,
-							logo,
-							newsched,
-							userid,
-							userfname,
-							userlname,
-							username,
-							password,
-							currsymbol
-						})
-					} else {
-						$('#prompt').css('display', 'block')
-						$('html, body').animate({
-							scrollTop: $("#movetoerror").offset().top
-						}, 500);
-					}
+			submitHandler: function (form) {
+				const checkboxes = $('.schedCheck');
+				const finalSched = [];
+				for (let i = 0; i < checkboxes.length; i++) {
+					checkboxes[i].checked && finalSched.push(checkboxes.eq(i).val())
 				}
-			})
+				const newsched = finalSched.toString()
+				const gymname = $('#gymname').val()
+				const companyname = $('#companyname').val()
+				const address = $('#address').val()
+				const city = $('#city').val()
+				const phone = $('#phone').val()
+				const email = $('#email').val()
+				const logo = $('#logo').val()
+				const userid = $('#userfname').data('id')
+				const userfname = $('#userfname').val()
+				const userlname = $('#userlname').val()
+				const username = $('#username').val()
+				const password = $('#password').val()
+				const confirmpassword = $('#confirmpassword').val()
+				const currsymbol = $('#currsymbol').val()
+				const rates = $('.rates')
+				const starttime = $('#starttime').val()
+				const endtime = $('#endtime').val()
+				console.log({starttime, endtime})
+
+				if (password == confirmpassword) {
+					swal({
+						title: 'Are you sure?',
+						text: 'Utilites are used throughout the system',
+						type: 'warning',
+						showCancelButton: true,
+						cancelButtonColor: '#d33',
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Yes'
+					}).then((result) => {
+						if (result.value) {
+							swal({
+								title: 'Success!',
+								text: 'Class added successfully!',
+								type: 'success',
+								showConfirmButton: false,
+								timer: 1500
+							})
+
+							for (i = 0; i < rates.length; i++) {
+								const rate = $(rates[i]).val()
+								const id = $(rates[i]).data('id')
+								$.post('/edit/rates', {
+									rate,
+									id
+								})
+							}
+
+							$.post('/edit/utilities', {
+								gymname,
+								companyname,
+								address,
+								city,
+								phone,
+								email,
+								logo,
+								newsched,
+								userid,
+								userfname,
+								userlname,
+								username,
+								password,
+								currsymbol,
+								starttime,
+								endtime
+							})
+
+						}
+					})
+				} else {
+					$('#prompt').css('display', 'block')
+					$('html, body').animate({
+						scrollTop: $("#movetoerror").offset().top
+					}, 500);
+				}
+			}
 		})
 	})
+

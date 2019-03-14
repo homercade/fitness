@@ -1619,7 +1619,9 @@ router.post('/edit/utilities', (req, res) => {
       email = ?,
       logo = ?,
       workdays = ?,
-      currsymbol = ?
+      currsymbol = ?,
+      starttime = ?,
+      endtime = ?
     WHERE utilid = 1
   `
   const queryadmin = `
@@ -1639,7 +1641,9 @@ router.post('/edit/utilities', (req, res) => {
     req.body.email,
     req.body.logo,
     req.body.newsched,
-    req.body.currsymbol
+    req.body.currsymbol,
+    req.body.starttime,
+    req.body.endtime
   ],
   (err, out) => {
     db.query(queryadmin, [
