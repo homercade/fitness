@@ -87,10 +87,12 @@ block main
                       .form-group
                         label.control-label Start Date
                         input#sdate.form-control(type='date' name='startdate' required)
+                        #prompt
                     .col-md-6
                       .form-group
                         label.control-label End Date
-                        input.form-control(type='date' name='enddate' required)
+                        input#edate.form-control(type='date' name='enddate' required)
+                        #prompt
                   .row
                     .col-md-6
                       .form-group
@@ -110,12 +112,16 @@ block main
                         select.form-control(id='' name='type')
                           option.hidden Select Type..
                           option(value='Member') Member
-                          option(value='Non-Member') Non Member       
+                          option(value='Non-Member') Non Member        
                   .row
                     .col-md-12
                       label.control-label Description
                       .form-group
                         textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
+                  .row
+                    .col-md-4
+                      | Upload your Image 
+                      input#upload(type='file', name='img' ,accept="image/*")
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
@@ -329,3 +335,82 @@ script.
     }                        
     })
     });
+
+script.
+  $(document).ready(function(){
+    $('#sdate').keyup(function () {
+      var startdate = $(this).val()
+      if (startdate.length >= 4) {
+        $.post('/promoval').done(function (data) {
+          console.log(data)
+          for (i = 0; i < data.length; i++) {
+            if (data[i].startdate != startdate) {
+              $('#prompt').empty()
+              $('#btn-add-promo').attr('disabled', false)
+            } else {
+              $('#btn-add-promo').attr('disabled', true)
+              $('#sdate').addClass('inv')
+              $('#sdate.form-control').addClass('inv')
+              $('#prompt').text('*Promo with same duration Exists')
+              $('#prompt').css({
+                'color':'#ff6961',
+                'font-weight':'bold'
+              })
+            }
+          }
+        })
+      }
+      else{
+        $('#prompt').empty() 
+        $('#btn-add-promo').attr('disabled', false)
+      }
+    })
+  })
+
+script.
+  $(document).ready(function(){
+    $('#edate').keyup(function () {
+      var enddate = $(this).val()
+      if (enddate.length >= 4) {
+        $.post('/promoval').done(function (data) {
+          console.log(data)
+          for (i = 0; i < data.length; i++) {
+            if (data[i].enddate != enddate) {
+              $('#prompt').empty()
+              $('#btn-add-promo').attr('disabled', false)
+            } else {
+              $('#btn-add-promo').attr('disabled', true)
+              $('#edate').addClass('inv')
+              $('#edate.form-control').addClass('inv')
+              $('#prompt').text('*Promo with same duration Exists')
+              $('#prompt').css({
+                'color':'#ff6961',
+                'font-weight':'bold'
+              })
+            }
+          }
+        })
+      }
+      else{
+        $('#prompt').empty() 
+        $('#btn-add-promo').attr('disabled', false)
+      }
+    })
+  })
+
+script.
+  $(document).ready(function() {
+      $('#btn-add-promo').bind("click",function() 
+      { 
+          var imgVal = $('#upload').val(); 
+          if(imgVal=='') 
+          { 
+              alert("empty input file"); 
+              return false; 
+          } 
+
+
+
+
+      }); 
+  });

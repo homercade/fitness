@@ -272,7 +272,6 @@ function viewSpecial(req, res, next) {
 // });
 
 //insert discount
-
 router.post('/discount', (req, res) => { 
   console.log(req.files) 
   promopic=`${req.body.promoname}.jpg`
@@ -442,36 +441,59 @@ function viewCategory(req, res, next) {
 }
 
 //insert trainer
+// router.post('/trains', (req, res) => {
+//   if (req.body.Ttype=='Freelance'){
+//   db.query(`INSERT INTO tbltrainer
+//    ( trainerfname, trainerlname, 
+//    trainerbday,trainergender,traineraddress,
+//    trainermobile,traineremail,trainerschedule,trainerbranch,
+//    trainerspecialization,trainerpassword,trainerusername,type,
+//    trainertimestart,trainertimeend) VALUES 
+//    ( ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)`, [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.sched.toString(), req.body.branchid, req.body.specialid, req.body.password, req.body.username, req.body.Ttype, req.body.starttime, req.body.endtime], (err, results, fields) => {
+//     if (err)
+//       console.log(err);
+//     else {
+//       res.redirect('/trains');
+//     }
+//   });
+//   }else{
+//   db.query(`INSERT INTO tbltrainer 
+//     ( trainerfname, trainerlname, 
+//     trainerbday,trainergender,traineraddress,
+//     trainermobile,traineremail,trainerschedule,
+//     trainerbranch,trainerspecialization,trainerpassword,
+//     trainerusername,type) 
+//     VALUES ( ?, ?, ?, ?, ?, ? ,?, 'Monday,Tuesday,Wednesday,Thursday,Friday', ?, ?, ?, ?, ?)`, [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.branchid, req.body.specialid, req.body.password, req.body.username, req.body.Ttype], (err, results, fields) => {
+//     if (err)
+//       console.log(err);
+//     else 
+//       res.redirect('/trains');
+//   });
+//   }
+// });
+
+//insert trainer
 router.post('/trains', (req, res) => {
-  if (req.body.Ttype=='Freelance'){
+  console.log(req.files)
+  pic=`${req.body.fname + req.body.lname}.jpg`
+  fullname= req.session.user.userfname + " " + req.session.user.userlname
+  req.files.img.mv('public/assets/images/'+pic, function(err){
   db.query(`INSERT INTO tbltrainer
    ( trainerfname, trainerlname, 
    trainerbday,trainergender,traineraddress,
    trainermobile,traineremail,trainerschedule,trainerbranch,
-   trainerspecialization,trainerpassword,trainerusername,type,
-   trainertimestart,trainertimeend) VALUES 
-   ( ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)`, [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.sched.toString(), req.body.branchid, req.body.specialid, req.body.password, req.body.username, req.body.Ttype, req.body.starttime, req.body.endtime], (err, results, fields) => {
+   trainerspecialization,trainerpassword,trainerusername,trainertimestart,trainertimeend,trainerpic) VALUES 
+   ( ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ? )`, [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.sched.toString(), req.body.branchid, req.body.specialid, req.body.password, req.body.username, req.body.starttime, req.body.endtimem,pic], (err, results, fields) => {
     if (err)
       console.log(err);
     else {
       res.redirect('/trains');
     }
-  });
-  }else{
-  db.query(`INSERT INTO tbltrainer 
-    ( trainerfname, trainerlname, 
-    trainerbday,trainergender,traineraddress,
-    trainermobile,traineremail,trainerschedule,
-    trainerbranch,trainerspecialization,trainerpassword,
-    trainerusername,type) 
-    VALUES ( ?, ?, ?, ?, ?, ? ,?, 'Monday,Tuesday,Wednesday,Thursday,Friday', ?, ?, ?, ?, ?)`, [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.branchid, req.body.specialid, req.body.password, req.body.username, req.body.Ttype], (err, results, fields) => {
-    if (err)
-      console.log(err);
-    else 
-      res.redirect('/trains');
-  });
-  }
 });
+});
+  });
+
+
 
 //view branch dropdowns
 function viewbranchdrop(req, res, next) {
@@ -522,10 +544,10 @@ function viewTrainer(req, res, next) {
 JOIN tblspecial s ON s.specialID =u.trainerspecialization`, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewTrainer = results;
-      //moments time
-      for (var i = 0; i < req.viewTrainer.length; i++) {
-        req.viewTrainer[i].trainertimestart = moment(results[i].trainertimestart,'HH:mm:ss').format("hh:ss A");
-      }
+      // //moments time
+      // for (var i = 0; i < req.viewTrainer.length; i++) {
+      //   req.viewTrainer[i].trainertimestart = moment(results[i].trainertimestart,'HH:mm:ss').format("hh:ss A");
+      // }
        //moments time
       for (var i = 0; i < req.viewTrainer.length; i++) {
         req.viewTrainer[i].trainertimeend = moment(results[i].trainertimeend,'HH:mm:ss').format("hh:ss A"); 
@@ -1332,7 +1354,7 @@ function viewSp(req, res, next){
 
 //addwalkin
 router.post('/walkin',regid,(req, res) => {
-  db.query("INSERT INTO tbluser(userfname,userlname,usermobile)VALUES(?, ?, ?)", [req.body.fname, req.body.lname,req.body.mobile], (err, results, fields) => {
+  db.query("INSERT INTO tbluser(userfname,userlname,usermobile,userusername)VALUES(?, ?, ?, ?)", [req.body.fname, req.body.lname,req.body.mobile, req.body.username], (err, results, fields) => {
     db.query("INSERT INTO tblpayment(userid,classification,amount,branchid)VALUES(?, 3,50,?)", [req.regid,req.session.user.branch], (err, results, fields) => {
       if (err)
           console.log(err);
@@ -1342,6 +1364,17 @@ router.post('/walkin',regid,(req, res) => {
 
     });
     });
+})
+
+//walkinvalidation
+router.post('/walkinval', (req, res) => {
+    db.query(`SELECT u.*, p.* from tbluser u join tblpayment p on
+      u.userid=p.userid where p.classification = 3 and p.paymentdate IS NULL`, (err, out) => {
+        if(err) console.log(err)
+        if(out.length > 0){
+           res.send(out)
+        } 
+    })
 })
 
 //view walkin
@@ -1631,6 +1664,28 @@ function viewReceipt(req, res, next) {
     return next();
   })
 }
+
+//promoval
+router.post('/promoval', (req, res) => {
+    db.query(`SELECT * from tblpromo`, (err, out) => {
+        if(err) console.log(err)
+        if(out.length > 0){
+           res.send(out)
+        } 
+    })
+})
+
+//expire promos
+function Exppro(req, res, next) {
+  db.query(`UPDATE tblpromo Set status= 'Inactive' , statusback='2' where enddate < CURDATE()`, (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      return next()
+    };
+  })
+};
+
 
 // QUERIES
 
@@ -2112,7 +2167,10 @@ function rsales(req, res) {
 
 router.post('admin/dashboard', (req, res) => {
   console.log('heyyy')
-   db.query('select u.* , r.*, ct.*, cl.* ,m.*,b.* from tbluser u join tblmembership m ON m.usersid=u.userid inner join tblmemrates r ON r.memrateid=m.membershiprateid inner join tblmemclass cl on r.memclass=cl.memclassid inner join tblcat ct on ct.membershipID=r.memcat inner join tblbranch b on b.branchID=u.branch where cardnum=?', [req.body.cardNumber], (err, results) => {
+   db.query(`select u.* , r.*, ct.*, cl.* ,m.*,b.* from tbluser u join tblmembership m 
+    ON m.usersid=u.userid inner join tblmemrates r ON r.memrateid=m.membershiprateid 
+    inner join tblmemclass cl on r.memclass=cl.memclassid inner join tblcat ct on
+    ct.membershipID=r.memcat inner join tblbranch b on b.branchID=u.branch where cardnum=?`, [req.body.cardNumber], (err, results) => {
      if(err) console.log(err)
 
      if(results.length > 0){
@@ -2131,18 +2189,18 @@ router.get('/user', userd);
 router.get('/utilities', utils);
 
 //MAINTENANCE
-router.get('/branch', viewBranch, branch);
-router.get('/category', viewCategory, category);
-router.get('/classes', viewClass, classes);
-router.get('/discount', viewDiscount, discount);
+router.get('/branch', Exppro,viewBranch, branch);
+router.get('/category', Exppro,viewCategory, category);
+router.get('/classes', Exppro,viewClass, classes);
+router.get('/discount', Exppro,viewDiscount, discount);
 // router.get('/facility', viewFac, facility);
 /*router.get('/general', viewGen, general);*/
-router.get('/membership', viewclassdrop, viewMembership, viewcatdrop, membership);
-router.get('/specialization', viewSpecial, specs);
-router.get('/staff',viewBranches, viewStaff, staff);
-router.get('/trains', viewTrainer, viewspecialdrop, viewbranchdrop, trains);
-router.get('/memclass', viewHie, memclass);
-router.get('/ORs',viewOR,ORs);
+router.get('/membership', Exppro,viewclassdrop, viewMembership, viewcatdrop, membership);
+router.get('/specialization', Exppro,viewSpecial, specs);
+router.get('/staff',Exppro,viewBranches, viewStaff, staff);
+router.get('/trains', Exppro,viewTrainer, viewspecialdrop, viewbranchdrop, trains);
+router.get('/memclass', Exppro,viewHie, memclass);
+router.get('/ORs',Exppro,viewOR,ORs);
 
 //TRANSACTIONS
 // router.get('/t-class', t_class);

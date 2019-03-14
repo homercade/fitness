@@ -30,9 +30,6 @@ block main
                     i.fa.fa-user
                     |  Name
                   th
-                    i.fa.fa-user
-                    |  Type
-                  th
                     i.fa.fa-calendar-alt
                     |  Birthday
                   th
@@ -48,14 +45,9 @@ block main
                   each tr in trains 
                     tr
                       td #{tr.trainerfname} #{tr.trainerlname}
-                      td #{tr.type}
                       td #{tr.trainerbday}
                       td #{tr.trainerschedule}
-                      td
-                        if tr.type=='Freelance'
-                          |#{tr.trainertimestart} - #{tr.trainertimeend}
-                        else if tr.type == 'Regular'
-                          | Gym Hours
+                      td #{tr.trainertimestart} - #{tr.trainertimeend}
                       td
                         //- button#view.btn.btn-info.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='View Trainer', data-target='#viewmodal' data-sched=tr.trainerschedule data-mob=tr.trainermobile data-bra=tr.branchname data-spe=tr.specialname data-email=tr.traineremail data-addr=tr.traineraddress data-gen=tr.trainergender)
                         //-   i.fa.fa-search
@@ -104,7 +96,7 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Date of Birth
-                      input.date.form-control(type='text' name='bday')
+                      input.date.form-control(type='text' name='bday' )
                 .row
                   .col-md-12
                     .form-group
@@ -130,7 +122,7 @@ block main
                   .col-md-6(style="position:relative!important; height:60px!important")
                     .form-group
                       label.control-label Specialization
-                      select.select.form-control(name='specialid' multiple="multiple")
+                      select.select.form-control(name='specialid' )
                         each sp in spes
                           option(value=''+sp.specialID) #{sp.specialname}
                 //- .row
@@ -141,16 +133,16 @@ block main
                 //-         option.hidden(value='') Select Trainer Type... 
                 //-         option(value='Freelance') Freelance
                 //-         option.traintype(value='Regular') Regular
-                //- .row#t(style='display:none')
-                //-   .col-md-6
-                //-     .form-group
-                //-       label.control-label Start Time
-                //-       input.form-control.time(type="text" name='starttime')
+                .row
+                  .col-md-6
+                    .form-group
+                      label.control-label Start Time
+                      input.form-control.time(type="time" name='starttime')
 
-                //-   .col-md-6
-                //-     .form-group
-                //-       label.control-label End Time
-                //-       input.form-control.time(type="text" name='endtime')
+                  .col-md-6
+                    .form-group
+                      label.control-label End Time
+                      input.form-control.time(type="time" name='endtime')
 
                 .row#d
                   .input-group
@@ -202,11 +194,11 @@ block main
                       input.form-control(type='password' name='password' required)
                 .row
                   .col-md-4
-                    label(for='file') Display Image
-                    input.inputfile(type='file')
+                    | Upload your Image 
+                    input#upload(type='file', name='img' ,accept="image/*")
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
-            button.btn.btn-primary(id='btn-add-trainer') Add Trainer
+            button.btn.btn-primary(id='btn-add-trainer' type='submit') Add Trainer
   // MODAL VIEW MEMBER
   #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
     .modal-dialog
@@ -612,3 +604,19 @@ script.
   })
 
 
+script.
+  $(document).ready(function() {
+      $('#btn-add-trainer').bind("click",function() 
+      { 
+          var imgVal = $('#upload').val(); 
+          if(imgVal=='') 
+          { 
+              alert("empty input file"); 
+              return false; 
+          } 
+
+
+
+
+      }); 
+  });

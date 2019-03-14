@@ -54,6 +54,11 @@ block main
                 .form-group
                   label.control-labe(style="color:white") Last Name
                   input.form-control(type="text" name="lname" placeholder='Last Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' minlength='2' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+              .col-md-12
+                .form-group
+                  label.control-labe(style="color:white") Username 
+                  input.username.form-control(type="text" name="username" placeholder='Username' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' minlength='2' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                  #prompt
             .row
               .col-md-12
                 .form-group
@@ -61,7 +66,7 @@ block main
                   input.form-control(type='text' placeholder='09xxxxxxxxx' value='09' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' minlength='11' required)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='submit'  id='add-btn') Add Walkins
+          button.add.btn.btn-primary(type='submit'  id='add-btn') Add Walkins
 
 .edit-walkins-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog
@@ -280,4 +285,35 @@ script.
         timer: 1500
       });
       $('#add-walk').submit();
-    });
+    }); 
+
+script.
+  $(document).ready(function(){
+    $('.username').keyup(function () {
+      var username = $(this).val()
+      if (username.length >= 4) {
+        $.post('/walkinval').done(function (data) {
+          console.log(data)
+          for (i = 0; i < data.length; i++) {
+            if (data[i].userusername != username) {
+              $('#prompt').empty()
+              $('.add').attr('disabled', false)
+            } else {
+              $('.add').attr('disabled', true)
+              $('.username').addClass('inv')
+              $('.username.input.form-control').addClass('inv')
+              $('#prompt').text('*Cannot add exisiting Walkin Client')
+              $('#prompt').css({
+                'color':'#ff6961',
+                'font-weight':'bold'
+              })
+            }
+          }
+        })
+      }
+      else{
+        $('#prompt').empty() 
+        $('.add').attr('disabled', false)
+      }
+    })
+  })
