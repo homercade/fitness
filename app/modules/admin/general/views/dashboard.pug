@@ -15,22 +15,10 @@ block main
     section.wrapper.site-min-height
       .row
         .col-lg-9.main-chart
-          .row.mtbox
-            .col-md-2.col-sm-2.box0.col-md-offset-3
-              .box1
-                span.li_heart
-                h3 210
-              p 210 Active Members
-            .col-md-2.col-sm-2.box0
-              .box1
-                span.li_calendar
-                h3 25
-              p 25 Active Trainers
-            .col-md-2.col-sm-2.box0
-              .box1
-                span.li_vynil
-                h3 3
-              p 3 Active Classes
+          .row.mt
+            //- .col-lg-9.main-chart.charts
+            .col-md-12.mb
+              canvas#memberByMembership
           .row.mt
             .col-md-1
             .col-md-4.mb
@@ -49,13 +37,8 @@ block main
                     .col-md-6
                       h5.small.mt TOTAL SPEND
                       p $ 47,60
-            .col-md-7.mb
-              canvas#memberByMembership
-          .row.mt
-            //- .col-lg-9.main-chart.charts
-            .col-md-12
+            .col-md-7
               canvas#memberByMonth
-            
 
 
         .col-lg-3.ds
@@ -133,15 +116,38 @@ script.
       $('#hiddenInput').trigger('focus')
     },500)
 
-    const cardNumber =  $('#hiddenInput').val()
-    $('#hiddenInput').on('change', function(){
-    $.post('/dashboard', { cardNumber: cardNumber }).done(data => {
-      console.log({d: data})
-    })
 
-    swal('ID: ' + $(this).val(), 'The user is: usernameHere', 'success');
-    var cardVal = $(this).val();
-    $('#hiddenInput').val('')
+    $('#hiddenInput').on('change', function(){
+    $.post('/', { 
+      cardNumber: $(this).val()
+    }).done(function(response){
+      console.log(response);
+      // const logDate = new Date().toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: 'numeric' }); (optional)
+      if(response == 'noCard'){
+        swal({
+          title: 'Card does not exist!',
+          text: 'This card is either unregistered, or the owner\'s membership has expired.',
+          type: 'error',
+          showCancelButton: false,
+          showConfirmButton: false,
+          timer: 6000
+        });
+        $('#hiddenInput').val('');
+      }
+      else{
+        console.log(response[0].memberid);
+        swal({
+          title: response[0].userfname + ' ' + response[0].userlname,
+          html: 'Subscription: ' + response[0].memclassname + ' — ' + response[0].membershipname, // + '<br><b>Time In: </b>' + logDate (optional)
+          type: 'success',
+          footer: '<b>Expiration Date</b>:  ' + response[0].expiryDate,
+          showCancelButton: false,
+          showConfirmButton: false,
+          timer: 6000
+        })
+        $('#hiddenInput').val('');
+      }
+    });
     })
   })
 

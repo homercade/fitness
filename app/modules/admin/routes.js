@@ -2254,6 +2254,25 @@ function card(req, res) {
 }
 
 
+router.post('/', (req, res) => {
+  db.query(`SELECT a.memberid, DATE_FORMAT(expirydate,'%M %e, %Y (%W)') AS expiryDate, b.userfname, b.userlname, c.memclassname, d.membershipname, e.memrateid 
+  FROM tblmembership a 
+  INNER JOIN tbluser b ON a.usersid = b.userid  
+  INNER JOIN tblmemrates e ON e.memrateid=a.membershiprateid 
+  INNER JOIN tblmemclass c ON e.memclass=c.memclassid 
+  INNER JOIN tblcat d ON d.membershipID=e.memcat WHERE a.cardnum=?;`, [req.body.cardNumber], function(err, results, fields){
+    console.log('Card Value is: ' + req.body.cardNumber);
+    if(err) throw(err)
+    else{
+      if(results==0){
+        res.send('noCard');
+      }
+      else{
+        res.send(results);
+      }
+    }
+  })
+})
 
 
 //QUERIES
@@ -2323,21 +2342,6 @@ function rsales(req, res) {
     qClass:req.total
   })
 }
-
-router.post('admin/dashboard', (req, res) => {
-  console.log('heyyy')
-   db.query(`select u.* , r.*, ct.*, cl.* ,m.*,b.* from tbluser u join tblmembership m 
-    ON m.usersid=u.userid inner join tblmemrates r ON r.memrateid=m.membershiprateid 
-    inner join tblmemclass cl on r.memclass=cl.memclassid inner join tblcat ct on
-    ct.membershipID=r.memcat inner join tblbranch b on b.branchID=u.branch where cardnum=?`, [req.body.cardNumber], (err, results) => {
-     if(err) console.log(err)
-
-     if(results.length > 0){
-        console.log('HEERE:::', results)
-        res.send(results)
-     }
-   })
-})
 
 
 //A-TEAM FITNESS GETS
