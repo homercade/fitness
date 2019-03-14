@@ -1597,7 +1597,6 @@ router.post('/edit/utilities', (req, res) => {
       res.send(out)
     })
     if (err) console.log(err)
-    res.send(out)
   })
 })
 

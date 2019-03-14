@@ -529,11 +529,19 @@ router.post('/fee', (req, res) => {
 	})
 })
 
-
+// VIEW UTILITIES
+function viewUtils ( req,res,next ) {
+  db.query('SELECT * FROM tblutilities', ( err,results ) => {
+    if (err) console.log(err)
+    req.utils = results[0]
+    return next();
+  })
+}
 
 // ---------- F U N C T I O N S ---------- //
 function dashboard(req, res, next) {
 	return res.render('member/views/dashboard', {
+		utils: req.utils,
 		notifs: req.notifs,
 		profs: req.initial,
 		total: req.total,
@@ -544,6 +552,7 @@ function dashboard(req, res, next) {
 
 function profile(req, res, next) {
 	return res.render('member/views/profile', {
+		utils: req.utils,
 		notifs: req.notifs,
 		profs: req.initial,
 		session: req.session
@@ -552,6 +561,7 @@ function profile(req, res, next) {
 
 function events(req, res, next) {
 	return res.render('member/views/events', {
+		utils: req.utils,
 		notifs: req.notifs,
 		joinedEvents: req.joinedEvents,
 		eventIds: req.eventIds,
@@ -563,6 +573,7 @@ function events(req, res, next) {
 
 function classes(req, res, next) {
 	return res.render('member/views/classes', {
+		utils: req.utils,
 		notifs: req.notifs,
 		joinedClasses: req.joinedClasses,
 		classIds: req.classIds,
@@ -574,6 +585,7 @@ function classes(req, res, next) {
 
 function trainer(req, res, next) {
 	return res.render('member/views/trainer', {
+		utils: req.utils,
 		notifs: req.notifs,
 		profs: req.initial,
 		trainers: req.viewTrainers,
@@ -584,6 +596,7 @@ function trainer(req, res, next) {
 
 function pending(req, res, next) {
 	return res.render('member/views/pending', {
+		utils: req.utils,
 		notifs: req.notifs,
 		profs: req.initial,
 		session: req.session
@@ -592,6 +605,7 @@ function pending(req, res, next) {
 
 function accepted(req, res, next) {
 	return res.render('member/views/accepted', {
+		utils: req.utils,
 		notifs: req.notifs,
 		profs: req.initial,
 		pt: req.pt,
@@ -602,6 +616,7 @@ function accepted(req, res, next) {
 
 function change(req, res, next) {
 	return res.render('member/views/change', {
+		utils: req.utils,
 		notifs: req.notifs,
 		profs: req.initial,
 		session: req.session
@@ -610,13 +625,13 @@ function change(req, res, next) {
 }
 
 // ------------- GET ---------------//
-router.get('/', initial, notification, totalPayment, fee, checkFinishedSession, dashboard);
+router.get('/', initial, notification, viewUtils, totalPayment, fee, checkFinishedSession, dashboard);
 // router.get('/', initial, notification, totalPayment, fee, dueEvents, dueDate, dashboard, checkFinishedSession);
-router.get('/profile', notification, initial, profile);
-router.get('/events', notification, joinedEvents, viewEvent, initial, events);
-router.get('/trainers', notification, initial, check, viewTrainers, trainer);
-router.get('/classes', notification, joinedClasses, viewClass, initial, classes);
-router.get('/pending', notification, initial, pending);
-router.get('/accepted', notification, viewHistory, checkForChange, personalTrainer, initial, accepted);
-router.get('/change', notification, initial, change);
+router.get('/profile', notification, viewUtils, initial, profile);
+router.get('/events', notification, viewUtils, joinedEvents, viewEvent, initial, events);
+router.get('/trainers', notification, viewUtils, initial, check, viewTrainers, trainer);
+router.get('/classes', notification, viewUtils, joinedClasses, viewClass, initial, classes);
+router.get('/pending', notification, viewUtils, initial, pending);
+router.get('/accepted', notification, viewUtils, viewHistory, checkForChange, personalTrainer, initial, accepted);
+router.get('/change', notification, viewUtils, initial, change);
 exports.member = router;

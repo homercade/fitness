@@ -376,12 +376,21 @@ router.post('/trainee/accept', (req, res) => {
   })
 });
 
+// VIEW UTILITIES
+function viewUtils ( req,res,next ) {
+  db.query('SELECT * FROM tblutilities', ( err,results ) => {
+    if (err) console.log(err)
+    req.utils = results[0]
+    return next();
+  })
+}
 
 // ---------- F U N C T I O N S ---------- //
 
 //    FUNCTION
 function dashboard(req, res, next) {
   res.render('trainer/views/dashboard', {
+    utils: req.utils,
     hello: req.trainer,
     notifs: req.notifs,
     session: req.session
@@ -391,6 +400,7 @@ function dashboard(req, res, next) {
 
 function trainee(req, res, next) {
   res.render('trainer/views/trainee', {
+    utils: req.utils,
     trainee: req.viewTrainee,
     hello: req.trainer,
     notifs: req.notifs,
@@ -401,6 +411,7 @@ function trainee(req, res, next) {
 
 function pending(req, res, next) {
   res.render('trainer/views/pending', {
+    utils: req.utils,
     hello: req.trainer,
     pends: req.viewPend,
     notifs: req.notifs,
@@ -411,6 +422,7 @@ function pending(req, res, next) {
 
 function notrainee(req, res, next) {
   res.render('trainer/views/no-trainee', {
+    utils: req.utils,
     hello: req.trainer,
     notifs: req.notifs,
     session: req.session
@@ -420,6 +432,7 @@ function notrainee(req, res, next) {
 
 function traineeSched(req, res, next) {
   res.render('trainer/views/trainee-sched', {
+    utils: req.utils,
     trainee: req.viewTrainee,
     hello: req.trainer,
     general: req.general,
@@ -432,6 +445,7 @@ function traineeSched(req, res, next) {
 
 function change(req, res, next) {
   res.render('trainer/views/change', {
+    utils: req.utils,
     hello: req.trainer,
     notifs: req.notifs,
     session: req.session
@@ -442,12 +456,11 @@ function change(req, res, next) {
 
 //    ROUTER
 // router.get('/', hello, dueEvents, dashboard);
-router.get('/', hello, notification, dashboard);
-router.get('/trainee', hello, notification, allTrainees, trainee);
-router.get('/pending', hello, notification, viewPend, pending);
-router.get('/no-trainee', hello, notification, notrainee);
-router.get('/trainee-sched', hello, notification, viewHistory, individualTrainee, traineeSched);
-router.get('/change', hello, notification, change);
-
+router.get('/', viewUtils, hello, notification, dashboard);
+router.get('/trainee', viewUtils, hello, notification, allTrainees, trainee);
+router.get('/pending', viewUtils, hello, notification, viewPend, pending);
+router.get('/no-trainee', viewUtils, hello, notification, notrainee);
+router.get('/trainee-sched', viewUtils, hello, notification, viewHistory, individualTrainee, traineeSched);
+router.get('/change', viewUtils, hello, notification, change);
 
 exports.trainer = router;
