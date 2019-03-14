@@ -22,7 +22,6 @@ block main
             input#sessionID.hidden(type="text" value = pt[0].sessionID)
             input#sessionStatus.hidden(type="text" value = pt[0].sessionStatus)
 
-
           .col-md-4.profile-text(style='margin-top:20px!important;')
             h4(style='margin-left:0') You are currently assigned to <br><b>#{pt[0].trainerfname} #{pt[0].trainerlname}</b>
             h5 Trainer Details: 
@@ -119,6 +118,7 @@ block main
 script.
 
 include ../../../templates/foot
+include ../../../templates/sub-foot
 
 script.
   $(document).ready(function(){
@@ -140,7 +140,6 @@ script.
   $(document).ready(function () {
     var fee
     $.post('/member/fee').done(function(data){
-      console.log(data)
       fee = data.fee
     })
     
@@ -216,7 +215,6 @@ script.
       let trainerscheduleArray = JSON.parse(trainerschedule);
       let trainertimestart = $('#trainertimestart').val();
       let trainertimeend = $('#trainertimeend').val();
-      console.log(trainerschedule, trainertimestart, trainertimeend)
 
       for (i = 0; i < data.length; i++) {
         let name = `${data[i].trainerfname} ${data[i].trainerlname}`
@@ -228,10 +226,6 @@ script.
         let content = data[i].description
         schedStatus = data[i].scheduleStatus
         delId = data[i].PTid
-
-        console.log(name)
-        console.log(start)
-        console.log(end)
 
         var desc = {
           id: delId,

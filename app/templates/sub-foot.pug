@@ -1,0 +1,26 @@
+script.
+  const session = !{JSON.stringify(session)}
+  //- IF NOT 
+  //- ADD STICKY NAVBAR
+  if (session.trainer || session.member) {
+    let navbar = document.getElementById("navbar");
+    let sticky = navbar.offsetTop;
+
+    function myFunction() {
+      if (window.pageYOffset >= sticky) {
+        navbar.classList.add("sticky")
+      } else {
+        navbar.classList.remove("sticky");
+      }
+    }
+
+    window.onscroll = function () {
+      myFunction()
+    }
+    //- POST REQUEST WHEN BELL IS CLICKED
+    $('.bell').click(function(){
+      $('.badge').css("display","none")
+      if (session.member) $.post('/member/notification/mark/read')
+      if (session.trainer)  $.post('/trainer/notification/mark/read')
+    })
+  }

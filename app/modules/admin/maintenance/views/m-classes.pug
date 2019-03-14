@@ -114,8 +114,6 @@ block main
                       .form-group
                         label.control-label Class Name
                         input#name.form-control(type='text' name='classname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
-                        script.
-                          trimThot(classname)
                   .row
                     .col-md-12
                       label.control-label Description
@@ -155,7 +153,7 @@ script.
     $('#memdrop').addClass('active')
     $('#classes').addClass('active')
   })
-
+  
   $('#viewmodal').on('show.bs.modal', function(event){
     let button = $(event.relatedTarget) 
     let name = button.data('name')

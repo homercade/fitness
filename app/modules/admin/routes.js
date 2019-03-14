@@ -12,7 +12,7 @@ var fs=require('fs')
 router.use(authMiddleware.hasAuth);
 
 var indexController = require('./controllers/index');
-router.get('/', indexController);
+
 
 var mailer = nodemailer.createTransport({
     service: 'gmail',
@@ -1558,14 +1558,98 @@ router.post('/graph/membership/members/count', (req, res) => {
   })
 }) 
 
+// VIEW UTILITIES
+function viewUtils ( req,res,next ) {
+  db.query('SELECT * FROM tblutilities', ( err,results ) => {
+    if (err) console.log(err)
+    req.utils = results[0]
+    return next();
+  })
+}
 
+function viewAdmin ( req,res,next ) {
+  db.query('SELECT * FROM tbluser WHERE usertype = 1', ( err,results ) => {
+    if (err) console.log(err)
+    req.admin = results[0]
+    return next();
+  })
+}
+
+function viewRates ( req,res,next ) {
+  db.query('SELECT * FROM tblgenera', ( err,results ) => {
+    if (err) console.log(err)
+    req.rates = results
+    return next();
+  })
+}
+
+// EDIT UTILITIES
+router.post('/edit/utilities', (req, res) => {
+  const queryutils = `
+    UPDATE tblutilities 
+    SET gymname = ?, 
+      companyname = ?,
+      address = ?,
+      city = ?,
+      phone = ?,
+      email = ?,
+      logo = ?,
+      workdays = ?,
+      currsymbol = ?
+    WHERE utilid = 1
+  `
+  const queryadmin = `
+    UPDATE tbluser 
+    SET userfname = ?, 
+      userlname = ?,
+      userusername = ?,
+      userpassword = ?
+    WHERE userid = ?
+  `
+  db.query(queryutils, [
+    req.body.gymname,
+    req.body.companyname,
+    req.body.address,
+    req.body.city,
+    req.body.phone,
+    req.body.email,
+    req.body.logo,
+    req.body.newsched,
+    req.body.currsymbol
+  ],
+  (err, out) => {
+    db.query(queryadmin, [
+      req.body.userfname,
+      req.body.userlname,
+      req.body.username,
+      req.body.password,
+      req.body.userid
+    ],
+    (err, out) => {
+      if (err) console.log(err)
+      res.send(out)
+    })
+    if (err) console.log(err)
+  })
+})
+
+
+router.post('/edit/rates', (req, res) => {
+  const query = `
+    UPDATE tblgenera SET fee = ? WHERE generalID = ?
+  `
+  db.query(query, [req.body.rate, req.body.id], (err, out) => {
+    if (err) console.log(err)
+    res.send(out)
+  })
+})
 
 //change membership dropdowns
 function viewMemChange ( req,res,next ) {
   const query = `
   select r.*, cl.*,ct.* from tblmemrates r inner join tblmemclass cl on
-r.memclass=cl.memclassid inner join tblcat ct on 
-ct.membershipID=r.memcat
+  r.memclass=cl.memclassid inner join tblcat ct on 
+  ct.membershipID=r.memcat
   `
   db.query(query, ( err,results ) => {
     if (err) console.log(err)
@@ -1905,62 +1989,80 @@ router.post('/card', (req, res) => {
 
 // GENERAL
 function reports(req, res) {
-  res.render('admin/general/views/reports');
+  res.render('admin/general/views/reports', {
+    utils: req.utils,
+    admin: req.admin,
+  });
 }
 
 function userd(req, res) {
-  res.render('admin/general/views/user');
+  res.render('admin/general/views/user', {
+    utils: req.utils,
+    admin: req.admin,
+  });
+}
+
+function dashboard(req, res) {
+  res.render('admin/general/views/dashboard', {
+    utils: req.utils,
+    admin: req.admin,
+    session: req.session
+  });
 }
 
 function utils(req, res) {
-  res.render('admin/general/views/utils');
+  res.render('admin/general/views/utils', {
+    utils: req.utils,
+    admin: req.admin,
+    rates: req.rates
+  });
 }
 
 // MAINTENANCE
 function branch(req, res) {
   res.render('admin/maintenance/views/m-branch', {
+    utils: req.utils,
+    admin: req.admin,
     branches: req.viewBranch,
   });
 }
 
 function ORs(req, res) {
   res.render('admin/maintenance/views/m-ORs',{
+    utils: req.utils,
+    admin: req.admin,
     ors: req.viewOR
   })
 }
 
 function category(req, res) {
   res.render('admin/maintenance/views/m-category', {
+    utils: req.utils,
+    admin: req.admin,
     cats: req.viewCategory
   });
 }
 
 function classes(req, res) {
   res.render('admin/maintenance/views/m-classes', {
+    utils: req.utils,
+    admin: req.admin,
     classes: req.viewClass
   });
 }
 
 function discount(req, res) {
   res.render('admin/maintenance/views/m-discount', {
+    utils: req.utils,
+    admin: req.admin,
     discounts: req.viewDiscount
   });
 }
 
-function facility(req, res) {
-  res.render('admin/maintenance/views/m-facility', {
-    facs: req.viewFac
-  });
-}
-
-/*function general(req, res) {
-  res.render('admin/maintenance/views/m-general', {
-    gens: req.viewGen
-  });
-}
-*/
 function membership(req, res) {
   res.render('admin/maintenance/views/m-membership', {
+    utils: req.utils,
+    admin: req.admin,
     drops: req.viewcatdrop,
     mems: req.viewMembership,
     classes: req.viewclassdrop
@@ -1969,12 +2071,16 @@ function membership(req, res) {
 
 function specs(req, res) {
   res.render('admin/maintenance/views/m-specialization', {
+    utils: req.utils,
+    admin: req.admin,
     specials: req.viewSpecial
   });
 }
 
 function staff(req, res) {
   res.render('admin/maintenance/views/m-staff', {
+    utils: req.utils,
+    admin: req.admin,
     staffs: req.viewStaff,
     bra: req.viewBranches
   });
@@ -1982,6 +2088,8 @@ function staff(req, res) {
 
 function trains(req, res) {
   res.render('admin/maintenance/views/m-trainer', {
+    utils: req.utils,
+    admin: req.admin,
     drops: req.viewbranchdrop,
     spes: req.viewspecialdrop,
     trains: req.viewTrainer
@@ -1990,34 +2098,41 @@ function trains(req, res) {
 
 function memclass(req, res) {
   res.render('admin/maintenance/views/m-mclasses', {
+    utils: req.utils,
+    admin: req.admin,
     Hays: req.viewHie
   });
 }
 
 // TRANSACTIONS
 
-// function t_class(req, res) {
-//   res.render('admin/transactions/views/t-classes',{
-   
-//   });
-// }
-
 function t_event(req, res) {
-  res.render('admin/transactions/views/t-event');
+  res.render('admin/transactions/views/t-event', {
+    utils: req.utils,
+    admin: req.admin,
+  });
 }
 
 function freezed(req, res) {
   res.render('admin/transactions/views/t-freezed', {
+    utils: req.utils,
+    admin: req.admin,
     fres: req.viewFre
   });
 }
 
 function income(req, res) {
-  res.render('admin/transactions/views/t-income');
+  res.render('admin/transactions/views/t-income',{
+    utils: req.utils,
+    admin: req.admin,
+
+  });
 }
 
 function payment(req, res) {
   res.render('admin/transactions/views/t-payment', {
+    utils: req.utils,
+    admin: req.admin,
     pays: req.viewPay,
     history: req.viewHis
   });
@@ -2025,18 +2140,24 @@ function payment(req, res) {
 
 function pending(req, res) {
   res.render('admin/transactions/views/t-pending', {
+    utils: req.utils,
+    admin: req.admin,
     pends: req.viewPend
   });
 }
 
 function personal(req, res) {
   res.render('admin/transactions/views/t-personal',{
+    utils: req.utils,
+    admin: req.admin,
     pers: req.viewPer
   });
 }
 
 function regular(req, res) {
   res.render('admin/transactions/views/t-regular', {
+    utils: req.utils,
+    admin: req.admin,
     regs: req.viewReg,
     ass: req.viewAss,
     Exc: req.viewExc,
@@ -2049,6 +2170,8 @@ function regular(req, res) {
 
 function Interregular(req, res) {
   res.render('admin/transactions/views/t-interregular', {
+    utils: req.utils,
+    admin: req.admin,
     intb: req.viewInt,
     ass: req.viewAss,
     Excc: req.viewExcc,
@@ -2061,24 +2184,32 @@ function Interregular(req, res) {
 
 function Events(req, res) {
   res.render('admin/transactions/views/t-event',{
+    utils: req.utils,
+    admin: req.admin,
     eves: req.viewEve
   });
 }
 
 function walkins(req, res) {
   res.render('admin/transactions/views/t-walkins',{
+    utils: req.utils,
+    admin: req.admin,
     walk:req.viewWal
   });
 }
 
 function trainSessions(req, res) {
   res.render('admin/transactions/views/t-training-sessions',{
+    utils: req.utils,
+    admin: req.admin,
     sessions: req.sessionsToday
   });
 }
 
 function GClasses(req, res) {
   res.render('admin/transactions/views/t-classes',{
+    utils: req.utils,
+    admin: req.admin,
     clazz : req.viewClass2,
     classes: req.viewGcl,
     train: req.viewGt
@@ -2087,18 +2218,24 @@ function GClasses(req, res) {
 
 function pendingPtChange(req, res) {
   res.render('admin/transactions/views/t-pt-change',{
+    utils: req.utils,
+    admin: req.admin,
     pends :req.pendingChange
   })
 }
 
 function paymentSession(req, res) {
   res.render('admin/transactions/views/t-payment-session',{
+    utils: req.utils,
+    admin: req.admin,
     paid :req.paymentSession
   })
 }
 
 function receipt(req, res) {
   res.render('admin/transactions/views/t-reciepts',{
+    utils: req.utils,
+    admin: req.admin,
     paid :req.paymentSession,
     rec :req.viewReceipt
   })
@@ -2106,6 +2243,8 @@ function receipt(req, res) {
 
 function card(req, res) {
   res.render('admin/transactions/views/t-cardassign',{
+    utils: req.utils,
+    admin: req.admin,
     car: req.viewCard
   })
 }
@@ -2116,52 +2255,68 @@ function card(req, res) {
 //QUERIES
 function qClasses(req, res) {
   res.render('admin/queries/views/class',{
+    utils: req.utils,
+    admin: req.admin,
     qClass: req.qClass
   })
 }
 function qEvents(req, res) {
   res.render('admin/queries/views/event',{
+    utils: req.utils,
+    admin: req.admin,
     qEvent: req.qEvent
   })
 }
 function qMembers(req, res) {
   res.render('admin/queries/views/member',{
+    utils: req.utils,
+    admin: req.admin,
     quser : req.quser
   })
 }
 function qMembership(req, res) {
   res.render('admin/queries/views/membership',{
+    utils: req.utils,
+    admin: req.admin,
     qmembership : req.qmembership
   })
 }
 function qSessions(req, res) {
   res.render('admin/queries/views/session',{
+    utils: req.utils,
+    admin: req.admin,
     qSession : req.qSession
   })
 }
 function qStaffs(req, res) {
   res.render('admin/queries/views/staff',{
+    utils: req.utils,
+    admin: req.admin,
     qStaff: req.qStaff
   })
 }
 function qTrainers(req, res) {
   res.render('admin/queries/views/trainer',{
+    utils: req.utils,
+    admin: req.admin,
     qTrainer : req.qTrainer
   })
 }
 function qWalkins(req, res) {
   res.render('admin/queries/views/walkin',{
+    utils: req.utils,
+    admin: req.admin,
     qwalkin: req.qwalkin
   })
 }
 
 
-
 //- REPORTS
 function rsales(req, res) {
   res.render('admin/reports/views/sales',{
+    utils: req.utils,
+    admin: req.admin,
     qClass:req.total
-    
   })
 }
 
@@ -2184,57 +2339,54 @@ router.post('admin/dashboard', (req, res) => {
 //A-TEAM FITNESS GETS
 
 //GENERAL
-router.get('/reports', reports);
-router.get('/user', userd);
-router.get('/utilities', utils);
+router.get('/', viewUtils, viewAdmin, dashboard);
+router.get('/reports', viewUtils, viewAdmin, reports);
+router.get('/user', viewUtils, viewAdmin, userd);
+router.get('/utilities', viewUtils, viewAdmin, viewRates, utils);
 
 //MAINTENANCE
-router.get('/branch', Exppro,viewBranch, branch);
-router.get('/category', Exppro,viewCategory, category);
-router.get('/classes', Exppro,viewClass, classes);
-router.get('/discount', Exppro,viewDiscount, discount);
-// router.get('/facility', viewFac, facility);
-/*router.get('/general', viewGen, general);*/
-router.get('/membership', Exppro,viewclassdrop, viewMembership, viewcatdrop, membership);
-router.get('/specialization', Exppro,viewSpecial, specs);
-router.get('/staff',Exppro,viewBranches, viewStaff, staff);
-router.get('/trains', Exppro,viewTrainer, viewspecialdrop, viewbranchdrop, trains);
-router.get('/memclass', Exppro,viewHie, memclass);
-router.get('/ORs',Exppro,viewOR,ORs);
+router.get('/branch', viewUtils, viewAdmin, Exppro, viewBranch, branch);
+router.get('/category', viewUtils, viewAdmin, Exppro, viewCategory, category);
+router.get('/classes', viewUtils, viewAdmin, Exppro, viewClass, classes);
+router.get('/discount', viewUtils, viewAdmin, Exppro, viewDiscount, discount);
+router.get('/membership', viewUtils, viewAdmin, Exppro, viewclassdrop, viewMembership, viewcatdrop, membership);
+router.get('/specialization', viewUtils, viewAdmin, Exppro, viewSpecial, specs);
+router.get('/staff',viewUtils, viewAdmin, Exppro, viewBranches, viewStaff, staff);
+router.get('/trains', viewUtils, viewAdmin, Exppro, viewTrainer, viewspecialdrop, viewbranchdrop, trains);
+router.get('/memclass', viewUtils, viewAdmin, Exppro, viewHie, memclass);
+router.get('/ORs',viewUtils, viewAdmin, Exppro, viewOR,ORs);
 
 //TRANSACTIONS
-// router.get('/t-class', t_class);
-router.get('/t-event', t_event);
-router.get('/freezed',viewFre, freezed);
-router.get('/income', income);
-router.get('/payment', viewPay, payment);
-router.get('/pending', check,viewUpdate, viewPend, pending);
-router.get('/personal', viewPer,personal);
-router.get('/regular',viewSusp,viewMemChangeOr,viewMemChange,regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewReg, regular);
-router.get('/interregular',viewSusp,viewMemChangeOr,viewMemChange,Nulling,viewSp,viewExcB,viewExcc,viewAss,viewInt, Interregular);
-router.get('/events',viewEve, Events);
-router.get('/walkins',viewWal, walkins);
-router.get('/trainsessions', sessionsToday, trainSessions);
-router.get('/t/classes',viewClass2,viewGt,viewGcl, GClasses);
-router.get('/pending/pt', viewPendingChange, pendingPtChange);
+router.get('/t-event', viewUtils, viewAdmin, t_event);
+router.get('/freezed', viewUtils, viewAdmin, viewFre, freezed);
+router.get('/income', viewUtils, viewAdmin,  income);
+router.get('/payment', viewUtils, viewAdmin, viewPay, payment);
+router.get('/pending', viewUtils, viewAdmin, check,viewUpdate, viewPend, pending);
+router.get('/personal', viewUtils, viewAdmin, viewPer,personal);
+router.get('/regular', viewUtils, viewAdmin, viewSusp,viewMemChangeOr,viewMemChange,regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewReg, regular);
+router.get('/interregular', viewUtils, viewAdmin, viewSusp,viewMemChangeOr,viewMemChange,Nulling,viewSp,viewExcB,viewExcc,viewAss,viewInt, Interregular);
+router.get('/events', viewUtils, viewAdmin, viewEve, Events);
+router.get('/walkins', viewUtils, viewAdmin, viewWal, walkins);
+router.get('/trainsessions', viewUtils, viewAdmin, sessionsToday, trainSessions);
+router.get('/t/classes', viewUtils, viewAdmin, viewClass2,viewGt,viewGcl, GClasses);
+router.get('/pending/pt', viewUtils, viewAdmin, viewPendingChange, pendingPtChange);
 router.get('/payment/session', viewPaymentSession, paymentSession);
-router.get('/receipt', viewReceipt,receipt);
-router.get('/card', viewCard,card);
+router.get('/receipt', viewUtils, viewAdmin, viewReceipt,receipt);
+router.get('/card', viewUtils, viewAdmin, viewCard,card);
 
 //QUERIES
-router.get('/queries/classes', qClass, qClasses);
-router.get('/queries/events', qEvent, qEvents);
-router.get('/queries/members', quser, qMembers);
-router.get('/queries/membership', qmembership, qMembership);
-router.get('/queries/PTsessions', qSession, qSessions);
-router.get('/queries/staffs', qStaff,qStaffs);
-router.get('/queries/trainers',qTrainer, qTrainers);
-router.get('/queries/walkins', qwalkin, qWalkins);
+router.get('/queries/classes', viewUtils, viewAdmin, qClass, qClasses);
+router.get('/queries/events', viewUtils, viewAdmin, qEvent, qEvents);
+router.get('/queries/members', viewUtils, viewAdmin, quser, qMembers);
+router.get('/queries/membership', viewUtils, viewAdmin, qmembership, qMembership);
+router.get('/queries/PTsessions', viewUtils, viewAdmin, qSession, qSessions);
+router.get('/queries/staffs', viewUtils, viewAdmin, qStaff,qStaffs);
+router.get('/queries/trainers',viewUtils, viewAdmin, qTrainer, qTrainers);
+router.get('/queries/walkins', viewUtils, viewAdmin, qwalkin, qWalkins);
 
 
 // REPORTS
-router.get('/reports/sales',totalPayment, rsales);
-
+router.get('/reports/sales', viewUtils, viewAdmin, totalPayment, rsales);
 
 /**
  * Here we just export said router on the 'index' property of this module.

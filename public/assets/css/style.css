@@ -251,7 +251,7 @@ hr {
 	height: 17px;
 	width: 17px;
 	display: inline-block;
-	background: url("../img/nav-expand.png") no-repeat top;
+	/* background: url("../img/nav-expand.png") no-repeat top; */
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -261,7 +261,7 @@ hr {
 }
 
 .active .dcjq-icon {
-	background: url("../img/nav-expand.png") no-repeat bottom;
+	/* background: url("../img/nav-expand.png") no-repeat bottom; */
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
