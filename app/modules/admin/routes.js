@@ -474,7 +474,7 @@ function viewCategory(req, res, next) {
 
 //insert trainer
 router.post('/trains', (req, res) => {
-  console.log(req.files)
+  console.log(req.body)
   pic=`${req.body.fname + req.body.lname}.jpg`
   fullname= req.session.user.userfname + " " + req.session.user.userlname
   req.files.img.mv('public/assets/images/'+pic, function(err){
@@ -483,7 +483,11 @@ router.post('/trains', (req, res) => {
    trainerbday,trainergender,traineraddress,
    trainermobile,traineremail,trainerschedule,trainerbranch,
    trainerspecialization,trainerpassword,trainerusername,trainertimestart,trainertimeend,trainerpic) VALUES 
-   ( ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ? )`, [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.sched.toString(), req.body.branchid, req.body.specialid, req.body.password, req.body.username, req.body.starttime, req.body.endtimem,pic], (err, results, fields) => {
+   ( ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ? )`, 
+   [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, 
+   req.body.mobile, req.body.email, `${req.body['sched[]']}`, 
+   req.body.branchid, req.body.specialid, req.body.password, 
+   req.body.username, req.body.starttime, req.body.endtimem,pic], (err, results, fields) => {
     if (err)
       console.log(err);
     else {
