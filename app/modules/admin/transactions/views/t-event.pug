@@ -79,11 +79,11 @@ block main
                 .col-md-9
                   .form-group
                     label.control-label Event Name
-                    input.form-control.addDisable(type='text' name='event' placeholder='Cardio Dalisay' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='65' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                    input.form-control.addDisable(type='text' name='event'  onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='65' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                 .col-md-3
                   .form-group
                     label.control-label Slots
-                    input.form-control(type="number" min='10' max='99' placeholder='60' name='slot' onkeypress='return restrictCharacters(this, event, numOnly)' required)
+                    input.form-control(type="number" min='10' max='99'  name='slot' onkeypress='return restrictCharacters(this, event, numOnly)' required)
               .row
                 .col-md-6
                   .form-group
@@ -130,7 +130,8 @@ block main
                 .col-md-12
                   label.control-label Description
                   .form-group
-                    textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)' placeholder='A 10-step workout program that will make your body like Cardo Dalisay: undying.' required)
+                    textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3'
+                    type='text' required)
 
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
