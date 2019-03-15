@@ -1493,7 +1493,7 @@ router.post('/payment/session/pay', oradd,(req, res) => {
   amount = NULL 
   WHERE sessionID = ?
   `
-  db.query(query, [ req.body.id ], oradd,( err,out ) => {
+  db.query(query, [ req.body.id ], ( err,out ) => {
     if(err) console.log(err)
     db.query(`INSERT INTO tblpayment (userid, paymentdate, amount, classification, branchid,ornum) VALUES (?, CURDATE(), ?, 5, ?, ?)`, [ req.body.userid, req.body.amount, req.session.user.branch, req.oradd], ( err,out ) => {
       if(err) console.log(err)
@@ -1561,6 +1561,32 @@ router.post('/view/event/participant', (req, res) => {
     res.send(out)
   })
 })
+
+router.post('/view/history', (req, res) => {
+  const query = `
+  select u.* , p.* from tbluser u 
+  join tblpayment p on p.userid = u.userid where u.userid= ? and p.classification='1'
+  `
+  db.query(query, [ req.body.id ],(err, out) => {
+    if(err) console.log(err)
+    res.send(out)
+  })
+})
+
+
+router.post('/logo', (req, res) => {
+  console.log(req.files)
+  pic=`${req.session.userfname + req.session.userlname + 'logo'}.jpg`
+  req.files.img.mv('public/assets/images/'+pic, function(err){
+  db.query(`UPDATE tblutilities Set logo = ? where utilid IS NOT NULL`, [pic], (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      res.redirect('/utilities'); 
+    }
+  });
+});
+}); 
 
 // ALL NOTIFS
 router.post('/view/notif', (req, res) => {

@@ -43,7 +43,7 @@ block main
 													i.fa.fa-search
 												button.btn.btn-success.btn-xs(data-toggle='modal', data-target='.pay-modal', data-id=pa.userid data-memid=pa.memrateid)
 													i.fa.fa-coins
-												button.btn.btn-warning.btn-xs(data-toggle='modal', data-target='.sorted.modal')
+												button.hist.btn.btn-warning.btn-xs(value=pa.userid)
 													i.fa.fa-exclamation-circle
 												button.btn.btn-danger.btn-xs(data-toggle='modal', data-target='')
 													i.fa.fa-trash
@@ -144,30 +144,29 @@ block main
 							button.btn.btn-default(type='button', data-dismiss='modal') Close
 							button.btn.btn-primary(type='submit' id='pay-btn') Pay
 							//modal
-.sorted.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-	.modal-dialog.modal-lg
-		.modal-content
-			.modal-header
-				button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-				h4#myModalLabel.modal-title Payment History
-			form(method='POST' action='/assign')
-				.modal-body
+	.hist-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+					h4#myModalLabel.modal-title HISTORY
+				form(action='', method='post')
+					br
 					.container-fluid
-						content-panel
-							table.table.table-striped.table-advance.table-hover
-								br
-								thead
-									tr
-										th
-											i.fa.fa-calendar
-											|  Payment Date 
-								tbody
-									each hs in history
-										tr
-										td #{hs.paymentdate}
-										input.form.control(value=hs.userid)
-				.modal-footer
-					button.btn.btn-default(type='button', data-dismiss='modal') Close
+						table.table.table-advance.table-hover
+							thead
+								tr
+									th
+										i.fa.fa-bookmark
+											|  No.
+									th 
+										i.fa.fa-user
+											|  Name
+									th 
+										i.fa.fa-phone
+											|  Date
+		                
+							tbody#participant
 					
 include ../../../../templates/foot
 
@@ -258,3 +257,43 @@ script.
 	//- }                        
 	//- })
 	//- });
+
+script.
+	  $(document).ready(function(){
+	    $('.hist').click(function(){
+	      $.post('/view/history',{
+	        id : $(this).val()
+	      }).done(function(data){
+	          console.log(data, 'puta')
+	          if (data.length == 0){
+	            $('#participant').append(`
+	              <tr>
+	                <td> No Data found ...</td>
+	              </tr>
+	            `)
+	          }
+	          else  {
+	            var num = 1
+	            for(i=0; i<data.length; i++){
+	              $('#participant').append(`
+	                <tr>
+	                  <td>${num}</td>
+	                  <td>${data[i].userfname} ${data[i].userlname}</td>  
+	                  <td>${data[i].paymentdate}</td>  
+	                </tr>
+	              `)
+	              num ++
+	            }
+	          }
+	      }).then(
+	        $('.hist-modal').modal('show')
+	      )
+	    })
+
+	    $('.hist-modal').on('hidden.bs.modal', function(){
+	      $('#participant').empty()
+	    })
+
+
+
+	  });
