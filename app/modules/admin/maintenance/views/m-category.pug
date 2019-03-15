@@ -62,15 +62,15 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Category Name
-                        input.form-control(type='text' name='catname' required onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                        input.form-control.addDisable(type='text' name='catname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   .row
                     .col-md-12
                       label.control-label Description
                       .form-group
-                        textarea#prog-desc.form-control(style='resize:none', name='catdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                        textarea#prog-desc.form-control(style='resize:none', name='catdesc', rows='3')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-add-cat') Add Category
+              button.btn.btn-primary.addButton(type='submit' id='btn-add-cat') Add Category
     //VIEW MODAL
     #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -110,7 +110,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Category Name
-                        input#name.form-control(type='text' name='catname' required onkeypress='return restrictCharacters(this, event, alphaOnly)')
+                        input#name.form-control.addDisable(type='text' name='catname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)')
                   .row
                     .col-md-12
                       label.control-label Description
@@ -118,7 +118,7 @@ block main
                         textarea#desc.form-control(style='resize:none', name='catdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-edit-cat') Save
+              button.btn.btn-primary.addButton(type='submit' id='btn-edit-cat') Save
 
     // MODAL DELETE
     #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

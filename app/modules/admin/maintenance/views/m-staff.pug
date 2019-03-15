@@ -84,20 +84,20 @@ block main
 											.col-md-6
 												.form-group
 													label.control-label First Name
-													input.form-control(type='text' name='sfirstName' onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' minlength='2' maxlength='25' required)
+													input.form-control.addDisable(type='text' name='sfirstName' onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' minlength='2' maxlength='25' required)
 											.col-md-6
 												.form-group
 													label.control-label Last Name
-													input.form-control(type='text' name='slastName' onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' minlength='2' maxlength='25' required)
+													input.form-control.addDisable(type='text' name='slastName' onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' minlength='2' maxlength='25' required)
 										.row
 											.col-md-6
 												.form-group
 													label.control-label Mobile Number
-													input.form-control(type='text' name='smobNum', placeholder='09xxxxxxxxxx' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
+													input.form-control.addDisable(type='text' name='smobNum', placeholder='09xxxxxxxxxx' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
 											.col-md-6
 												.form-group
 													label.control-label Email
-													input.form-control(type='email', name='semail' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
+													input.form-control.addDisable(type='email', name='semail' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
 										.row
 											.col-md-12
 												h5 Login Information
@@ -107,7 +107,7 @@ block main
 											.col-md-6
 												.form-group
 													label.control-label Username
-													input.form-control(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15')
+													input.form-control.addDisable(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15')
 											.col-md-6
 												.form-group
 													label.control-label Password
@@ -118,7 +118,7 @@ block main
 												input#upload(type='file', name='img' ,accept="image/*")
 							.modal-footer
 								button.btn.btn-default(type='button', data-dismiss='modal') Close
-								button.btn.btn-primary(type='submit' id='btn-add-staff') Add Staff
+								button.btn.btn-primary.addButton(type='submit' id='btn-add-staff') Add Staff
 
 			// VIEW STAFF
 			#viewmodal.modal.fade(tabindex='-1', role='dialog', aria-hidden='true')
@@ -309,7 +309,7 @@ script.
 		var id = button.data('id')
 		console.log(id)
 		let modal = $(this)     
-		modal.find('.modal-body #id').val(` ${id}`)
+		modal.find('.modal-body #id').val(`${id}`)
 	})
 
 	//sweet alert add staff

@@ -61,7 +61,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Membership Class Name
-                        input.form-control(type='text' name='classname' required onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                        input.form-control.addDisable(type='text' name='classname' required onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   .row
                     .col-md-12
                       label.control-label Description
@@ -69,7 +69,7 @@ block main
                         textarea#prog-desc.form-control(style='resize:none', name='classdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-add-mcla') Add Membership Class
+              button.btn.btn-primary.addButton(type='submit' id='btn-add-mcla') Add Membership Class
     //VIEW MODAL
     #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -109,7 +109,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Class Name
-                        input#name.form-control(type='text' name='classname' required onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                        input#name.form-control.addDisable(type='text' name='classname' required onkeypress='return restrictCharacters(this, event, alphaOnly)' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   .row
                     .col-md-12
                       label.control-label Description
@@ -117,7 +117,7 @@ block main
                         textarea#desc.form-control(style='resize:none', name='classdesc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-edit-mcla') Save
+              button.btn.btn-primary.addButton(type='submit' id='btn-edit-mcla') Save
 
     // MODAL DELETE
     #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

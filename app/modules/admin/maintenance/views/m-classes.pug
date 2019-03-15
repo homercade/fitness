@@ -113,7 +113,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Class Name
-                        input#name.form-control(type='text' name='classname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                        input#name.form-control.addDisable(type='text' name='classname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                   .row
                     .col-md-12
                       label.control-label Description
@@ -121,7 +121,7 @@ block main
                         textarea#desc.form-control(style='resize:none', name='classdesc', rows='3')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-edit-class') Save
+              button.btn.btn-primary.addButton(type='submit' id='btn-edit-class') Save
     // MODAL VIEW
     #viewmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -261,42 +261,3 @@ script.
     })
   })
 
-  $(document).ready(function () {
-    $('.addButton').attr('disabled', true)
-    $('.addDisable').keyup(function () {
-      if ($(this).val()) {
-        if ($(this).val() !== "") {
-          $('.addButton').attr('disabled', false)
-          if ($(this).val() == " ") {
-            $('.addButton').attr('disabled', true)
-            $('.addDisable').val("")
-            if ($(this).val()) {
-              var replacing = $(this).val().trim()
-              $('.addDisable').val(replacing)
-              $('.addButton').attr('disabled', false)
-            }
-          }
-        } 
-        else $('.addButton').attr('disabled', true)
-      } 
-      else $('.addButton').attr('disabled', true)
-    })
-  })
-
-script.
-  function restrictCharacters(myfield, e, restrictionType) {
-    if (!e) var e = window.event
-    if (e.keyCode) code = e.keyCode
-    else if (e.which) code = e.which
-    var character = String.fromCharCode(code)
-    if (code == 27) {
-      this.blur() return false
-    }
-    if (!e.ctrlKey && code != 9 && code != 8 && (code != 39 || (code == 39 && character == "'"))) {
-      if (character.match(restrictionType)) {
-        return true
-      } else {
-        return false
-      }
-    }
-  }

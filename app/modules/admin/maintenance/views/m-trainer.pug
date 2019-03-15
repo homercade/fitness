@@ -74,11 +74,11 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name
-                      input.form-control(type='text' name='fname' required)
+                      input.form-control.addDisable(type='text' name='fname' required)
                   .col-md-6
                     .form-group
                       label.control-label Last Name
-                      input.form-control(type='text' name='lname' required)
+                      input.form-control.addDisable(type='text' name='lname' required)
                 .row
                   .col-md-6
                     .input-group
@@ -94,21 +94,21 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Date of Birth
-                      input.date.form-control(type='text' name='bday' required)
+                      input.date.form-control.addDisable(type='text' name='bday' required)
                 .row
                   .col-md-12
                     .form-group
                       label.control-label Address
-                      input.form-control(type='text' name='addr' maxlength='105' required)
+                      input.form-control.addDisable(type='text' name='addr' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number
-                      input.form-control(type='number' name='mobile' maxlength='11' required)
+                      input.form-control.addDisable(type='number' name='mobile' maxlength='11' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
-                      input.form-control(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
+                      input.form-control.addDisable(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
                 .row
                   .col-md-6
                     .form-group
@@ -178,7 +178,7 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Username
-                      input.form-control(type='text' name='username' maxlength='25' required)
+                      input.form-control.addDisable(type='text' name='username' maxlength='25' required)
                   .col-md-6
                     .form-group
                       label.control-label Password
@@ -259,12 +259,12 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name
-                      input#fname.form-control(type='text' name='fname' maxlength='35' required)
+                      input#fname.form-control.addDisable(type='text' name='fname' maxlength='35' required)
                       input.hidden#id(type='text' name='id')
                   .col-md-6
                     .form-group
                       label.control-label Last Name
-                      input#lname.form-control(type='text' name='lname' maxlength='35' required)
+                      input#lname.form-control.addDisable(type='text' name='lname' maxlength='35' required)
                 .row
                   .col-md-6
                     .input-group
@@ -285,21 +285,21 @@ block main
                   .col-md-12
                     .form-group
                       label.control-label Address
-                      input#addr.form-control(type='text' name='addr' maxlength='105' required)
+                      input#addr.form-control.addDisable(type='text' name='addr' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number
-                      input#mob.form-control(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
+                      input#mob.form-control.addDisable(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
-                      input#email.form-control(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
+                      input#email.form-control.addDisable(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
                 .row  
                   .col-md-12(style="position:relative!important; height:60px!important")
                     .form-group
                       label.control-label Specialization
-                      select.select.form-control(name='specialid' multiple="multiple")
+                      select.select.form-control.addDisable(name='specialid' multiple="multiple")
                         each sp in spes
                           option(value=''+sp.specialID) #{sp.specialname}
               .row
@@ -311,7 +311,7 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Username
-                      input.form-control(type='text' name='username' required)#username
+                      input.form-control.addDisable(type='text' name='username' required)#username
                   .col-md-6
                     .form-group
                       label.control-label Password

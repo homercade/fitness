@@ -87,14 +87,14 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Membership Amount (₱)
-                        input.form-control(type='number' name='memfee' required onkeypress='return restrictCharacters(this, event, floatOnly)' min=199 max=9999)
+                        input.form-control.addDisable(type='number' name='memfee' required onkeypress='return restrictCharacters(this, event, floatOnly)' min=199 max=9999)
                     .col-md-6
                       .form-group
                         label.control-label Membership Duration (Month/s)
-                        input.form-control(type='text' name='memdura' required onkeypress='return restrictCharacters(this, event, floatOnly)')
+                        input.form-control.addDisable(type='text' name='memdura' required onkeypress='return restrictCharacters(this, event, floatOnly)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(id='btn-add-rate') Add Rate
+              button.btn.btn-primary.addButton(id='btn-add-rate') Add Rate
 
     // MODAL EDIT MEMBER
     #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')

@@ -100,11 +100,11 @@ block main
                 .col-md-6
                   .form-group
                     label.control-label First Name <span class='r'>*</span> 
-                    input.form-control(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                    input.form-control.addDisable(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                 .col-md-6
                   .form-group
                     label.control-label Last Name <span class='r'>*</span> 
-                    input.form-control(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                    input.form-control.addDisable(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
               .row
                 .col-md-6
                   .input-group
@@ -125,16 +125,16 @@ block main
                 .col-md-12
                   .form-group
                     label.control-label Address <span class='r'>*</span> 
-                    input.form-control(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
+                    input.form-control.addDisable(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
               .row
                 .col-md-6
                   .form-group
                     label.control-label Mobile Number <span class='r'>*</span> 
-                    input.form-control(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
+                    input.form-control.addDisable(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
                 .col-md-6
                   .form-group
                     label.control-label Email <span class='r'>*</span> 
-                    input.email.form-control(type='email' required  name='email' pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' onkeypress='return restrictCharacters(this, event, emailOnly)')
+                    input.email.form-control.addDisable(type='email' required  name='email' pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' onkeypress='return restrictCharacters(this, event, emailOnly)')
                     #prompt2
             .row
               .col-md-12
@@ -145,7 +145,7 @@ block main
                 .col-md-6
                   .form-group
                     label.control-label Username <span class='r'>*</span> 
-                    input.username.form-control(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15' required)
+                    input.username.form-control.addDisable(type='text' name='username' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15' required)
                     #prompt
                 .col-md-6
                   .form-group
@@ -232,11 +232,11 @@ block main
                 .col-md-6
                   .form-group
                     label.control-label First Name
-                    input.form-control(type='text' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                    input.form-control.addDisable(type='text' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                 .col-md-6
                   .form-group
                     label.control-label Last Name
-                    input.form-control(type='text' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                    input.form-control.addDisable(type='text' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
               .row
                 .col-md-6
                   .input-group
@@ -257,16 +257,16 @@ block main
                 .col-md-12
                   .form-group
                     label.control-label Address
-                    input.form-control(type='text' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
+                    input.form-control.addDisable(type='text' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
               .row
                 .col-md-6
                   .form-group
                     label.control-label Mobile Number
-                    input.form-control(type='text', value='+639' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
+                    input.form-control.addDisable(type='text', value='+639' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
                 .col-md-6
                   .form-group
                     label.control-label Email
-                    input.form-control(type='email' pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' onkeypress='return restrictCharacters(this, event, emailOnly)')
+                    input.form-control.addDisable(type='email' pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' onkeypress='return restrictCharacters(this, event, emailOnly)')
             .row
               .col-md-12
                 h5 Login Information
@@ -276,7 +276,7 @@ block main
                 .col-md-12
                   .form-group
                     label.control-label Username
-                    input.form-control(type='text' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15' required)
+                    input.form-control.addDisable(type='text' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='15' required)
             .row
               .col-md-12
                 h5 More Information
