@@ -7,7 +7,11 @@ block main
         .content-panel
           center
             each pr in profs   
-              img(src=`/assets/images/${pr.pic}`, alt="" width='128' height='128')        
+              img(src=`/assets/images/${pr.pic}`, alt="" width='128' height='128')
+              .row
+                a.btn.btn-success.btn-xs(data-toggle='modal', data-target='#add') 
+                  i.fa.fa-edit
+                  |  Edit        
               h4(style='margin-bottom:18px') #{pr.userfname} #{pr.userlname}
               a#edit.btn.btn-primary.btn-xs(style="position:relative; bottom:10px; cursor:pointer:") 
                 i.fa.fa-edit
@@ -107,14 +111,14 @@ block main
                   h5 Last Paid on
                     b 
                       | #{pr.paymentdate}
-                button.btn.btn-primary.btn-xs(style='margin-right: 5px')
-                  i.fa.fa-snowflake
-                  |
-                  | Freeze
-                button.btn.btn-success.btn-xs
-                  i.fa.fa-level-up-alt 
-                  |
-                  | Upgrade 
+                //- button.btn.btn-primary.btn-xs(style='margin-right: 5px')
+                //-   i.fa.fa-snowflake
+                //-   |
+                //-   | Freeze
+                //- button.btn.btn-success.btn-xs
+                //-   i.fa.fa-level-up-alt 
+                //-   |
+                //-   | Upgrade 
                 
           br
           .row
@@ -144,6 +148,25 @@ block main
             .col-md-6
               each pr in profs
                 h5 #{pr.expirydate}
+
+
+        //add
+      #add.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+        .modal-dialog
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+              h4#myModalLabel.modal-title Update Profile
+            form.needs-validation(action='/member/pic/edit', method='POST', autocomplete='off' novalidate id='add-staff' enctype='multipart/form-data')
+              .modal-body
+                .container-fluid
+                    .row
+                      .col-md-4
+                        | Upload your Image 
+                        input#upload(type='file', name='img' ,accept="image/*")
+              .modal-footer
+                button.btn.btn-default(type='button', data-dismiss='modal') Close
+                button.btn.btn-primary.addButton(type='submit' id='btn-add-staff') Save
 
 include ../../../templates/foot
 include ../../../templates/sub-foot
@@ -213,3 +236,20 @@ script.
       })
     }
   })
+
+script.
+  $(document).ready(function() {
+      $('#btn-add-staff').bind("click",function() 
+      { 
+          var imgVal = $('#upload').val(); 
+          if(imgVal=='') 
+          { 
+              alert("empty input file"); 
+              return false; 
+          } 
+
+
+
+
+      }); 
+  });

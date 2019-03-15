@@ -198,7 +198,21 @@ router.post('/profile/edit', (req, res) => {
 	], (err, out) => {
 		if (err) console.error(err)
 	})
-})
+}) 
+
+router.post('/pic/edit', (req, res) => {
+  console.log(req.files)
+  pic=`${req.session.member.userfname + req.session.member.userlname}.jpg`
+  req.files.img.mv('public/assets/images/'+pic, function(err){
+  db.query(`UPDATE tbluser Set pic = ? where userid =?`, [pic,req.session.member.userid], (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      res.redirect('/member'); 
+    }
+  });
+});
+}); 
 
 
 //******************************************************* */
