@@ -1,4 +1,9 @@
 include ../../../templates/mem-head
+append head
+  style.
+    #toast-container > div {
+      opacity: 1;
+    }
 
 block main   
 
@@ -28,7 +33,7 @@ block main
                   .white-header
                     h5 Profile
                   p
-                    img.img-circle(src='assets/img/ui-zac.jpg', width='80')
+                    img.img-circle(src=`assets/images/${pr.pic}`, width='80' height='80')
                   p
                     b #{pr.userfname} #{pr.userlname}
                   .row
@@ -48,14 +53,42 @@ block main
                   .row
                     h1 ₱ #{fee.fee}.00
 
-
-
+  //- HIDDEN VALUES
+  input#expirydate.hidden(value=expirydate.expirydate)  
 
 include ../../../templates/foot
 include ../../../templates/sub-foot
 
 script.
 
+  $(function(){
+    const oneHour = 3600000
+    const toastrOption = {
+      closeButton: true,
+      positionClass: "toast-bottom-left",
+      timeOut: oneHour,
+      extendedTimeOut: oneHour
+    }
+    
+    const expiryDate = moment($('#expirydate').val()).format()
+    const shouldShowAlert = moment(expiryDate).subtract(7, 'd').format()
+    const today = moment().format()
+    const subtractDate = function(from, now) {
+      alertDate = new Date(now);
+      dateToday = new Date(from);
+      return Math.floor((Date.UTC(dateToday.getFullYear(), dateToday.getMonth(), dateToday.getDate()) - 
+        Date.UTC(alertDate.getFullYear(), alertDate.getMonth(), alertDate.getDate()) ) /(1000 * 60 * 60 * 24));
+      }
+    const dueInAWeek = shouldShowAlert <= today
+    const daysFromNow = subtractDate(expiryDate, today)
+    console.log(expiryDate, today)
+    if (dueInAWeek){
+      if (daysFromNow === 1) toastr.error(`Your membership will expire ${daysFromNow}.`, 'Membership Application', toastrOption)
+      else if (daysFromNow === 0) toastr.error(`Your membership will expire tomorrow!`, 'Membership Application', toastrOption)
+      else toastr.warning(`Your membership will expire in ${daysFromNow}.`, 'Membership Application', toastrOption)
+    } 
+  })
+  
   setInterval(()=>{
     let dateTimeNow = moment().format('llll') 
     $('#dateTimeNow').text(`${dateTimeNow}`)

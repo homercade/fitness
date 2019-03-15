@@ -110,6 +110,13 @@ router.post('/create-notification', (req, res) => {
 	})
 })
 
+function getExpiryDate(req, res, next) {
+	db.query('SELECT expirydate from tblmembership where usersid = ?', [req.session.member.userid], (err, results) => {
+		console.log(results)
+		req.getExpiryDate = results[0]
+		return next()
+	})	
+}
 
 //******************************************************* */
 //                      PROFILE.
@@ -546,6 +553,7 @@ function dashboard(req, res, next) {
 		profs: req.initial,
 		total: req.total,
 		fee: req.fee,
+		expirydate: req.getExpiryDate,
 		session: req.session
 	})
 }
@@ -625,7 +633,7 @@ function change(req, res, next) {
 }
 
 // ------------- GET ---------------//
-router.get('/', initial, notification, viewUtils, totalPayment, fee, checkFinishedSession, dashboard);
+router.get('/', initial, notification, viewUtils, totalPayment, getExpiryDate, fee, checkFinishedSession, dashboard);
 // router.get('/', initial, notification, totalPayment, fee, dueEvents, dueDate, dashboard, checkFinishedSession);
 router.get('/profile', notification, viewUtils, initial, profile);
 router.get('/events', notification, viewUtils, joinedEvents, viewEvent, initial, events);

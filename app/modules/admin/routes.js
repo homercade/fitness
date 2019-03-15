@@ -1672,6 +1672,39 @@ router.post('/edit/rates', (req, res) => {
   })
 })
 
+// DASHBOARD REPORTS
+
+// COUNT ACTIVE MEMBERS
+function countActiveMembers (req, res, next)  {
+  db.query(`SELECT usersid FROM tblmembership WHERE status = 'paid'`, (err, results) => {
+    if (err) console.log(err)
+    req.countActiveMembers = results.length
+    return next()
+  })
+}
+
+// COUNT ACTIVE TRAINERS 
+function countActiveTrainers (req, res, next)  {
+  db.query(`SELECT trainerfname FROM tbltrainer`, (err, results) => {
+    if (err) console.log(err)
+    req.countActiveTrainers = results.length
+    return next()
+  })
+}
+
+// // VIEW ALL PAYMENTS
+// function viewPayments (req, res, next)  {
+//   db.query(`SELECT userid, amount FROM tblpayment`, (err, payments) => {
+//     if (err) console.log(err)
+//     payments.forEach(payment =>{
+//       payment.userid 
+//     })
+//     return next()
+//   })
+// }
+
+
+
 //change membership dropdowns
 function viewMemChange ( req,res,next ) {
   const query = `
@@ -2034,7 +2067,11 @@ function dashboard(req, res) {
   res.render('admin/general/views/dashboard', {
     utils: req.utils,
     admin: req.admin,
-    session: req.session
+    session: req.session,
+    memberships: req.viewHie,
+    classes: req.viewClass2,
+    activeMembersCount: req.countActiveMembers,
+    countActiveTrainers: req.countActiveTrainers
   });
 }
 
@@ -2371,7 +2408,7 @@ function rsales(req, res) {
 //A-TEAM FITNESS GETS
 
 //GENERAL
-router.get('/', viewUtils, viewAdmin, dashboard);
+router.get('/', viewUtils, viewAdmin, viewHie, viewClass2, countActiveMembers, countActiveTrainers, dashboard);
 router.get('/reports', viewUtils, viewAdmin, reports);
 router.get('/user', viewUtils, viewAdmin, userd);
 router.get('/utilities', viewUtils, viewAdmin, viewRates, utils);
@@ -2402,7 +2439,7 @@ router.get('/walkins', viewUtils, viewAdmin, viewWal, walkins);
 router.get('/trainsessions', viewUtils, viewAdmin, sessionsToday, trainSessions);
 router.get('/t/classes', viewUtils, viewAdmin, viewClass2,viewGt,viewGcl, GClasses);
 router.get('/pending/pt', viewUtils, viewAdmin, viewPendingChange, pendingPtChange);
-router.get('/payment/session', viewPaymentSession, paymentSession);
+router.get('/payment/session', viewUtils, viewAdmin, viewPaymentSession, paymentSession);
 router.get('/receipt', viewUtils, viewAdmin, viewReceipt,receipt);
 router.get('/card', viewUtils, viewAdmin, viewCard,card);
 

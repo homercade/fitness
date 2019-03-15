@@ -45,7 +45,7 @@ block main
 											span.from
 											span.time  #{n.notifdate}
 					else
-						li(style="background-color: #FFF2E5; border-radius: 5px;")
+						li(style="background-color: #FFF2E5; border-radius: 5px")
 							a(href='#')
 								span.subject
 								center
@@ -58,7 +58,7 @@ block main
 						| Hello, 
 						b #{pr.userfname} #{pr.userlname}!
 					span.dropdown
-						img.img-circle.dropdown-toggle(data-toggle='dropdown', src='/assets/img/ui-zac.jpg', alt='')
+						img.img-circle.dropdown-toggle(data-toggle='dropdown', src=`/assets/images/${pr.pic}`, alt='' style='height:3em')
 						ul.dropdown-menu.extended.tasks-bar(style='z-index:2000; position:absolute; top:30px;')
 							
 							li

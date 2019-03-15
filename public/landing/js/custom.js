@@ -14,7 +14,7 @@ $(document).ready(function() {
     $('body').vegas({
         slides: [
             { src: '../../../../landing/images/gym1.jpg' },
-            { src: '../../../../landing/images/gym2.jpg' },
+            { src: '../../../../landing/images/gym2.jpg' }
         ],
         timer: false,
         transition: [ 'zoomOut', ]

@@ -6,8 +6,8 @@ block main
       #info.col-md-5
         .content-panel
           center
-            img(src="/assets/img/ui-zac.jpg", alt="" )
-            each pr in profs              
+            each pr in profs   
+              img(src=`/assets/images/${pr.pic}`, alt="" width='128' height='128')        
               h4(style='margin-bottom:18px') #{pr.userfname} #{pr.userlname}
               a#edit.btn.btn-primary.btn-xs(style="position:relative; bottom:10px; cursor:pointer:") 
                 i.fa.fa-edit

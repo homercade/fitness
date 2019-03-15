@@ -61,6 +61,7 @@ html(lang='en')
               a.btn.btn-lg.btn-default.smoothScroll.wow.fadeInUp.hidden-xs(href='#', data-toggle='modal', data-target='#login', data-wow-delay='0.8s') Log-in
               a.btn.btn-lg.btn-success.smoothScroll.wow.fadeInUp(href='#', data-toggle='modal', data-target='#modal1', data-wow-delay='1.0s') Register
     // about section
+    
     section#about
       .container
         .row
@@ -82,6 +83,11 @@ html(lang='en')
                   |                 the customer's account to another successor. This system can recommend a set to you based on your input.
                   |                 You can also inquire a trainer based on your workout preferences. And lastly, this can record every transaction
                   |                 made, and generate report based on the data received.
+        .row 
+          .wow.fadeInUp(data-wow-delay='0.6s')
+            h1.wow.fadeIn(data-wow-delay='0.2s' style=" margin-top: 100px;")
+            .banner(style="opacity:0.7;height:300px;background-position: center;background-repeat: no-repeat;background-size: cover;")
+
     // footer section
     footer
       .container
@@ -436,63 +442,69 @@ script.
     
   })
 
-      
+script.
+  $(function(){
+    $.post('/signup/promopic').done(data =>{
+      $('.banner').css('background-image', `url("/assets/images/${data[0].promopic}")`)
+      console.log(`'url("/assets/images/${data[0].promopic}.jpg")'`)
+    })
+  })     
 
 script.
-      $(document).ready(function () {
-        $("#login")
-          .on("show", function () {
-            $("body").addClass("modal-open");
-          })
-          .on("hidden", function () {
-            $("body").removeClass("modal-open")
-          });
-        $('#type').click(function () {
-          if ($(this).val() == 2) {
-            $('#branch').prop("disabled", false);} 
-          else {
-            $('#branch').prop("disabled", true);
-          }
-        });
-
-        $(".date").datepicker({
-          changeMonth: true,
-          changeYear: true,
-          todayHighlight: true,
-          maxViewMode: 2,
-          startView: 2,
-          autoclose: true
-        });
-
-        $(function () {
-          $("#student").click(function () {
-            if ($(this).is(":checked")) {
-              $("#2").show();
-              $("#1").hide(); } 
-            else {
-              $("#2").hide();
-              $("#1").show(); }
-            });
-        });
-
-        $('.needs-validation').validate({
-          rules:{
-            username: {
-              minlength: 4
-            },
-            mobile:{
-              maxlength: 11,
-              minlength: 11
-            },
-          },
-          messages:{
-            username:{
-              minlength: 'Username shouldn\'t be less than four characters'
-            },
-            mobile:{
-              maxlength: 'Mobile number should be exactly 11 digits',
-              minlength: 'Mobile number should be exactly 11 digits'
-            }
-          }
-        });
+  $(document).ready(function () {
+    $("#login")
+      .on("show", function () {
+        $("body").addClass("modal-open");
+      })
+      .on("hidden", function () {
+        $("body").removeClass("modal-open")
       });
+    $('#type').click(function () {
+      if ($(this).val() == 2) {
+        $('#branch').prop("disabled", false);} 
+      else {
+        $('#branch').prop("disabled", true);
+      }
+    });
+
+    $(".date").datepicker({
+      changeMonth: true,
+      changeYear: true,
+      todayHighlight: true,
+      maxViewMode: 2,
+      startView: 2,
+      autoclose: true
+    });
+
+    $(function () {
+      $("#student").click(function () {
+        if ($(this).is(":checked")) {
+          $("#2").show();
+          $("#1").hide(); } 
+        else {
+          $("#2").hide();
+          $("#1").show(); }
+        });
+    });
+
+    $('.needs-validation').validate({
+      rules:{
+        username: {
+          minlength: 4
+        },
+        mobile:{
+          maxlength: 11,
+          minlength: 11
+        },
+      },
+      messages:{
+        username:{
+          minlength: 'Username shouldn\'t be less than four characters'
+        },
+        mobile:{
+          maxlength: 'Mobile number should be exactly 11 digits',
+          minlength: 'Mobile number should be exactly 11 digits'
+        }
+      }
+    });
+  });

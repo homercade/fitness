@@ -64,7 +64,7 @@ block main
             - }
              
             .col-lg-4.col-md-4.col-sm-4.mb
-              .content-panel(style="background-color:gray; padding:0; color:white; padding-top: 20px;")
+              .content-panel(style="background:url('/assets/img/trainerbg.jpg'); padding:0; color:white; padding-top: 20px;")
                 h3#slot(style='padding:0; margin:0; position:absolute;top:10px; left:20px;') #{cl.slot}
                 p(style='position:absolute;top:13px; left:60px;') - remaining slots
                 h3 #{cl.eventclassname}
@@ -73,7 +73,7 @@ block main
                 br
                 br
                 br
-                button.btn-block.btn-primary.join(style=" padding:5px; font-weight: bold; border:none;", value = cl.eventclassid)
+                button.btn-block.btn-primary.join(style=" padding:5px; font-weight: bold; border:none; background-color:black", value = cl.eventclassid onMouseOver="this.style.backgroundColor=black")
                     | Join
                 .content-panel(style="margin:0!important; color:#797979;padding:5px 10px; width:100%;box-shadow:none; border-radius:0;")
                   br

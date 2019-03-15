@@ -19,18 +19,18 @@ block main
             .col-md-2.col-sm-2.box0.col-md-offset-3
               .box1
                 span.li_heart
-                h3 210
-              p 210 Active Members
+                h3 #{activeMembersCount}
+              p #{activeMembersCount} Active Members
             .col-md-2.col-sm-2.box0
               .box1
                 span.li_calendar
-                h3 25
-              p 25 Active Trainers
+                h3 #{countActiveTrainers}
+              p #{countActiveTrainers} Active Trainers
             .col-md-2.col-sm-2.box0
               .box1
                 span.li_vynil
-                h3 3
-              p 3 Active Classes
+                h3 #{classes.length}
+              p #{classes.length} Active Classes
           
           .row.mt
             .col-md-1
@@ -63,39 +63,31 @@ block main
           h3 
             span.li_heart 
             |  Membership
-          .desc
-            .thumb
-              img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
-            .details
-              h6  Gold Membership
-          .desc
-            .thumb
-              img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
-            .details
-              h6  Silver Membership
-          .desc
-            .thumb
-              img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
-            .details
-              h6  Bronze Membership
+          each membership in memberships
+            .desc
+              .thumb
+                img.img-circle(src='assets/img/gold.png', width='35px', height='35px', align='')
+              .details
+                h6 #{membership.memclassname} Membership
           h3 
             span.li_calendar 
             |  Class List
-          .desc
-            .thumb
-              img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
-            .details
-              h6  Body Building
-          .desc
-            .thumb
-              img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
-            .details
-              h6 Aerobics
-          .desc
-            .thumb
-              img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
-            .details
-              h6 General Training
+          each cl in classes
+            .desc
+              .thumb
+                img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
+              .details
+                h6 #{cl.eventclassname}
+            //- .desc
+            //-   .thumb
+            //-     img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
+            //-   .details
+            //-     h6 Aerobics
+            //- .desc
+            //-   .thumb
+            //-     img.img-circle(src='assets/img/class.png', width='35px', height='35px', align='')
+            //-   .details
+            //-     h6 General Training
 
           //- Input for RFID
           input#hiddenInput(type='text' style="opacity:0" )
@@ -109,7 +101,7 @@ script.
     const oneHour = 3600000
     const toastrOption = {
       closeButton: true,
-      positionClass: "toast-bottom-left",
+      positionClass: "toast-bottom-right",
       timeOut: oneHour,
       extendedTimeOut: oneHour
     }
