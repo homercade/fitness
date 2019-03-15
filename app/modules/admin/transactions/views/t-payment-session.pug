@@ -52,7 +52,7 @@ block main
 			.modal-header
 				button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 				h4.modal-title Official Receipt
-			.modal-body
+			.toPrint.modal-body
 				.container-fluid
 					.row
 						.col-xs-12
@@ -126,12 +126,26 @@ block main
 										td.text-right
 											strong 
 												.total
-			.modal-footer
-				button.btn.btn-default(type='button', data-dismiss='modal') Close
-				button.btn.btn-primary(type='button') Print
+		.modal-footer
+			button.btn.btn-default(type='button', data-dismiss='modal') Close
+			// button.btn.btn-primary(type='button') Print
+			button.btn.btn-primary(type='button' id='saveAsPDF') Save as PDF
 
 
 include ../../../../templates/foot
+
+script.
+	$('#saveAsPDF').click(function(){
+		html2canvas($('.toPrint'), {
+			onrendered: function (canvas) {
+				var time = new Date();
+				var img = canvas.toDataURL('image/png');
+				var doc = new jsPDF();
+				doc.addImage(img, 'JPEG', 15, 20, 160, 100);
+				doc.save('payment_file_' + time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) + '.pdf');
+			}
+		})
+	})
 
 script.
 		$(document).ready(function(){
