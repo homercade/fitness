@@ -249,12 +249,8 @@ include ../../../../templates/foot
 
 script.
 	$('#saveAsPDF').click(function(){
-		console.log('BEEEEEEEEEEEEEEEEEEEEP');
 		html2canvas($('.toPrint'), {
 			onrendered: function (canvas) {
-				//- ctx.webkitImageSmoothingEnabled = false;
-				//- ctx.mozImageSmoothingEnabled = false;
-				//- ctx.imageSmoothingEnabled = false;
 				var time = new Date();
 				var img = canvas.toDataURL('image/png');
 				var doc = new jsPDF();
