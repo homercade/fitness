@@ -330,7 +330,6 @@ style.
 script.
   $(document).ready(function(){
     $('#membership').on('change', function(){
-      console.log($(`.membershipOption[value="${$(this).val()}"]`).attr('ct_description'))
       $('#membershipType').text($(`.membershipOption[value="${$(this).val()}"]`).attr('ct_description'))
       $('#membershipDescription').text($(`.membershipOption[value="${$(this).val()}"]`).attr('ct_membershipdesc'))
     })
@@ -341,7 +340,6 @@ script.
       var username = $(this).val()
       if (username.length >= 4) {
         $.post('/signup/users').done(function (data) {
-          console.log(data)
           for (i = 0; i < data.length; i++) {
             if (data[i].userusername != username) {
               $('#prompt').empty()
@@ -366,7 +364,6 @@ script.
       var email = $(this).val()
       if (email.length >= 4) {
         $.post('/signup/users').done(function (data) {
-          console.log(data)
           for (i = 0; i < data.length; i++) {
             if (data[i].useremail != email) {
             } else {
@@ -422,7 +419,6 @@ script.
       if($(`.membershipOption[value='${selected}']`).attr('memName') == 'Exclusive'){
         $('#branchCol').css('display', 'block')
         $.post('/signup/query/branch').done(function(data){
-          console.log(data)
           for(var i=0; i< data.length; i++){
             $('#branch').append(`<option value='${data[i].branchID}'>${data[i].branchname}</option>`)
           }
@@ -446,7 +442,6 @@ script.
   $(function(){
     $.post('/signup/promopic').done(data =>{
       $('.banner').css('background-image', `url("/assets/images/${data[0].promopic}")`)
-      console.log(`'url("/assets/images/${data[0].promopic}.jpg")'`)
     })
   })     
 

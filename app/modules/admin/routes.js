@@ -1692,18 +1692,71 @@ function countActiveTrainers (req, res, next)  {
   })
 }
 
-// // VIEW ALL PAYMENTS
-// function viewPayments (req, res, next)  {
-//   db.query(`SELECT userid, amount FROM tblpayment`, (err, payments) => {
-//     if (err) console.log(err)
-//     payments.forEach(payment =>{
-//       payment.userid 
-//     })
-//     return next()
-//   })
-// }
+// VIEW TOP USER
+function viewTopUser (req, res, next)  {
+  const query = `
+    SELECT userid, MAX(pay_sum) AS total 
+    FROM (SELECT userid, SUM(amount) AS pay_sum 
+      FROM tblpayment 
+        GROUP BY userid)a 
+    GROUP BY pay_sum 
+    ORDER BY total 
+    DESC LIMIT 1
+  `
+  db.query(query, (err, results) => {
+    if (err) console.log(err)
+    const topUser = results[0]
+    const query = `
+      SELECT userid, 
+        userfname, 
+        userlname,
+        pic, 
+        acceptdate 
+      FROM tbluser
+      JOIN tblmembership ON tblmembership.usersid = tbluser.userid
+      WHERE userid = ?
+    `
+    db.query(query, [topUser.userid], (err, results) => {
+      if (err) console.log(err)
+      results[0].total = Number.parseFloat(topUser.total).toFixed(2)
+      results[0].acceptdate = moment(results[0].acceptdate).format('ll')
+      req.topUser = results[0]
+      return next()
+    })
+  })
+}
+
+// VIEW MEMBERS COUNT PER MONTH
 
 
+router.post('/view/member/per/month', (req, res) => {
+  const query = `
+  SELECT A.monthname, IF(B.total IS NULL, 0, B.total )total 
+  FROM (
+    SELECT MONTHNAME(STR_TO_DATE(1, '%m'))monthname, (1)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(2, '%m'))monthname, (2)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(3, '%m'))monthname, (3)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(4, '%m'))monthname, (4)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(5, '%m'))monthname, (5)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(6, '%m'))monthname, (6)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(7, '%m'))monthname, (7)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(8, '%m'))monthname, (8)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(9, '%m'))monthname, (9)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(10, '%m'))monthname, (10)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(11, '%m'))monthname, (11)month
+      UNION SELECT MONTHNAME(STR_TO_DATE(12, '%m'))monthname, (12)month
+      )A LEFT JOIN (
+      SELECT MONTHNAME(acceptdate)monthname, 
+      COUNT(acceptdate)total 
+      FROM tblmembership 
+      GROUP BY monthname
+    )B ON A.monthname= B.monthname ORDER BY A.month ASC
+  `
+  db.query(query, (err, out) => {
+    if (err) console.log(err)
+    res.send(out)
+  })
+})
 
 //change membership dropdowns
 function viewMemChange ( req,res,next ) {
@@ -2071,7 +2124,8 @@ function dashboard(req, res) {
     memberships: req.viewHie,
     classes: req.viewClass2,
     activeMembersCount: req.countActiveMembers,
-    countActiveTrainers: req.countActiveTrainers
+    countActiveTrainers: req.countActiveTrainers,
+    topUser: req.topUser
   });
 }
 
@@ -2408,7 +2462,7 @@ function rsales(req, res) {
 //A-TEAM FITNESS GETS
 
 //GENERAL
-router.get('/', viewUtils, viewAdmin, viewHie, viewClass2, countActiveMembers, countActiveTrainers, dashboard);
+router.get('/', viewUtils, viewAdmin, viewHie, viewClass2, countActiveMembers, countActiveTrainers, viewTopUser, dashboard);
 router.get('/reports', viewUtils, viewAdmin, reports);
 router.get('/user', viewUtils, viewAdmin, userd);
 router.get('/utilities', viewUtils, viewAdmin, viewRates, utils);

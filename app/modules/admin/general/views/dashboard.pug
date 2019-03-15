@@ -11,6 +11,7 @@ append head
 
 block main
   //- #navbar.hidden
+
   section#main-content
     section.wrapper.site-min-height
       .row
@@ -39,17 +40,18 @@ block main
                 .darkblue-header
                   h5 TOP USER
                 p
-                  img.img-circle(src='assets/img/ui-zac.jpg', width='80')
+                  img.img-circle(src=`assets/images/${topUser.pic}`, width='80' height='80')
                 footer
                   p
-                    b Zac Snider
+                    b #{topUser.userfname} #{topUser.userlname}
                   .row
                     .col-md-6
                       h5.small.mt MEMBER SINCE
-                      p 2012
+                      p #{topUser.acceptdate}
                     .col-md-6
                       h5.small.mt TOTAL SPEND
-                      p $ 47,60
+                      p #{utils.currsymbol} #{topUser.total}
+                
             .col-md-7
               canvas#memberByMonth
           .row.mt
@@ -131,8 +133,6 @@ script.
     $.post('/', { 
       cardNumber: $(this).val()
     }).done(function(response){
-      console.log(response);
-      // const logDate = new Date().toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: 'numeric' }); (optional)
       if(response == 'noCard'){
         swal({
           title: 'Card does not exist!',
@@ -145,7 +145,6 @@ script.
         $('#hiddenInput').val('');
       }
       else{
-        console.log(response[0].memberid);
         swal({
           title: response[0].userfname + ' ' + response[0].userlname,
           html: 'Subscription: ' + response[0].memclassname + ' — ' + response[0].membershipname, // + '<br><b>Time In: </b>' + logDate (optional)
@@ -163,11 +162,43 @@ script.
 
 script.
   $(document).ready(function(){
+
     //- LINE CHART
     //- dataset
-    const months = ['January', 'Feburuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    const monthsAbb = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-    const numberOfMembersApplied = [3, 0, 2, 1, 7, 2, 6, 0, 0, 1, 23, 0]
+    let months = []
+    let numberOfMembersApplied = []
+    
+    $.post('/view/member/per/month').done(data => {
+      data.forEach(data => {
+        switch (data.monthname) {
+          case 'January': months.push('Jan')
+            break
+          case 'February': months.push('Feb')
+            break
+          case 'March': months.push('Mar')
+            break
+          case 'April': months.push('Apr')
+            break
+          case 'May': months.push('May')
+            break
+          case 'June': months.push('Jun')
+            break
+          case 'July': months.push('Jul')
+            break
+          case 'August': months.push('Aug')
+            break
+          case 'September': months.push('Sept')
+            break
+          case 'October': months.push('Oct')
+            break
+          case 'November': months.push('Nov')
+            break
+          case 'December': months.push('Dec')
+            break
+        }
+        numberOfMembersApplied.push(data.total)
+      })
+    })
 
     //- initialization
     const chartMemberByMonth = document.getElementById('memberByMonth').getContext('2d')
@@ -177,7 +208,7 @@ script.
       const chart1 = new Chart(chartMemberByMonth, {
         type: 'line',
         data: {
-          labels: monthsAbb,
+          labels: months,
           datasets: [{
             label: 'Members Registered',
             data: numberOfMembersApplied,
