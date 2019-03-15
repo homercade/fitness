@@ -337,6 +337,18 @@ function addid(req, res, next) {
   })
 }
 
+
+//function oradd
+function oradd(req, res, next) {
+  db.query(`SELECT (orid+1)id FROM tblor ORDER BY orid DESC LIMIT 1`, function (err, results, fields) {
+    if (err) return res.send(err)
+    req.oradd = results[0].id
+    console.log(req.oradd)
+    return next();
+  })
+}
+
+
 //insert branch
 router.post('/branch', addid, (req, res) => {
   fullname=req.session.user.userfname + " " + req.session.user.userlname
@@ -988,8 +1000,8 @@ function viewPay(req, res, next) {
 }
 
 //payment
-router.post('/payment',(req, res) => {
-    db.query(`INSERT INTO tblpayment (userid)VALUES(?)`, [req.body.id], (err, results, fields) => {
+router.post('/payment',oradd,(req, res) => {
+    db.query(`INSERT INTO tblpayment (userid,or)VALUES(?,?)`, [req.body.id, req.oradd], (err, results, fields) => {
       db.query(`UPDATE tbluser u 
         join tblpayment p on p.userid=u.userid 
         inner join tblmembership m on m.usersid=u.userid 
@@ -1049,9 +1061,9 @@ router.post('/payment/walkin',(req, res) => {
  
 
 //freezing
-router.post('/freeze',(req, res) => {
+router.post('/freeze',oradd,(req, res) => {
  db.query(`INSERT INTO tblfreeze(userfid,freezedmonths,datefrozen,genid) values(?,?,?,4)`, [req.body.id,req.body.freezevalue,req.body.effect], (err, results, fields) => {
-  db.query(`INSERT INTO tblpayment(userid,classification)VALUES(?,2)`,[req.body.id], (err, results, fields) => {
+  db.query(`INSERT INTO tblpayment(userid,classification,or)VALUES(?,2,?)`,[req.body.id,req.oradd], (err, results, fields) => {
     db.query(`UPDATE tblfreeze f inner join tblgenera g ON f.genid=g.generalID 
       inner join tbluser u ON u.userid=f.userfid 
       set total = fee * freezedmonths Where minus is null and userid=?`,[req.body.id], (err, results, fields) => {
@@ -1377,9 +1389,9 @@ function viewSp(req, res, next){
 }
 
 //addwalkin
-router.post('/walkin',regid,(req, res) => {
+router.post('/walkin',regid,oradd,(req, res) => {
   db.query("INSERT INTO tbluser(userfname,userlname,usermobile,userusername)VALUES(?, ?, ?, ?)", [req.body.fname, req.body.lname,req.body.mobile, req.body.username], (err, results, fields) => {
-    db.query("INSERT INTO tblpayment(userid,classification,amount,branchid)VALUES(?, 3,50,?)", [req.regid,req.session.user.branch], (err, results, fields) => {
+    db.query("INSERT INTO tblpayment(userid,classification,amount,branchid,or)VALUES(?, 3,50, ?, ?)", [req.regid,req.session.user.branch,req.oradd], (err, results, fields) => {
       if (err)
           console.log(err);
         else {
@@ -1467,7 +1479,7 @@ function viewPaymentSession ( req,res,next ) {
   })
 }
 // PAY
-router.post('/payment/session/pay', (req, res) => {
+router.post('/payment/session/pay', oradd,(req, res) => {
   const query = `
   UPDATE tblsession SET 
   session_count = session_count + amount,
@@ -1476,9 +1488,9 @@ router.post('/payment/session/pay', (req, res) => {
   amount = NULL 
   WHERE sessionID = ?
   `
-  db.query(query, [ req.body.id ], ( err,out ) => {
+  db.query(query, [ req.body.id ], oradd,( err,out ) => {
     if(err) console.log(err)
-    db.query(`INSERT INTO tblpayment (userid, paymentdate, amount, classification, branchid) VALUES (?, CURDATE(), ?, 5, ?)`, [ req.body.userid, req.body.amount, req.session.user.branch], ( err,out ) => {
+    db.query(`INSERT INTO tblpayment (userid, paymentdate, amount, classification, branchid,or) VALUES (?, CURDATE(), ?, 5, ?, ?)`, [ req.body.userid, req.body.amount, req.session.user.branch, req.oradd], ( err,out ) => {
       if(err) console.log(err)
     })
   })
@@ -1732,7 +1744,7 @@ function viewMemChangeOr ( req,res,next ) {
 }
 
 //change membership
-router.post('/changemem', (req, res) => {
+router.post('/changemem',oradd, (req, res) => {
   db.query(`UPDATE tblmembership 
     SET membershiprateid=? where usersid=? `,[req.body.memid,req.body.usersid], (err, results, fields) => {
     db.query(`UPDATE tbluser u 
@@ -1743,9 +1755,9 @@ router.post('/changemem', (req, res) => {
     SET m.upgradedate = curdate() + interval ? MONTH END
     where usersid=?`,[req.body.per ,req.body.usersid], (err, results, fields) => {
       db.query(`Insert Into tblpayment 
-        (userid,paymentdate,amount,classification,branchid)
-        VALUES(?, CURDATE(), ?, 6, ?) `,
-        [req.body.usersid, req.body.total, req.session.user.branch], (err, results, fields) => {
+        (userid,paymentdate,amount,classification,branchid,or)
+        VALUES(?, CURDATE(), ?, 6, ?, ?) `,
+        [req.body.usersid, req.body.total, req.session.user.branch,req.oradd], (err, results, fields) => {
           db.query(`UPDATE tbluser u 
           join tblmembership m ON m.usersid=u.userid 
           inner join tblmemrates r ON m.membershiprateid=r.memrateid 
@@ -1764,7 +1776,7 @@ router.post('/changemem', (req, res) => {
    })
 
 //change membership
-router.post('/changememin', (req, res) => {
+router.post('/changememin', oradd,(req, res) => {
   db.query(`UPDATE tblmembership 
     SET membershiprateid=? where usersid=? `,[req.body.memid,req.body.usersid], (err, results, fields) => {
     db.query(`UPDATE tbluser u 
@@ -1776,9 +1788,9 @@ router.post('/changememin', (req, res) => {
     when cl.memclassid = r.memclass then curdate() + interval r.memperiod MONTH END
     where usersid=?`,[req.body.usersid], (err, results, fields) => {
       db.query(`Insert Into tblpayment 
-        (userid,paymentdate,amount,classification,branchid)
-        VALUES(?, CURDATE(), ?, 6, ?) `,
-        [req.body.usersid, req.body.total, req.session.user.branch], (err, results, fields) => {
+        (userid,paymentdate,amount,classification,branchid,or)
+        VALUES(?, CURDATE(), ?, 6, ?, ?) `,
+        [req.body.usersid, req.body.total, req.session.user.branch, req.oradd], (err, results, fields) => {
           db.query(`UPDATE tbluser u 
           join tblmembership m ON m.usersid=u.userid 
           inner join tblmemrates r ON m.membershiprateid=r.memrateid 
