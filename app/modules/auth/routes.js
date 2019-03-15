@@ -88,6 +88,16 @@ function viewBranch(req, res, next) {
   })
 }
 
+//function oradd
+function oradd(req, res, next) {
+  db.query(`SELECT (orid+1)id FROM tblor ORDER BY orid DESC LIMIT 1`, function (err, results, fields) {
+    if (err) return res.send(err)
+    req.oradd = results[0].id
+    console.log(req.oradd)
+    return next();
+  })
+}
+
 SignupRouter.post('/users', (req, res) => {
   db.query('SELECT * FROM tbluser', (err, out) => {
     if (err) console.log(err)
@@ -193,7 +203,7 @@ SignupRouter.route('/')
     res.render('auth/views/landing', req.query);
   })
 
-  .post(useraddid, (req, res) => {
+  .post(useraddid, oradd,(req, res) => {
     var autogen = codegen();
     fullname = (req.body.fname + " " + req.body.lname);
     addr = (req.body.str + " " + req.body.city)
@@ -215,13 +225,13 @@ SignupRouter.route('/')
           db.query(`INSERT INTO tblmembership (usersid,membershiprateid, 
                         specializationid, paymentcode, status,promoid) VALUES 
                         (?, ?, ?, ?, 'Pending' ,?)`, [req.newuserid, req.body.membership, req.body.specs, autogen, a], (err, results, fields) => {
-            db.query(`INSERT INTO tblpayment (userid) 
-                            VALUES (?)`, [req.newuserid], (err, results, fields) => {
+            db.query(`INSERT INTO tblpayment (userid,or) 
+                            VALUES (?)`, [req.newuserid,req.oradd], (err, results, fields) => {
               db.query(`UPDATE tbluser u join tblmembership m on m.usersid=u.userid
                                     inner join tblpromo p on p.promoID=m.promoid inner join 
                                     tblmemrates r on r.memrateid=m.membershiprateid
                                     SET total=r.memfee - (r.memfee * ?) where u.userid=?`, [b, req.newuserid], (err, results, fields) => {
-                if (err) console.log(err);
+                if (err) console.log(err); 
                 else {
                   // if (req.body.email != NULL){
                   //     // db.query(`select u.userfname,u.userlname ,
@@ -274,8 +284,8 @@ SignupRouter.route('/')
           db.query(`INSERT INTO tblmembership (usersid,membershiprateid, 
                         specializationid, paymentcode, status) VALUES 
                         (?, ?, ?, ?, 'Pending' )`, [req.newuserid, req.body.membership, req.body.specs, autogen], (err, results, fields) => {
-            db.query(`INSERT INTO tblpayment (userid) 
-                            VALUES (?)`, [req.newuserid], (err, results, fields) => {
+            db.query(`INSERT INTO tblpayment (userid,or) 
+                            VALUES (?)`, [req.newuserid,req.oradd], (err, results, fields) => {
               db.query(`UPDATE tbluser u join tblmembership m on m.usersid=u.userid
                                     inner join tblmemrates r on r.memrateid=m.membershiprateid
                                     SET total=r.memfee where u.userid=?`, [req.newuserid], (err, results, fields) => {
