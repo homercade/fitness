@@ -1,93 +1,101 @@
 include ../../../templates/mem-head
+append head
+  style.
+    .error {
+      color: red
+    }
+    img:hover{
+      cursor: pointer
+    }
+
 block main   
 
   .container
     section.wrapper(style='margin-top:15px;')
       #info.col-md-5
-        .content-panel
-          center
-            each pr in profs   
-              img(src=`/assets/images/${pr.pic}`, alt="" width='128' height='128')
-              .row
-                a.btn.btn-success.btn-xs(data-toggle='modal', data-target='#add') 
+        form.form-horizontal.style-form.needs-validation(novalidate)
+          .content-panel
+            center
+              each pr in profs  
+                img(src=`/assets/images/${pr.pic}`, alt="" width='128' height='128' data-toggle='modal', data-target='#edit-image')
+                a.btn.btn-success.btn-xs(data-toggle='modal', data-target='#edit-image' style="position: absolute; top: 35px; right: 173px;") 
+                  i.fa.fa-edit      
+                h4(style='margin-bottom:18px') #{pr.userfname} #{pr.userlname}
+                a#edit.btn.btn-primary.btn-xs(style="position:relative; bottom:10px; cursor:pointer:") 
                   i.fa.fa-edit
-                  |  Edit        
-              h4(style='margin-bottom:18px') #{pr.userfname} #{pr.userlname}
-              a#edit.btn.btn-primary.btn-xs(style="position:relative; bottom:10px; cursor:pointer:") 
-                i.fa.fa-edit
-                |  Edit
-              a#save.btn.btn-success.btn-xs(style="position:relative; bottom:10px; cursor:pointer; display:none; margin-right:5px") 
-                |  Save Changes
-              a#cancel.btn.btn-default.btn-xs(style="position:relative; bottom:10px; cursor:pointer; display:none;") 
-                |  Cancel
-              
-              br
-              br
-              br
-          h4 
-            i.fa.fa-dumbbell(style="margin-right: 10px;")
-            | Personal Information
-          hr
-          #fields
-            .row
-              .col-md-6
-                h5 
-                  b Address: 
-              .col-md-6
-              each pr in profs
-                h5 #{pr.useraddress} 
-            .row
-              .col-md-6
-                h5
-                  b Gender:
-              .col-md-6
-              each pr in profs
-                h5.ucwords #{pr.usergender}
-            .row
-              .col-md-6
-                h5 
-                  b Birthdate: 
-              .col-md-6
-              each pr in profs
-                h5 #{pr.userbday}
+                  |  Edit
+                a#cancel.btn.btn-default.btn-xs(style="position:relative; bottom:10px; cursor:pointer; display:none;") 
+                  |  Cancel
+                |
+                |
+                button#save.btn.btn-primary.btn-xs(type="submit" style="position:relative; bottom:10px; cursor:pointer; display:none; padding-left: 10px; padding-right: 10px") 
+                  |  Save 
+                
                 br
-              
-          
-          #editFields(style='display:none')
-            form.form-inline
+                br
+                br
+            h4 
+              i.fa.fa-dumbbell(style="margin-right: 10px;")
+              | Personal Information
+            hr
+            #fields
+              .row
+                .col-md-6
+                  h5 
+                    b Address: 
+                .col-md-6
+                each pr in profs
+                  h5 #{pr.useraddress} 
+              .row
+                .col-md-6
+                  h5
+                    b Gender:
+                .col-md-6
+                each pr in profs
+                  h5.ucwords #{pr.usergender}
+              .row
+                .col-md-6
+                  h5 
+                    b Birthdate: 
+                .col-md-6
+                each pr in profs
+                  h5 #{pr.userbday}
             
-              .row(style='margin-bottom:5px;')
-              each pr in profs
-                .form-group
-                  label(style='margin-left:15px; font-weight:bold') Address: 
-                  input#address.form-control(type="text" value = pr.useraddress , name='address' style='position:relative; right:-130px')
-              .row(style='margin-bottom:5px;')
-              each pr in profs
-                .form-group
-                  label(style='margin-left:15px;font-weight:bold') Contact: 
-                  input#contact.form-control(type="text" value = pr.usermobile , name='contact' style='position:relative; right:-130px')
-              .row(style='margin-bottom:5px;') 
-              each pr in profs
-                .form-group
-                  label(style=' margin-left:15px;font-weight:bold') Email: 
-                  input#email.form-control(type="email" value = pr.useremail , name='email' style='position:relative; right:-144px')
-              .row(style='margin-bottom:5px;')
-              each pr in profs
-                .form-group
-                  label(style=' margin-left:15px;font-weight:bold') Username: 
-                  input#username.form-control(type="text" value = pr.userusername , name='username' style='position:relative; right:-115px')
-              .row(style='margin-bottom:5px;')
-              each pr in profs
-                .form-group
-                  label(style=' margin-left:15px;font-weight:bold') Password: 
-                  input#password.form-control(type="password" value = pr.userpassword , name='password' style='position:relative; right:-120px')
-              .row(style='margin-bottom:5px;')
-              each pr in profs
-                .form-group
-                  label(style=' margin-left:15px;font-weight:bold') Confirm Password: 
-                  input#rpassword.form-control(type="password" value = pr.userpassword , name='rpassword' style='position:relative; right:-66px')
-              .row(style='margin-bottom:5px;')
-                #prompt(style='margin-left:30px; margin-top:10px')
+            #editFields(style='display:none; height: 270px')
+                .row(style='margin-bottom:5px;')
+                each pr in profs
+                    label.col-sm-4.control-label(style=' font-weight:bold') Address: 
+                    .col-sm-8
+                      input#address.form-control(type="text" value = pr.useraddress , name='address' required) 
+                .row(style='margin-bottom:5px;')
+                each pr in profs
+                    label.col-sm-4.control-label(style='font-weight:bold') Contact: 
+                    .col-sm-8
+                      input#contact.form-control(type="number" maxlength='11' value = pr.usermobile , name='contact' required)
+                .row(style='margin-bottom:5px;') 
+                each pr in profs
+                    label.col-sm-4.control-label(style=' font-weight:bold') Email: 
+                    .col-sm-8
+                      input#email.form-control(type="email" value = pr.useremail , name='email' required)
+                .row(style='margin-bottom:5px;')
+                each pr in profs
+                    label.col-sm-4.control-label(style=' font-weight:bold') Username: 
+                    .col-sm-8
+                      input#username.form-control(type="text" value = pr.userusername , name='username' required)
+                .row(style='margin-bottom:5px;')
+                each pr in profs
+                    label.col-sm-4.control-label(style=' font-weight:bold') Password: 
+                    .col-sm-8
+                      input#password.form-control(type="password" value = pr.userpassword , name='password' required)
+                .row(style='margin-bottom:5px;')
+                each pr in profs
+                    label.col-sm-4.control-label(style=' font-weight:bold') Confirm Password: 
+                    .col-sm-8
+                      input#rpassword.form-control(type="password" value = pr.userpassword , name='rpassword'  required)
+                .row(style='margin-bottom:5px;')
+                  #prompt(style='margin-left:30px; margin-top:10px')
+               
+                
       #extra.col-md-7
         .content-panel
           h4 
@@ -126,7 +134,6 @@ block main
               h5 
                 b Trainer Enrolled:
             .col-md-6
-              
               each pr in profs
                 if pr.trainerfname == undefined
                   h5 Not yet applied to a trainer. 
@@ -148,30 +155,32 @@ block main
             .col-md-6
               each pr in profs
                 h5 #{pr.expirydate}
-
-
-        //add
-      #add.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      //- edit image
+      #edit-image.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
         .modal-dialog
           .modal-content
             .modal-header
               button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
               h4#myModalLabel.modal-title Update Profile
-            form.needs-validation(action='/member/pic/edit', method='POST', autocomplete='off' novalidate id='add-staff' enctype='multipart/form-data')
+            form.needs-validation-image(action='/member/pic/edit', method='POST', autocomplete='off' novalidate id='add-staff' enctype='multipart/form-data')
               .modal-body
                 .container-fluid
                     .row
-                      .col-md-4
+                      .col-md-8
                         | Upload your Image 
-                        input#upload(type='file', name='img' ,accept="image/*")
-              .modal-footer
-                button.btn.btn-default(type='button', data-dismiss='modal') Close
-                button.btn.btn-primary.addButton(type='submit' id='btn-add-staff') Save
-
+                        input#upload(type='file', name='img' ,accept="image/*" required)
+                      .col-md-4
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        |
+                        |
+                        button.btn.btn-primary.addButton(type='submit' id='btn-add-staff') Save
+      
 include ../../../templates/foot
 include ../../../templates/sub-foot
 
 script.
+
+
   $('#edit').click(function(){
     $('#extra').hide();
     $('#edit').hide();
@@ -197,59 +206,43 @@ script.
       'left':'0%'
     })
   })
-
-  $('#save').click(function(){
-    
-    if( $('#password').val() == $('#rpassword').val() ){
+  $('.needs-validation-image').validate()
+  $('.needs-validation').validate({
+    submitHandler: function(form) {
+      if( $('#password').val() == $('#rpassword').val() ){
 
       $.post('/member/profile/edit', {
-      address: $('#address').val(),
-      contact: $('#contact').val(),
-      email: $('#email').val(),
-      username: $('#username').val(),
-      password: $('#password').val()
-      }).done(
-        swal(
-          'Succesful!',
-          'You succesfully edited your profile.',
-          'success'
-        ).then((result) => {
-          if (result.value){
-            $('#prompt').text('')
-            $('#editFields').hide();
-            $('#fields').show();
-            $('#save').hide();
-            $('#cancel').hide();
-            $('#edit').show();
-            $('#extra').show();
-            $('#info').animate({
-              'left': '0%'
-            })
-          }
+        address: $('#address').val(),
+        contact: $('#contact').val(),
+        email: $('#email').val(),
+        username: $('#username').val(),
+        password: $('#password').val()
+        }).done(
+          swal(
+            'Succesful!',
+            'You succesfully edited your profile.',
+            'success'
+          ).then((result) => {
+            if (result.value){
+              $('#prompt').text('')
+              $('#editFields').hide();
+              $('#fields').show();
+              $('#save').hide();
+              $('#cancel').hide();
+              $('#edit').show();
+              $('#extra').show();
+              $('#info').animate({
+                'left': '0%'
+              })
+            }
+          })
+        )
+      }
+      else{
+        $('#prompt').text('Password did not match.').css({
+          'color':'red',
+          'font-weight':'bold'
         })
-      )
-    }
-    else{
-      $('#prompt').text('Password did not match.').css({
-        'color':'red',
-        'font-weight':'bold'
-      })
+      }
     }
   })
-
-script.
-  $(document).ready(function() {
-      $('#btn-add-staff').bind("click",function() 
-      { 
-          var imgVal = $('#upload').val(); 
-          if(imgVal=='') 
-          { 
-              alert("empty input file"); 
-              return false; 
-          } 
-
-
-
-
-      }); 
-  });

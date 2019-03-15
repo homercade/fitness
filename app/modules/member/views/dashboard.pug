@@ -83,9 +83,9 @@ script.
     const daysFromNow = subtractDate(expiryDate, today)
     console.log(expiryDate, today)
     if (dueInAWeek){
-      if (daysFromNow === 1) toastr.error(`Your membership will expire ${daysFromNow}.`, 'Membership Application', toastrOption)
-      else if (daysFromNow === 0) toastr.error(`Your membership will expire tomorrow!`, 'Membership Application', toastrOption)
-      else toastr.warning(`Your membership will expire in ${daysFromNow}.`, 'Membership Application', toastrOption)
+      if (daysFromNow === 1) toastr.error(`Your membership will expire tomorrow!`, 'Membership Application', toastrOption)
+      else if (daysFromNow <= 4) toastr.error(`Your membership will expire in ${daysFromNow} days.`, 'Membership Application', toastrOption)
+      else toastr.warning(`Your membership will expire in ${daysFromNow} days.`, 'Membership Application', toastrOption)
     } 
   })
   

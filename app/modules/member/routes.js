@@ -114,6 +114,12 @@ function getExpiryDate(req, res, next) {
 	db.query('SELECT expirydate from tblmembership where usersid = ?', [req.session.member.userid], (err, results) => {
 		console.log(results)
 		req.getExpiryDate = results[0]
+		const expiryDate = moment(results[0].expirydate).format('MM DD, YYYY')
+		const today = moment().format('MM DD, YYYY')
+		console.log(expiryDate, today)
+		if (expiryDate == today){
+			res.redirect('/login?incorrect')
+		}
 		return next()
 	})	
 }
@@ -201,19 +207,15 @@ router.post('/profile/edit', (req, res) => {
 }) 
 
 router.post('/pic/edit', (req, res) => {
-  console.log(req.files)
   pic=`${req.session.member.userfname + req.session.member.userlname}.jpg`
   req.files.img.mv('public/assets/images/'+pic, function(err){
-  db.query(`UPDATE tbluser Set pic = ? where userid =?`, [pic,req.session.member.userid], (err, results, fields) => {
-    if (err)
-      console.log(err);
-    else {
-      res.redirect('/member'); 
-    }
-  });
-});
-}); 
-
+		db.query(`UPDATE tbluser SET pic = ? WHERE userid = ?`, [pic, req.session.member.userid], (err, results) => {
+			if (err) console.log(err);
+			res.redirect('/member')
+		})
+		if (err) console.log(err) 
+	})
+})
 
 //******************************************************* */
 //                     CLASSES.
@@ -559,6 +561,23 @@ function viewUtils ( req,res,next ) {
   })
 }
 
+function viewSusp(req, res, next) {
+	const query = `
+		UPDATE tblmembership m 
+		JOIN tbluser u ON m.usersid=u.userid 
+		SET m.status='Suspended', 
+			u.userpassword=NULL 
+		WHERE m.expirydate <= CURDATE()
+	`
+  db.query(query, (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      return next()
+    }
+  })
+}
+
 // ---------- F U N C T I O N S ---------- //
 function dashboard(req, res, next) {
 	return res.render('member/views/dashboard', {
@@ -647,8 +666,7 @@ function change(req, res, next) {
 }
 
 // ------------- GET ---------------//
-router.get('/', initial, notification, viewUtils, totalPayment, getExpiryDate, fee, checkFinishedSession, dashboard);
-// router.get('/', initial, notification, totalPayment, fee, dueEvents, dueDate, dashboard, checkFinishedSession);
+router.get('/', initial, notification, viewUtils, totalPayment, getExpiryDate, fee, viewSusp, checkFinishedSession, dashboard);
 router.get('/profile', notification, viewUtils, initial, profile);
 router.get('/events', notification, viewUtils, joinedEvents, viewEvent, initial, events);
 router.get('/trainers', notification, viewUtils, initial, check, viewTrainers, trainer);

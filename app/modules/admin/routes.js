@@ -2504,7 +2504,7 @@ function rsales(req, res) {
 //A-TEAM FITNESS GETS
 
 //GENERAL
-router.get('/', viewUtils, viewAdmin, viewHie, viewClass2, countActiveMembers, countActiveTrainers, viewTopUser, dashboard);
+router.get('/', viewSusp, viewUtils, viewAdmin, viewHie, viewClass2, countActiveMembers, countActiveTrainers, viewTopUser, dashboard);
 router.get('/reports', viewUtils, viewAdmin, reports);
 router.get('/user', viewUtils, viewAdmin, userd);
 router.get('/utilities', viewUtils, viewAdmin, viewRates, utils);
