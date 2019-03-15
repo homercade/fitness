@@ -78,7 +78,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label OR Number
-                        input.form-control(type='text' name='OR' onkeypress='return restrictCharacters(this, event, alphaNumOnlyD)' pattern='^[0-9]{4}-{1}[0-9]{5}-{1}[A-Z]{2}-{1}[0-9]{1}$' title='Please match the format for the OR: 0000-00000-AA-0' required placeholder='0000-00000-AA-0' maxlength='15')
+                        input.form-control(type='text' name='OR' onkeypress='return restrictCharacters(this, event, alphaNumOnlyD)' maxlength='50')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary(id='btn-add-or') Save

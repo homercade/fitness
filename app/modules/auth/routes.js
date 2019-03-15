@@ -225,8 +225,8 @@ SignupRouter.route('/')
           db.query(`INSERT INTO tblmembership (usersid,membershiprateid, 
                         specializationid, paymentcode, status,promoid) VALUES 
                         (?, ?, ?, ?, 'Pending' ,?)`, [req.newuserid, req.body.membership, req.body.specs, autogen, a], (err, results, fields) => {
-            db.query(`INSERT INTO tblpayment (userid,or) 
-                            VALUES (?)`, [req.newuserid,req.oradd], (err, results, fields) => {
+            db.query(`INSERT INTO tblpayment (userid,ornum) 
+                            VALUES (?,?)`, [req.newuserid,req.oradd], (err, results, fields) => {
               db.query(`UPDATE tbluser u join tblmembership m on m.usersid=u.userid
                                     inner join tblpromo p on p.promoID=m.promoid inner join 
                                     tblmemrates r on r.memrateid=m.membershiprateid
@@ -284,12 +284,12 @@ SignupRouter.route('/')
           db.query(`INSERT INTO tblmembership (usersid,membershiprateid, 
                         specializationid, paymentcode, status) VALUES 
                         (?, ?, ?, ?, 'Pending' )`, [req.newuserid, req.body.membership, req.body.specs, autogen], (err, results, fields) => {
-            db.query(`INSERT INTO tblpayment (userid,or) 
-                            VALUES (?)`, [req.newuserid,req.oradd], (err, results, fields) => {
+            db.query(`INSERT INTO tblpayment (userid,ornum) 
+                            VALUES (?,?)`, [req.newuserid,req.oradd], (err, results, fields) => {
               db.query(`UPDATE tbluser u join tblmembership m on m.usersid=u.userid
                                     inner join tblmemrates r on r.memrateid=m.membershiprateid
                                     SET total=r.memfee where u.userid=?`, [req.newuserid], (err, results, fields) => {
-                if (err) console.log(err);
+                if (err) console.log(err); 
                 else {
                   // if (req.body.email != NULL){
                   //     // db.query(`select u.userfname,u.userlname ,

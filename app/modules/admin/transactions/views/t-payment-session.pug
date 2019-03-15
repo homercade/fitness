@@ -38,17 +38,10 @@ block main
 												td ₱ #{total}.00
 												td 
 													button.pay.btn.btn-theme.btn-xs(	
-																													type='button', 	
-																													value = p.sessionID, 
-																													data-userid = p.userid, 
-																													data-amount = total,
-																													data-name = fullname,
-																													data-mem = mebership,
-																													data-address = p.useraddress,
-																													data-email = p.useremail,
-																													data-mobile = p.usermobile,
-																													data-quantity = p.amount
-																													)
+													type='button', value = p.sessionID, data-userid = p.userid, 
+													data-amount = total,data-name = fullname,data-mem = mebership,
+													data-address = p.useraddress,data-email = p.useremail,
+													data-mobile = p.usermobile,	data-quantity = p.amount)
 														i.fa.fa-coins
 													button.delete.btn.btn-danger.btn-xs(type='button', value = p.sessionID)
 														i.fa.fa-trash-alt
