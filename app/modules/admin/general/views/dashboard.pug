@@ -145,9 +145,12 @@ script.
         $('#hiddenInput').val('');
       }
       else{
+        //- if(response[0].branchname) { const branchName = 'Exclusive';}
+        //- else { const branchName = 'Interbranch';}
+        //- console.log(branchName);
         swal({
           title: response[0].userfname + ' ' + response[0].userlname,
-          html: 'Subscription: ' + response[0].memclassname + ' — ' + response[0].membershipname, // + '<br><b>Time In: </b>' + logDate (optional)
+          html: 'Subscription: ' + response[0].memclassname + ' — ' + response[0].membershipname,// + '<br>Branch: </b>' + branchName,
           type: 'success',
           footer: '<b>Expiration Date</b>:  ' + response[0].expiryDate,
           showCancelButton: false,
