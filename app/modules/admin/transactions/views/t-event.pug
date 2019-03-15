@@ -79,7 +79,7 @@ block main
                 .col-md-9
                   .form-group
                     label.control-label Event Name
-                    input.form-control(type='text' name='event' placeholder='Cardio Dalisay' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='65' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                    input.form-control.addDisable(type='text' name='event' placeholder='Cardio Dalisay' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='65' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                 .col-md-3
                   .form-group
                     label.control-label Slots

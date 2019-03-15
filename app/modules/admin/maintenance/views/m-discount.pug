@@ -81,7 +81,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Promo Name
-                        input#name.form-control(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' minlength='5' maxlength='50' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$', title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                        input#name.form-control.addDisable(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' minlength='5' maxlength='50' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$', title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   .row
                     .col-md-6
                       .form-group
@@ -125,7 +125,7 @@ block main
 
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(type='submit' id='btn-add-promo') Add Discount
+              button.btn.btn-primary.addButton(type='submit' id='btn-add-promo') Add Discount
     // MODAL EDIT
     #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
@@ -142,7 +142,7 @@ block main
                     .col-md-12
                       .form-group
                         label.control-label Name
-                        input#name.form-control(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' minlength='5' maxlength='50' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$', title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                        input#name.form-control.addDisable(type='text' name='promoname' required onkeypress='return restrictCharacters(this, event, alphaNumOnly)' minlength='5' maxlength='50' pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$', title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   .row
                     .col-md-6
                       .form-group
@@ -179,7 +179,7 @@ block main
                         textarea#prog-desc.form-control(style='resize:none', name='desc', rows='3' onkeypress='return restrictCharacters(this, event, alphaNumOnlyPlus)')
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
-              button.btn.btn-primary(id='btn-edit-promo') Save
+              button.btn.btn-primary.addButton(id='btn-edit-promo') Save
 
     // MODAL DELETE
     #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -255,7 +255,7 @@ script.
     });
 
 
-    $(document).on('submit', '#btn-add-promo', function(e) {
+    $(document).on('click', '#btn-add-promo', function(e) {
     var form = $(this).parents('form');
     e.preventDefault();
 

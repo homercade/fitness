@@ -97,11 +97,11 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name <span class='r'>*</span> 
-                      input.form-control#fname(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                      input.form-control#fname.addDisable(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                   .col-md-6
                     .form-group
                       label.control-label Last Name <span class='r'>*</span> 
-                      input.form-control#lname(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                      input.form-control#lname.addDisable(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                 .row
                   .col-md-6
                     .input-group
@@ -122,16 +122,16 @@ block main
                   .col-md-12
                     .form-group
                       label.control-label Address <span class='r'>*</span> 
-                      input.form-control#addr(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
+                      input.form-control#addr.addDisable(type='text' name='addr' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number <span class='r'>*</span> 
-                      input.form-control#cont(type='text', placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
+                      input.form-control#cont.addDisable(type='text', placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
                   .col-md-6
                     .form-group
                       label.control-label Email <span class='r'>*</span> 
-                      input.email.form-control#emai(type='email' required  name='email' pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' onkeypress='return restrictCharacters(this, event, emailOnly)')
+                      input.email.form-control#emai.addDisable(type='email' required  name='email' pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' onkeypress='return restrictCharacters(this, event, emailOnly)')
                       #prompt2
               .row
                 .col-md-12
@@ -142,7 +142,7 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Username <span class='r'>*</span> 
-                      input.username.form-control(type='text' required name='username')
+                      input.username.form-control.addDisable(type='text' required name='username')
                       #prompt
                   .col-md-6
                     .form-group
@@ -214,11 +214,11 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name <span class='r'>*</span> 
-                      input.form-control(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                      input.form-control.addDisable(type='text' name='fname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                   .col-md-6
                     .form-group
                       label.control-label Last Name <span class='r'>*</span> 
-                      input.form-control(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                      input.form-control.addDisable(type='text' name='lname' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
                 .row
                   .col-md-6
                     .input-group
@@ -239,16 +239,16 @@ block main
                   .col-md-12
                     .form-group
                       label.control-label Address <span class='r'>*</span> 
-                      input.form-control(type='text' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
+                      input.form-control.addDisable(type='text' onkeypress='return restrictCharacters(this, event, alphaNumOnly)' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group 
                       label.control-label Mobile Number <span class='r'>*</span> 
-                      input.form-control(type='text' value='09xxxxxxxxx' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
+                      input.form-control.addDisable(type='text' value='09xxxxxxxxx' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
-                      input.form-control(type='email' required pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' onkeypress='return restrictCharacters(this, event, emailOnly)')
+                      input.form-control.addDisable(type='email' required pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$' onkeypress='return restrictCharacters(this, event, emailOnly)')
               .row
                 .col-md-12
                   h5 Login Information
@@ -258,7 +258,7 @@ block main
                   .col-md-12
                     .form-group
                       label.control-label Username <span class='r'>*</span> 
-                      input.form-control(type='text')
+                      input.form-control.addDisable(type='text')
               .row
                 .col-md-12
                   h5 More Information

@@ -27,3 +27,25 @@ function restrictCharacters(myfield, e, restrictionType) {
     }
   }
 };
+
+$(document).ready(function () {
+	$('.addButton').attr('disabled', true)
+	$('.addDisable').keyup(function () {
+		if ($(this).val()) {
+		if ($(this).val() !== "") {
+		$('.addButton').attr('disabled', false)
+		if ($(this).val() == " ") {
+		$('.addButton').attr('disabled', true)
+		$('.addDisable').val("")
+		if ($(this).val()) {
+			var replacing = $(this).val().trim()
+			$('.addDisable').val(replacing)
+			$('.addButton').attr('disabled', false)
+		}
+		}
+		} 
+		else $('.addButton').attr('disabled', true)
+		} 
+		else $('.addButton').attr('disabled', true)
+	})
+	})

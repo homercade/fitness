@@ -49,24 +49,24 @@ block main
               .col-md-6
                 .form-group
                   label.control-label Full Name
-                  input.form-control(type="text" name="fname" placeholder='First Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' minlength='2' maxlength='25' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two names.')
+                  input.form-control.addDisable(type="text" name="fname" placeholder='First Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' minlength='2' maxlength='25' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two names.')
               .col-md-6
                 .form-group
                   label.control-labe(style="color:white") Last Name
-                  input.form-control(type="text" name="lname" placeholder='Last Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' minlength='2' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                  input.form-control.addDisable(type="text" name="lname" placeholder='Last Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' minlength='2' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
               .col-md-12
                 .form-group
                   label.control-labe(style="color:white") Username 
-                  input.username.form-control(type="text" name="username" placeholder='Username' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' minlength='2' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
+                  input.username.form-control.addDisable(type="text" name="username" placeholder='Username' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' minlength='2' required pattern='^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$' title='Please avoid using leading or trailing spaces and multiple spaces between two words.')
                   #prompt
             .row
               .col-md-12
                 .form-group
                   label.control-label Contact
-                  input.form-control(type='text' placeholder='09xxxxxxxxx' value='09' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' minlength='11' required)
+                  input.form-control.addDisable(type='text' placeholder='09xxxxxxxxx' value='09' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' minlength='11' required)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.add.btn.btn-primary(type='submit'  id='add-btn') Add Walkins
+          button.add.btn.btn-primary.addButton(type='submit'  id='add-btn') Add Walkins
 
 .edit-walkins-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog
@@ -81,19 +81,19 @@ block main
               .col-md-6
                 .form-group
                   label.control-label Full Name
-                  input.form-control(type="text" name="fname" placeholder='First Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                  input.form-control.addDisable(type="text" name="fname" placeholder='First Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
               .col-md-6
                 .form-group
                   label.control-labe(style="color:white") Full Name
-                  input.form-control(type="text" name="lname" placeholder='Last Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
+                  input.form-control.addDisable(type="text" name="lname" placeholder='Last Name' onkeypress='return restrictCharacters(this, event, alphaOnly)' maxlength='25' required)
             .row
               .col-md-12
                 .form-group
                   label.control-label Contact
-                  input.form-control(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
+                  input.form-control.addDisable(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='11' required)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='submit') Add Walkins
+          button.btn.btn-primary.addButton(type='submit') Edit Walkins
 
 .add-facility-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
   .modal-dialog
