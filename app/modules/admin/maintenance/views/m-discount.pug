@@ -25,9 +25,9 @@ block main
                       th
                         i.fa.fa-coins
                         |  Discount (%)
-                      th
-                        i.fa.fa-bookmark
-                        |  Type
+                      //- th
+                      //-   i.fa.fa-bookmark
+                      //-   |  Type
                       th
                         i.fa.fa-calendar-alt
                         |  Date Added
@@ -49,7 +49,7 @@ block main
                         td #{ds.promoname}
                         td #{ds.startdate} until #{ds.enddate}
                         td #{ds.discount}
-                        td #{ds.promotype}
+                        //- td #{ds.promotype}
                         td  #{ds.Dateadded}
                         td #{ds.Addedby}
                         td
@@ -97,22 +97,20 @@ block main
                     .col-md-6
                       .form-group
                         label.control-label Discount (%)
-                        input#disc.form-control(type='number' maxlength='3' name='discount' onkeypress='return restrictCharacters(this, event, numOnly)' min=5 max=95 required)
-                    .col-md-6
-                      .form-group
+                        input#disc.form-control(type='number' name='discount' required onkeypress='return restrictCharacters(this, event, floatOnly)' min=5 max=95)
                         label.control-label Status
                         select.form-control(id='' name='status')
                           option.hidden Select Status..
                           option(value='Active') Active
                           option(value='Inactive') Inactive
-                  .row
-                    .col-md-12
-                      .form-group
-                        label.control-label Type
-                        select.form-control(id='' name='type')
-                          option.hidden Select Type..
-                          option(value='Member') Member
-                          option(value='Non-Member') Non Member        
+                  //- .row
+                  //-   .col-md-12
+                  //-     .form-group
+                  //-       label.control-label Type
+                  //-       select.form-control(id='' name='type')
+                  //-         option.hidden Select Type..
+                  //-         option(value='Member') Member
+                  //-         option(value='Non-Member') Non Member        
                   .row
                     .col-md-12
                       label.control-label Description

@@ -90,7 +90,7 @@ function viewBranch(req, res, next) {
 
 //function oradd
 function oradd(req, res, next) {
-  db.query(`SELECT (orid+1)id FROM tblor ORDER BY orid DESC LIMIT 1`, function (err, results, fields) {
+  db.query(`SELECT (ornum+1)id FROM tblpayment ORDER BY ornum DESC LIMIT 1`, function (err, results, fields) {
     if (err) return res.send(err)
     req.oradd = results[0].id
     console.log(req.oradd)

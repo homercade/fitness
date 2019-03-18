@@ -126,9 +126,9 @@ html(lang='en')
                             bold Total
                         td.text-right.fee
                           strong
-          .modal-footer
-          button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='button' id='saveAsPDF') Save as PDF
+            .modal-footer
+              button.btn.btn-default(type='button', data-dismiss='modal') Close
+              button.btn.btn-primary(type='button' id='saveAsPDF') Save as PDF
 
     //- // Back top
     a.go-top(href='#back-top')
@@ -254,14 +254,14 @@ script.
   })
 
 script.
-	$('#saveAsPDF').click(function(){
-		html2canvas($('.toPrint'), {
-			onrendered: function (canvas) {
-				var time = new Date();
-				var img = canvas.toDataURL('image/png');
-				var doc = new jsPDF();
-				doc.addImage(img, 'JPEG', 15, 20, 160, 100);
-				doc.save('register_file_' + time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) + '.pdf');
-			}
-		})
-	})
+  $('#saveAsPDF').click(function(){
+    html2canvas($('.toPrint'), {
+      onrendered: function (canvas) {
+        var time = new Date();
+        var img = canvas.toDataURL('image/png');
+        var doc = new jsPDF();
+        doc.addImage(img, 'JPEG', 15, 20, 160, 100);
+        doc.save('register_file_' + time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) + '.pdf');
+      }
+        })
+        })
