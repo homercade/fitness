@@ -17,7 +17,9 @@ block main
                   i.fa.fa-search
         br
         br
+        - console.log(trainers)
         each trainer in trainers
+         
           .col-lg-4.col-md-4.col-sm-4.mb(style="margin-bottom: 76px")
             .content-panel(style="background:url('/assets/img/trainerbg.jpg'); padding:0; color:white; padding-top: 20px;")
               h3 #{trainer.trainerfname} #{trainer.trainerlname}
@@ -34,7 +36,9 @@ block main
                                       data-timestart = trainer.trainertimestart,
                                       data-timeend   = trainer.trainertimeend,
                                       data-workdays  = trainer.trainerschedule,
-                                      data-img       = trainer.trainerpic
+                                      data-special   = trainer.specialname,
+                                      data-desc      = trainer.specialdesc,
+                                      data-img       = trainer.trainerpic,
                                       onMouseOver    = "this.style.backgroundColor=black"
                                     )
                 i.fa.fa-search(style="padding-right:10px;" )
@@ -76,10 +80,6 @@ block main
                     |
                     <span id='branch'></span>
                   h5 
-                    b Trainer Type: 
-                    |
-                    <span id='type'></span>
-                  h5 
                     b Work Days: 
                     |
                     <span id='workdays'></span>
@@ -87,6 +87,11 @@ block main
                     b Time Available: 
                     |
                     <span id='time'></span>
+                  h5 
+                    b Specialty: 
+                    |
+                    <span id='special'></span>
+              
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
           button.btn.btn-primary.apply(type='button') Apply
@@ -111,11 +116,13 @@ script.
         $.post('/member/trainer/apply', { 
         trainerId: $(this).val()
         }).done(
-          swal(
-          'Success!',
-          'Your application has been sent',
-          'success'
-          ).then(()=>{
+          swal({
+              title: 'Success!',
+              text: `Your application has been sent`,
+              type: 'success',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(()=>{
               location.reload();
             })
         ) 
@@ -132,6 +139,8 @@ script.
     var gender   =  button.data('gender') 
     var branch   =  button.data('branch')  
     var workdays =  button.data('workdays')
+    var special  =  button.data('special')  
+    var desc     =  button.data('desc')
     var img      =  button.data('img')
     var timestart =  moment(button.data('timestart'), 'HH:mm:ss').format('hh:mm A')
     var timeend =  moment(button.data('timeend'), 'HH:mm:ss').format('hh:mm A')
@@ -177,6 +186,8 @@ script.
     modal.find('.modal-body #img').attr('src', `/assets/images/${img}`)
     modal.find('.modal-body #time').text(time)
     modal.find('.modal-body #type').text(type)
+    modal.find('.modal-body #special').text(special)
+    modal.find('.modal-body #desc').text(desc)
     modal.find('.modal-footer .apply').val(id)
 
   })

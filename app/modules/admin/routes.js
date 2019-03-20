@@ -954,7 +954,7 @@ function viewInt(req, res, next) {
 function viewSusp(req, res, next) {
   db.query(`UPDATE tblmembership m join tbluser u 
     on m.usersid=u.userid SET m.status='Suspended', 
-    u.userpassword=NULL where m.expirydate < CURDATE()`, (err, results, fields) => {
+    u.userpassword=NULL where m.expirydate <= CURDATE()`, (err, results, fields) => {
     if (err)
       console.log(err);
     else {
@@ -1488,7 +1488,7 @@ router.post('/payment/session/pay', oradd,(req, res) => {
   amount = NULL 
   WHERE sessionID = ?
   `
-  db.query(query, [ req.body.id ], oradd,( err,out ) => {
+  db.query(query, [ req.body.id ],( err,out ) => {
     if(err) console.log(err)
     db.query(`INSERT INTO tblpayment (userid, paymentdate, amount, classification, branchid,or) VALUES (?, CURDATE(), ?, 5, ?, ?)`, [ req.body.userid, req.body.amount, req.session.user.branch, req.oradd], ( err,out ) => {
       if(err) console.log(err)
@@ -2474,7 +2474,7 @@ function rsales(req, res) {
 //A-TEAM FITNESS GETS
 
 //GENERAL
-router.get('/', viewUtils, viewAdmin, viewHie, viewClass2, countActiveMembers, countActiveTrainers, viewTopUser, dashboard);
+router.get('/', viewSusp, viewUtils, viewAdmin, viewHie, viewClass2, countActiveMembers, countActiveTrainers, viewTopUser, dashboard);
 router.get('/reports', viewUtils, viewAdmin, reports);
 router.get('/user', viewUtils, viewAdmin, userd);
 router.get('/utilities', viewUtils, viewAdmin, viewRates, utils);

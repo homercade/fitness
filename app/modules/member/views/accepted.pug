@@ -34,7 +34,7 @@ block main
           .col-md-3.centered
             .profile-pic
               p
-                img.img-circle.img-thumbnail(width=150 src='/assets/img/ui-sherman.jpg')
+                img.img-circle.img-thumbnail(style="width: 150px; height: 150px;" src=`/assets/images/${pt[0].trainerpic}`)
               p
                 button#changeTrainer.btn.btn-theme(type='button', value = pt[0].trainerid)
                   | Change Trainer
