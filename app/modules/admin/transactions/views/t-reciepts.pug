@@ -40,7 +40,7 @@ block main
 														| Change Membership
 												td 
 													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='.OR-modal',data-name=re.userfname + " " + re.userlname,
-													data-date=re.paymentdate, data-m=re.classification,data-price=re.amount,data-dat=re.paymentdate data-or=re.ornum)
+													data-date=re.paymentdate, data-m=re.classification,data-price=re.amount,data-dat=re.paymentdate data-or=re.ornum,data-e=re.useremail,data-ad=re.useraddress)
 														|View Bill
 				// /content-panel
 
@@ -186,6 +186,7 @@ block main
 											abbr(title='Phone') P:
 											|  0933 412 7526
 											br
+											|OR#
 											strong.or
 									// /pull-left
 									.pull-right
@@ -198,14 +199,13 @@ block main
 									.row
 										.col-md-9
 											h2#name
-											address
-												strong.m
-												br
-												strong.ad
-												br
-												strong.e
-												br
-												strong.ph
+											//- address
+											//- 	br
+											//- 	strong#ad
+											//- 	br
+											//- 	strong#e
+											//- 	br
+											//- 	strong#ph
 										.col-md-3
 											div
 												.pull-left DATE : 
@@ -350,9 +350,9 @@ script.
 			m = "Change Membership"
 		}
 		console.log(m)
-		//- var ad = button.data('ad')
-		//- var ph = button.data('ph')
-		//- var e = button.data('e')
+		var ad = button.data('ad')
+		var ph = button.data('ph')
+		var e = button.data('e')
 		var price = button.data('price')
 		var dat = button.data('dat')
 		var or = button.data('or')
@@ -363,9 +363,9 @@ script.
 		//- modal.find('.modal-body #id').val(`${id}`)
 		modal.find('.modal-body #name').text(`${name}`)
 		modal.find('.modal-body .m').text(`${m}`)
-		//- modal.find('.modal-body .ad').text(`${ad}`)
-		//- modal.find('.modal-body .e').text(`${e}`)
-		//- modal.find('.modal-body .ph').text(`${ph}`)
+		modal.find('.modal-body #ad').text(`${ad}`)
+		modal.find('.modal-body #e').text(`${e}`)
+		modal.find('.modal-body #ph').text(`${ph}`)
 		modal.find('.modal-body .price').text(`₱ ${price}`)
 		modal.find('.modal-body .dat').text(`${dat}`)
 		modal.find('.modal-body .or').text(`${or}`)

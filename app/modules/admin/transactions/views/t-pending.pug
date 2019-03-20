@@ -25,7 +25,7 @@ block main
 												td 
 													button.btn.btn-info.btn-xs(type='button', data-toggle='modal', data-target='#viewmodal', data-gen=pe.usergender, data-bd=pe.userbday , data-add=pe.useraddress , data-ph=pe.usermobile, data-em=pe.useremail, data-cl=pe.memclassname, data-ct=pe.membershipname data-code=pe.paymentcode data-f=pe.total )
 														i.fa.fa-search
-													button.btn.btn-success.btn-xs(type='button', data-toggle='modal', data-target='.OR-modal', data-fullname=pe.userfname + " " +pe.userlname,data-id=pe.userid, data-m=pe.memclassname +' '+pe.membershipname,data-ad=pe.useraddress,data-ph=pe.usermobile,data-e=pe.useremail,data-fee=pe.total data-or=pe.or)
+													button.btn.btn-success.btn-xs(type='button', data-toggle='modal', data-target='.OR-modal', data-fullname=pe.userfname + " " +pe.userlname,data-id=pe.userid, data-m=pe.memclassname +' '+pe.membershipname,data-ad=pe.useraddress,data-ph=pe.usermobile,data-e=pe.useremail,data-fee=pe.total data-or=pe.ornum)
 														i.fa.fa-check
 													button.btn.btn-danger.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Reject')
 														i.fa.fa-times
@@ -172,6 +172,9 @@ block main
 											br
 											abbr(title='Phone') P:
 											|  09334 412 7526
+											br
+											|OR# :
+											strong.or(style="fontsize:20")
 									// /pull-left
 									.pull-right
 										h1
@@ -191,8 +194,6 @@ block main
 												strong.e
 												br
 												strong.ph
-												br
-												strong.or
 										.col-md-3
 											div
 												.pull-left DATE : 
@@ -323,6 +324,7 @@ script.
 		var e = button.data('e')
 		var or = button.data('or')
 		var fee = button.data('fee')
+		console.log(or)
 
 		let modal = $(this)     
 
@@ -334,7 +336,7 @@ script.
 		modal.find('.modal-body .e').text(`${e}`)
 		modal.find('.modal-body .ph').text(`${ph}`)
 		modal.find('.modal-body .or').text(`${or}`)
-		modal.find('.modal-body .fee').text(`₱ ${fee}.00`)
+		modal.find('.modal-body .fee').text(`₱ ${fee}`)
 	})
 
 script.

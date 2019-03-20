@@ -800,11 +800,14 @@ function viewHie(req, res, next) {
 //view pending
 function viewPend(req, res, next) {
   db.query(`select u.* , r.* , cl.* , ct.* , 
-    m.* from tbluser u join tblmembership m 
+    m.* ,p.* , o.* from tbluser u join tblmembership m 
     ON m.usersid=u.userid inner join 
     tblmemrates r ON m.membershiprateid=r.memrateid inner join 
     tblmemclass cl ON r.memclass= cl.memclassid 
-    Inner join tblcat ct on r.memcat = ct.membershipID where m.status = "Pending" `, function (err, results, fields) {
+    Inner join tblcat ct on r.memcat = ct.membershipID 
+    join tblpayment p on p.userid=u.userid join 
+    tblor o on o.orid=p.ornum
+    where m.status = "Pending" `, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewPend = results;
     return next(); 
@@ -1001,7 +1004,7 @@ function viewPay(req, res, next) {
 
 //payment
 router.post('/payment',oradd,(req, res) => {
-    db.query(`INSERT INTO tblpayment (userid,or)VALUES(?,?)`, [req.body.id, req.oradd], (err, results, fields) => {
+    db.query(`INSERT INTO tblpayment (userid,ornum)VALUES(?,?)`, [req.body.id, req.oradd], (err, results, fields) => {
       db.query(`UPDATE tbluser u 
         join tblpayment p on p.userid=u.userid 
         inner join tblmembership m on m.usersid=u.userid 
@@ -1063,7 +1066,7 @@ router.post('/payment/walkin',(req, res) => {
 //freezing
 router.post('/freeze',oradd,(req, res) => {
  db.query(`INSERT INTO tblfreeze(userfid,freezedmonths,datefrozen,genid) values(?,?,?,4)`, [req.body.id,req.body.freezevalue,req.body.effect], (err, results, fields) => {
-  db.query(`INSERT INTO tblpayment(userid,classification,or)VALUES(?,2,?)`,[req.body.id,req.oradd], (err, results, fields) => {
+  db.query(`INSERT INTO tblpayment(userid,classification,ornum)VALUES(?,2,?)`,[req.body.id,req.oradd], (err, results, fields) => {
     db.query(`UPDATE tblfreeze f inner join tblgenera g ON f.genid=g.generalID 
       inner join tbluser u ON u.userid=f.userfid 
       set total = fee * freezedmonths Where minus is null and userid=?`,[req.body.id], (err, results, fields) => {
@@ -1222,11 +1225,13 @@ function viewClass2 (req, res, next){
 // }
 
 
-//creating event
+//creating event 
 router.post('/event',(req, res) => {
   db.query(`INSERT INTO tbleventclass
     (eventclassname,startdate,enddate,starttime,endtime,slot,type,desc)
-    VALUES(?, ?, ?, ?, ?, ?, 2, ?)`,[req.body.event, req.body.start, req.body.end, req.body.startt, req.body.endt, req.body.slot, req.body.desc], (err, results, fields) => {
+    VALUES(?, ?, ?, ?, ?, ?, 2, ?)`,
+    [req.body.event, req.body.start, req.body.end, 
+    req.body.startt, req.body.endt, req.body.slot, req.body.desc], (err, results, fields) => {
     if (err)
         console.log(err);
       else {
@@ -1391,7 +1396,7 @@ function viewSp(req, res, next){
 //addwalkin
 router.post('/walkin',regid,oradd,(req, res) => {
   db.query("INSERT INTO tbluser(userfname,userlname,usermobile,userusername)VALUES(?, ?, ?, ?)", [req.body.fname, req.body.lname,req.body.mobile, req.body.username], (err, results, fields) => {
-    db.query("INSERT INTO tblpayment(userid,classification,amount,branchid,or)VALUES(?, 3,50, ?, ?)", [req.regid,req.session.user.branch,req.oradd], (err, results, fields) => {
+    db.query("INSERT INTO tblpayment(userid,classification,amount,branchid,ornum)VALUES(?, 3,50, ?, ?)", [req.regid,req.session.user.branch,req.oradd], (err, results, fields) => {
       if (err)
           console.log(err);
         else {
@@ -1488,9 +1493,9 @@ router.post('/payment/session/pay', oradd,(req, res) => {
   amount = NULL 
   WHERE sessionID = ?
   `
-  db.query(query, [ req.body.id ],( err,out ) => {
+  db.query(query, [ req.body.id ], ( err,out ) => {
     if(err) console.log(err)
-    db.query(`INSERT INTO tblpayment (userid, paymentdate, amount, classification, branchid,or) VALUES (?, CURDATE(), ?, 5, ?, ?)`, [ req.body.userid, req.body.amount, req.session.user.branch, req.oradd], ( err,out ) => {
+    db.query(`INSERT INTO tblpayment (userid, paymentdate, amount, classification, branchid,ornum) VALUES (?, CURDATE(), ?, 5, ?, ?)`, [ req.body.userid, req.body.amount, req.session.user.branch, req.oradd], ( err,out ) => {
       if(err) console.log(err)
     })
   })
@@ -1556,6 +1561,32 @@ router.post('/view/event/participant', (req, res) => {
     res.send(out)
   })
 })
+
+router.post('/view/history', (req, res) => {
+  const query = `
+  select u.* , p.* from tbluser u 
+  join tblpayment p on p.userid = u.userid where u.userid= ? and p.classification='1'
+  `
+  db.query(query, [ req.body.id ],(err, out) => {
+    if(err) console.log(err)
+    res.send(out)
+  })
+})
+
+
+router.post('/logo', (req, res) => {
+  console.log(req.files)
+  pic=`${req.session.userfname + req.session.userlname + 'logo'}.jpg`
+  req.files.img.mv('public/assets/images/'+pic, function(err){
+  db.query(`UPDATE tblutilities Set logo = ? where utilid IS NOT NULL`, [pic], (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      res.redirect('/utilities'); 
+    }
+  });
+});
+}); 
 
 // ALL NOTIFS
 router.post('/view/notif', (req, res) => {
@@ -1864,8 +1895,8 @@ router.post('/changememin', oradd,(req, res) => {
 //view receipts
 function viewReceipt(req, res, next) {
   db.query(`select u.*,p.* ,o.* from tbluser u join tblpayment p on p.userid = u.userid 
-    join tblor o on o.orid=p.or where p.paymentdate is not null order by p.paymentdate desc`, function (err, results, fields) {
-    if (err) return res.send(err);
+    join tblor o on o.orid=p.ornum where p.paymentdate is not null order by p.paymentdate desc`, function (err, results, fields) {
+    if (err) return res.send(err); 
     req.viewReceipt = results;
        //moments dateadded
       for (var i = 0; i < req.viewReceipt.length; i++) {
