@@ -1587,6 +1587,20 @@ router.post('/logo', (req, res) => {
 });
 }); 
 
+router.post('/adminpic', (req, res) => {
+  console.log(req.files)
+  pic=`${req.session.user.userfname + req.session.user.userlname }.jpg`
+  req.files.img.mv('public/assets/images/'+pic, function(err){
+  db.query(`UPDATE tbluser Set pic = ? where userid=? `, [pic,req.session.user.userid], (err, results, fields) => {
+    if (err)
+      console.log(err);
+    else {
+      res.redirect('/utilities'); 
+    }
+  });
+});
+}); 
+
 // ALL NOTIFS
 router.post('/view/notif', (req, res) => {
   db.query(`select * from tblmembership where status = 'pending'`, (err, out) => {

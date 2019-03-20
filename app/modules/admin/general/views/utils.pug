@@ -114,6 +114,16 @@ block main
 										.col-sm-4
 											input#username.form-control(type='text' name='username' value=admin.userusername required)
 									.row.mb
+										label.col-sm-2.col-sm-2.control-label Admin Pic
+										.col-sm-4
+											a.btn.btn-success.btn-xs(data-toggle='modal', data-target='#admin') 
+												i.fa.fa-edit
+												|  Change Pic   
+											if admin.pic!== undefined 
+												p Current Logo - #{admin.pic}
+											else
+												p Acceptable file type (jpg., png)
+									.row.mb
 										label.col-sm-2.col-sm-2.control-label Admin Password
 										.col-sm-4
 											input#password.form-control(type='password' name='password' value=admin.userpassword required)
@@ -159,6 +169,24 @@ block main
 					.modal-footer
 						button.btn.btn-default(type='button', data-dismiss='modal') Close
 						button.btn.btn-primary(type='submit' ) Save
+		//add
+	#admin.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+					h4#myModalLabel.modal-title Update Admin Pic
+				form(action='/adminpic', method='POST', autocomplete='off' novalidate id='add-staff' enctype='multipart/form-data')
+					.modal-body
+						.container-fluid
+							.row
+								.col-md-4
+									| Upload your Image 
+									input#uploads(type='file', name='img' ,accept="image/*")
+					.modal-footer
+						button.btn.btn-default(type='button', data-dismiss='modal') Close
+						button.admin.btn.btn-primary(type='submit' ) Save
+
 
 
 include ../../../../templates/foot
@@ -285,6 +313,22 @@ script.
 		$('#btn-add-staff').bind("click",function() 
 		{ 
 			var imgVal = $('#upload').val(); 
+			if(imgVal=='') 
+		{ 
+			alert("empty input file"); 
+			return false; 
+		} 
+
+
+
+		}); 
+	});
+
+script.
+	$(document).ready(function() {
+		$('.admin').bind("click",function() 
+		{ 
+			var imgVal = $('#uploads').val(); 
 			if(imgVal=='') 
 		{ 
 			alert("empty input file"); 
