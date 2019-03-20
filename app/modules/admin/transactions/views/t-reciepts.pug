@@ -163,14 +163,17 @@ block main
 								button.btn.btn-default(type='button', data-dismiss='modal') Close
 								button.btn.btn-primary(type='submit') Submit
 
-.OR-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+	#try
+		.toPrint.modal-body
+			
+	.OR-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
 		.modal-dialog.modal-lg
 			.modal-content
 				.modal-header
 					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 					h4.modal-title Payment Breakdown
 				form(action='/pending/update', method='POST')
-					.toPrint.modal-body
+					#toPrint.toPrint.modal-body
 						.container-fluid
 							.row
 								.col-xs-12
@@ -199,24 +202,13 @@ block main
 									.row
 										.col-md-9
 											h2#name
-											//- address
-											//- 	br
-											//- 	strong#ad
-											//- 	br
-											//- 	strong#e
-											//- 	br
-											//- 	strong#ph
 										.col-md-3
 											div
 												.pull-left DATE : 
 												.pull-right.dat
 												.clearfix
 											br
-											div
-											div(style='background-color:#ffbb00;color:white;padding:10px;')
-												.pull-left  Total :
-												.pull-right.price
-												.clearfix
+											
 									table.table
 										thead
 											tr
@@ -239,13 +231,85 @@ block main
 												td.text-right
 													strong
 											input.hidden#id(type='text' name='id' )
+						//- .container-fluid(style='hidden')
+						//- 	.row
+						//- 		.col-xs-12
+						//- 			.pull-left
+						//- 				h1 A-TEAM FITNESS
+						//- 				address
+						//- 					strong A-Team Fitness Inc.
+						//- 					br
+						//- 					| 4408 Old. Sta. Mesa St, Newton Plaza
+						//- 					br
+						//- 					| Sta. Mesa Manila
+						//- 					br
+						//- 					abbr(title='Phone') P:
+						//- 					|  0933 412 7526
+						//- 					br
+						//- 					|OR#
+						//- 					strong.or
+						//- 			// /pull-left
+						//- 			.pull-right
+						//- 				h1
+						//- 					img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+						//- 			// --/pull-right --
+						//- 			.clearfix
+						//- 			br
+						//- 			br
+						//- 			.row
+						//- 				.col-md-9
+						//- 					h2#name
+						//- 				.col-md-3
+						//- 					div
+						//- 						.pull-left DATE : 
+						//- 						.pull-right.dat
+						//- 						.clearfix
+						//- 					br
+						//- 					div
+						//- 					div(style='background-color:#ffbb00;color:white;padding:10px;')
+						//- 						.pull-left  Total :
+						//- 						.pull-right.price
+						//- 						.clearfix
+						//- 			table.table
+						//- 				thead
+						//- 					tr
+						//- 						th.text-center(style='width:60px') QTY
+						//- 						th.text-left DESCRIPTION
+						//- 						th.text-right(style='width:90px') TOTAL
+						//- 				tbody
+						//- 					tr
+						//- 						td.text-center -
+						//- 						td.m 
+						//- 						td.text-right.price
+						//- 					tr
+						//- 						td(colspan='2' rowspan='4')
+						//- 						td.text-right 
+
+						//- 					tr
+						//- 						td.text-right.no-border
+						//- 							div(style='background-color:#ffbb00;color:white;padding:10px;')
+						//- 								strong Total
+						//- 						td.text-right
+						//- 							strong
+						//- 					input.hidden#id(type='text' name='id' )
 					.modal-footer
 						button.btn.btn-default(type='button', data-dismiss='modal') Close
-						button.btn.btn-primary(type='button') Print
+						button.btn.btn-primary(type='button' onclick="printContent('toPrint')") Print
 						button.btn.btn-primary(type='button' id='saveAsPDF') Save as PDF
 						//- button.btn.btn-danger(type='submit') Pay
 
 include ../../../../templates/foot
+
+script.
+	
+		function printContent(el){
+			let restorepage = $('body').html();
+			let printcontent = $('#' + el).clone();
+			$('body').empty().html(printcontent);
+			window.print();
+			$('body').html(restorepage);
+		}
+
 
 script.
 	$('#saveAsPDF').click(function(){

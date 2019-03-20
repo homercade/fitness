@@ -1,47 +1,46 @@
 doctype html
 head
 
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    link(rel="icon", type="image/png", href='/assets/img/barbell.png')
-    - var title='A-Team Fitness'
-    title #{title}
+  meta(charset='utf-8')
+  meta(name='viewport', content='width=device-width, initial-scale=1.0')
+  link(rel="icon", type="image/png", href='/assets/img/barbell.png')
+  - var title='A-Team Fitness'
+  title #{title}
 
-    //- General
-    link(href='/assets/css/bootstrap.css', rel='stylesheet')
-    link(href='/assets/css/style.css', rel='stylesheet')
+  //- General
+  link(href='/assets/css/bootstrap.css', rel='stylesheet')
+  link(href='/assets/css/style.css', rel='stylesheet')
 
-    //- Plugins
-    link(href='/assets/css/jquery.timepicker.min.css', rel='stylesheet')
-    link(href='/assets/css/datatables.min.css', rel='stylesheet')
-    link(href='/assets/css/select2.min.css' rel='stylesheet')
-    link(href='/assets/js/datatable/buttons.dataTables.min.css', rel='stylesheet')
-    link(href='/assets/css/toastr.min.css', rel='stylesheet')
+  //- Plugins
+  link(href='/assets/css/jquery.timepicker.min.css', rel='stylesheet')
+  link(href='/assets/css/datatables.min.css', rel='stylesheet')
+  link(href='/assets/css/select2.min.css' rel='stylesheet')
+  link(href='/assets/js/datatable/buttons.dataTables.min.css', rel='stylesheet')
+  link(href='/assets/css/toastr.min.css', rel='stylesheet')
 
-    //- link(href='/assets/css/dataTables.bootstrap.min.css', rel='stylesheet')
-    link(href='/assets/css/bootstrap-datepicker.css', rel='stylesheet')
-    link(href='/assets/css/bootstrap-timepicker.css', rel='stylesheet')
-    link(href='/assets/css/sweetalert2.min.css')
-    link(href='/assets/js/fullcalendar/fullcalendar.min.css' rel='stylesheet')
+  //- link(href='/assets/css/dataTables.bootstrap.min.css', rel='stylesheet')
+  link(href='/assets/css/bootstrap-datepicker.css', rel='stylesheet')
+  link(href='/assets/css/bootstrap-timepicker.css', rel='stylesheet')
+  link(href='/assets/css/sweetalert2.min.css')
+  link(href='/assets/js/fullcalendar/fullcalendar.min.css' rel='stylesheet')
 
-    //- Custom Style Sheets
-    link(href='/assets/css/style-responsive.css', rel='stylesheet')
-    link(href='/assets/css/custom-style.css', rel='stylesheet')
+  //- Custom Style Sheets
+  link(href='/assets/css/style-responsive.css', rel='stylesheet')
+  link(href='/assets/css/custom-style.css', rel='stylesheet')
 
-    //- Icons, Fonts
-    link(href='/assets/fontawesome/css/all.css', rel='stylesheet')
-    link(href='/assets/lineicons/style.css', rel='stylesheet') 
+  //- Icons, Fonts
+  link(href='/assets/fontawesome/css/all.css', rel='stylesheet')
+  link(href='/assets/lineicons/style.css', rel='stylesheet') 
 
-    link(href='/assets/css/metisMenu.min.css', rel='stylesheet') 
+  link(href='/assets/css/metisMenu.min.css', rel='stylesheet') 
 
 style.
 
-    label.checkbox.u{
-        margin-left: 7.5em;
-    }
-    
-    img {
-      object-fit: cover
-    }
+  label.checkbox.u{
+    margin-left: 7.5em;
+  }
 
+  img {
+    object-fit: cover
+  }
 block main
