@@ -10,7 +10,7 @@ block main
 			.fa.fa-bars.tooltips(data-placement='right', data-original-title='Toggle Navigation' style="color:white;")
 		// logo start
 		a.logo(href='/')
-			img.img-circle(src=`/assets/images/${utils.logo}`, style='border:3px solid white; width:30px; margin-right:10px; margin-left:10px;')
+			img.img-circle(src=`/assets/images/${utils.logo}`, width='30' height='30' style='border:3px solid white; width:30px; margin-right:10px; margin-left:10px;')
 			b  #{utils.gymname}
 		// logo end
 		.top-menu
@@ -24,7 +24,7 @@ block main
 		ul#nav-accordion.sidebar-menu
 			p.centered
 				a(href='/')
-					img.img-circle(src='/assets/img/friends/fr-03.jpg', width='60')
+					img.img-circle(src=`/assets/images/${admin.pic}`, width='60' height='60')
 			h5.centered #{admin.userfname}
 			li.mt
 				a#dashboard(href='/')

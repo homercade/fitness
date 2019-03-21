@@ -47,7 +47,7 @@ block main
 											a.btn.btn-success.btn-xs(data-toggle='modal', data-target='#add') 
 												i.fa.fa-edit
 												|  Change logo image     
-											if utils.logo !== undefined 
+											if utils.logo !== null 
 												p Current Logo - #{utils.logo}
 											else
 												p Acceptable file type (jpg., png)
@@ -119,7 +119,8 @@ block main
 											a.btn.btn-success.btn-xs(data-toggle='modal', data-target='#admin') 
 												i.fa.fa-edit
 												|  Change Pic   
-											if admin.pic!== undefined 
+											- console.log(admin.pic)
+											if admin.pic!== null 
 												p Current Logo - #{admin.pic}
 											else
 												p Acceptable file type (jpg., png)

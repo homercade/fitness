@@ -11,8 +11,9 @@ block main
                 table.table.table-advance.table-hover
                   h4(style="float:left")
                     |   Sales Report
-                  select(id="monthFilter" style="float:right;font-size: 17px;")
-                    option(value='-') -
+                  p(style="position: absolute;right: 422px;top: 76px;font-size: 14px;") Filter by Month: 
+                  select(id="monthFilter" style="position: absolute;right: 270px;top: 69px;float:right;font-size: 14px;padding: 5px 26px;border-radius: 3px; cursor: pointer;")
+                    option(value='-')
                     option(value='January') January
                     option(value='Febuary') Febuary
                     option(value='March') March
@@ -80,7 +81,14 @@ block main
                       th
                         i.fa.fa-user
                         |  Branch
-                        
+        .row.mt
+          .col-md-6   
+            .content-panel
+                canvas#memberByMonth   
+          .col-md-6   
+            .content-panel
+               canvas#memberByMembership   
+   
                     
                                     
 include ../../../../templates/foot
@@ -128,6 +136,156 @@ script.
       });
     }
   });
+
+script.
+  $(document).ready(function(){
+
+    //- LINE CHART
+    //- dataset
+    let months = []
+    let numberOfMembersApplied = []
+    
+    $.post('/view/member/per/month').done(data => {
+      data.forEach(data => {
+        switch (data.monthname) {
+          case 'January': months.push('Jan')
+            break
+          case 'February': months.push('Feb')
+            break
+          case 'March': months.push('Mar')
+            break
+          case 'April': months.push('Apr')
+            break
+          case 'May': months.push('May')
+            break
+          case 'June': months.push('Jun')
+            break
+          case 'July': months.push('Jul')
+            break
+          case 'August': months.push('Aug')
+            break
+          case 'September': months.push('Sept')
+            break
+          case 'October': months.push('Oct')
+            break
+          case 'November': months.push('Nov')
+            break
+          case 'December': months.push('Dec')
+            break
+        }
+        numberOfMembersApplied.push(data.total)
+      })
+    })
+
+    //- initialization
+    const chartMemberByMonth = document.getElementById('memberByMonth').getContext('2d')
+    const chartMemberByMembership = document.getElementById('memberByMembership').getContext('2d')
+
+    setTimeout(() => {
+      const chart1 = new Chart(chartMemberByMonth, {
+        type: 'line',
+        data: {
+          labels: months,
+          datasets: [{
+            label: 'Members Registered',
+            data: numberOfMembersApplied,
+            backgroundColor: '#2F96B4',
+            borderColor: '#2F96B4',
+            fill: false,
+          }]
+        },
+        options: {
+          title: {
+            display: true,
+            text: 'Top Registers'
+          },
+          scales: {
+            xAxes: [{
+              gridLines: {
+                display: true,
+                drawBorder: true,
+                drawOnChartArea: false,
+              }
+            }],
+            yAxes: [{
+              gridLines: {
+                display: true,
+                drawBorder: true,
+              },
+              ticks: {
+                stepSize: 5
+              }
+            }]
+          }
+        }
+      })
+    }, 500)
+
+    //- PIE CHART
+    let memberships = []
+    let membershipsWithDescription = []
+    let memberCount = []
+    
+    $.post('/graph/membership/members').done(function (allMemberships) {
+      allMemberships.forEach(membership => {
+        memberships.push(membership.memclassname)
+      })
+      memberships.forEach(membership => {
+        $.post('/graph/membership/members/count', { membership }).done(count => {
+          for (let key in count[0]) {
+            membership = `${membership} members count - ${count[0][key]}`
+            membershipsWithDescription.push(membership)
+            memberCount.push(count[0][key])
+          }
+        })
+      })
+    })
+
+    setTimeout(() => {
+      const chart2 = new Chart(chartMemberByMembership, {
+        type: 'doughnut',
+        data: {
+          labels: membershipsWithDescription,
+          datasets: [{
+            label: 'Members Registered',
+            data: memberCount,
+            backgroundColor: [
+              '#ff6961',
+              '#FCCA83',
+              '#779ecb',
+              '#ffb3ba',
+              '#baffc9',
+              '#ffffba'
+              ],
+            borderColor: '#f2f2f2',
+            label: 'Dataset 1'
+          }]
+        },
+        options: {
+          title: {
+            display: true,
+            text: 'Most Applied'
+          },
+          legend: {
+            position: 'bottom',
+          },
+          tooltips: {
+            callbacks: {
+              label: function(tooltipItem, data) {
+                let dataset = data.datasets[tooltipItem.datasetIndex];
+                let total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                  return previousValue + currentValue;
+                });
+                let currentValue = dataset.data[tooltipItem.index];
+                let percentage = Math.floor(((currentValue/total) * 100)+0.5);         
+                return percentage + "%";
+              }
+            }
+          }
+        }
+      })
+    }, 500)
+  })
 
 
 

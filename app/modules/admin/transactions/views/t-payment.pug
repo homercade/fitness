@@ -55,25 +55,25 @@ block main
 						button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 						h4.modal-title Official Receipt
 					form(action='POST', method='')
-						.modal-body
+						.modal-body#toPrint
 							.container-fluid
 								.row
 									.col-xs-12
 										.pull-left
-											h1 A-TEAM FITNESS
+											h1 #{utils.gymname}
 											address
-												strong A-Team Fitness Inc.
+												strong #{utils.companyname}
 												br
-												| 4408 Old. Sta. Mesa St, Newton Plaza
+												| #{utils.address}
 												br
-												| Sta. Mesa Manila
+												| #{utils.city}
 												br
 												abbr(title='Phone') P:
-												|  0933 412 7526
+												|  #{utils.phone}
 										// /pull-left
 										.pull-right
 											h1
-												img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+												img.img-circle(src=`/assets/images/${utils.logo}`, style="width:120px; float:right; margin-top:20px;", alt="")
 										// --/pull-right --
 										.clearfix
 										br
@@ -96,10 +96,6 @@ block main
 													.clearfix
 												br
 												div
-												div(style='background-color:#ffbb00;color:white;padding:10px;')
-													.pull-left  Total Paid :
-													.pull-right#fee
-													.clearfix
 										table.table
 											thead
 												tr
@@ -117,13 +113,12 @@ block main
 
 												tr
 													td.text-right.no-border
-														div(style='background-color:#ffbb00;color:white;padding:10px;')
-															strong Total
+														strong(style='background-color:#ffbb00;color:white;padding:5px 10px;') Total
 													td.text-right
 														strong#fee
 					.modal-footer
 						button.btn.btn-default(type='button', data-dismiss='modal') Close
-						button.btn.btn-primary(type='button') Print 
+						button.btn.btn-primary(type='button' onclick="printContent('toPrint')") Print 
 
 					//- MODAL PAYMENT
 		.pay-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -158,17 +153,26 @@ block main
 								tr
 									th
 										i.fa.fa-bookmark
-											|  No.
+										|  No.
 									th 
 										i.fa.fa-user
-											|  Name
+										|  Name
 									th 
 										i.fa.fa-phone
-											|  Date
+										|  Date
 		                
 							tbody#participant
 					
 include ../../../../templates/foot
+
+script.
+	function printContent(el){
+		let restorepage = $('body').html();
+		let printcontent = $('#' + el).clone();
+		$('body').empty().html(printcontent);
+		window.print();
+		$('body').html(restorepage);
+	}
 
 script.
 	$(document).ready(function(){
@@ -191,33 +195,31 @@ script.
 
 script.
 	$('.view-modal').on('show.bs.modal', function(event){
-			var button = $(event.relatedTarget);
-			var fname = button.data('fname');
-			var fee = button.data('fee');
-			var mem = button.data('mem');
-			var addr = button.data('addr');
-			var em = button.data('em');
-			var mob = button.data('mob');
-			var or = button.data('or');
-			console.log(or)
-			let modal = $(this);
+		var button = $(event.relatedTarget);
+		var fname = button.data('fname');
+		var fee = button.data('fee');
+		var mem = button.data('mem');
+		var addr = button.data('addr');
+		var em = button.data('em');
+		var mob = button.data('mob');
+		var or = button.data('or');
+		console.log(or)
+		let modal = $(this);
 
-			modal.find('.modal-body #fname').text(`${fname}`);
-			modal.find('.modal-body #fee').text(`₱ ${fee}.00`);
-			modal.find('.modal-body #mem').text(`${mem}`);
-			modal.find('.modal-body #addr').text(`${addr}`);
-			modal.find('.modal-body #em').text(`${em}`);
-			modal.find('.modal-body #or').text(`${or}`);
-			modal.find('.modal-body #mob').text(`${mob}`);
-		})
+		modal.find('.modal-body #fname').text(`${fname}`);
+		modal.find('.modal-body #fee').text(`₱ ${fee}.00`);
+		modal.find('.modal-body #mem').text(`${mem}`);
+		modal.find('.modal-body #addr').text(`${addr}`);
+		modal.find('.modal-body #em').text(`${em}`);
+		modal.find('.modal-body #or').text(`${or}`);
+		modal.find('.modal-body #mob').text(`${mob}`);
+	})
 	
 script.
-	n = new Date();
-	y = n.getFullYear();
-	m = n.getMonth() + 1;
-	d = n.getDate();
-
-	document.getElementById("date").innerHTML =m +"-" +d+"-"+y;
+	
+	
+	const today = moment().format('MMMM DD, YYYY')
+	document.getElementById("date").innerHTML = today
 
 	//- $(document).on('click', '#pay-btn', function(e) {
 	//- var form = $(this).parents('form');
@@ -275,11 +277,12 @@ script.
 	          else  {
 	            var num = 1
 	            for(i=0; i<data.length; i++){
+								
 	              $('#participant').append(`
 	                <tr>
 	                  <td>${num}</td>
 	                  <td>${data[i].userfname} ${data[i].userlname}</td>  
-	                  <td>${data[i].paymentdate}</td>  
+	                  <td>${moment(data[i].paymentdate).format('MMMM DD, YYYY')}</td>  
 	                </tr>
 	              `)
 	              num ++

@@ -157,28 +157,28 @@ block main
 					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 					h4.modal-title Payment Breakdown
 				form(action='/pending/update', method='POST' id='pay-pend')
-					.modal-body
+					#toPrint.modal-body
 						.container-fluid
 							.row
 								.col-xs-12
 									.pull-left
-										h1 A-TEAM FITNESS
+										h1 #{utils.gymname}
 										address
-											strong A-Team Fitness Inc.
+											strong #{utils.companyname}
 											br
-											| 4408 Old. Sta. Mesa St, Newton Plaza
+											| #{utils.address}
 											br
-											| Sta. Mesa Manila
+											| #{utils.city}
 											br
 											abbr(title='Phone') P:
-											|  09334 412 7526
+											|  #{utils.phone}
 											br
 											|OR# :
 											strong.or(style="fontsize:20")
 									// /pull-left
 									.pull-right
 										h1
-											img.img-circle(src="/assets/img/icon.png", style="width:120px; float:right; margin-top:20px;", alt="")
+											img.img-circle(src=`/assets/images/${utils.logo}`, style="width:120px; float:right; margin-top:20px;", alt="")
 									// --/pull-right --
 									.clearfix
 									br
@@ -201,10 +201,7 @@ block main
 												.clearfix
 											br
 											div
-											div(style='background-color:#ffbb00;color:white;padding:10px;')
-												.pull-left  Total :
-												.pull-right.fee
-												.clearfix
+										
 									table.table
 										thead
 											tr
@@ -222,53 +219,30 @@ block main
 
 											tr
 												td.text-right.no-border
-													div(style='background-color:#ffbb00;color:white;padding:10px;')
-														strong Total
+													strong(style='background-color:#ffbb00;color:white;padding:5px 10px;') Total
 												td.text-right
 													strong.fee
 											input.hidden#id(type='text' name='id' )
 					.modal-footer
 						button.btn.btn-default(type='button', data-dismiss='modal') Close
-						button.btn.btn-primary(type='button') Print
+						button.btn.btn-primary(type='button' onclick="printContent('toPrint')") Print
 						button.btn.btn-danger(type='submit' id='pay-btn') Pay
 
 include ../../../../templates/foot
-//- script.
-//- 	$('#is-not-student').hide();
-//- 	$('#is-student').show();
-//- 	$('#accept').click(function(){
-//- 		$('#code').modal();
-//- 		$('#viewmodal').modal('hide');
-//- 	});
 
 script.
-	var today = new Date();
-	var dd = today.getDate();
-	var mm = today.getMonth()+1;
-	var yyyy = today.getFullYear();
-
-	if(dd<10) {
-			dd = '0'+dd
-	} 
-
-	if(mm<10) {
-			mm = '0'+mm
-	} 
-
-	today = yyyy + '-' + mm + '-' + dd;
-
-	document.getElementById("thedate").value = today;
+	document.getElementById("thedate").value = moment().format('MMMM DD, YYYY');
 
 script.
-	//- $(document).ready(function(){
-	//- 	$('.edit').click(function(){
-	//- 		$('#form').attr('action', `/pending/update/${$(this).val()}`)
-	//- 		$('#form').submit()
-	//- 	})
-	//- 	$('#transactionDrop').addClass('active');
-	//- 	$('#pending').addClass('active');
-	//- 	});
+	function printContent(el){
+		let restorepage = $('body').html();
+		let printcontent = $('#' + el).clone();
+		$('body').empty().html(printcontent);
+		window.print();
+		$('body').html(restorepage);
+	}
 
+script.
 
 	$('#code').on('show.bs.modal', function(event){
 			var button = $(event.relatedTarget)      
@@ -340,12 +314,8 @@ script.
 	})
 
 script.
-	n = new Date();
-	y = n.getFullYear();
-	m = n.getMonth() + 1;
-	d = n.getDate();
 
-	document.getElementById("date").innerHTML =m +"-" +d+"-"+y;
+	document.getElementById("date").innerHTML = moment().format('MMMM DD, YYYY');
 
 	$(document).on('click', '#pay-btn', function(e) {
 		var form = $(this).parents('form');
