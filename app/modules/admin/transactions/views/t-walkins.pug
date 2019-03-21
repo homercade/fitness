@@ -193,7 +193,6 @@ block main
                     tr
                       td(colspan='2' rowspan='4')
                       td.text-right
-
                     tr
                       td.text-right.no-border
                         div(style='background-color:#ffbb00;color:white;padding:10px;')
@@ -201,10 +200,11 @@ block main
                       td.text-right
                         strong#fee
                       input#id(type='text' name='uid' )
-        .modal-footer
-          button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='button') Print
-          button.btn.btn-danger(type='submit') Pay
+      .modal-footer
+        button.btn.btn-default(type='button', data-dismiss='modal') Close
+        button.btn.btn-primary(type='button' id='saveAsPDF') Save as PDF
+        button.btn.btn-danger(type='submit') Pay
+          // button.btn.btn-primary(type='button') Print
 
 //- .pay-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
 //-   .modal-dialog.modal-sm
@@ -225,6 +225,18 @@ block main
 //-           button.btn.btn-primary(type='submit') Pay
 include ../../../../templates/foot
 
+script.
+  $('#saveAsPDF').click(function(){
+    html2canvas($('.toPrint'), {
+      onrendered: function (canvas) {
+        var time = new Date();
+        var img = canvas.toDataURL('image/png');
+        var doc = new jsPDF();
+        doc.addImage(img, 'JPEG', 15, 20, 160, 100);
+        doc.save('walkin_file_' + time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) + '.pdf');
+      }
+    })
+  })
 
 script.
   $(document).ready(function(){

@@ -2424,14 +2424,15 @@ function card(req, res) {
   })
 }
 
-
 router.post('/', (req, res) => {
-  db.query(`SELECT a.memberid, DATE_FORMAT(expirydate,'%M %e, %Y (%W)') AS expiryDate, b.userfname, b.userlname, c.memclassname, d.membershipname, e.memrateid 
+  db.query(`SELECT a.memberid, DATE_FORMAT(expirydate,'%M %e, %Y (%W)') AS expiryDate, b.userfname, b.userlname, c.memclassname, d.membershipname, e.memrateid, f.branchname 
   FROM tblmembership a 
-  INNER JOIN tbluser b ON a.usersid = b.userid  
-  INNER JOIN tblmemrates e ON e.memrateid=a.membershiprateid 
-  INNER JOIN tblmemclass c ON e.memclass=c.memclassid 
-  INNER JOIN tblcat d ON d.membershipID=e.memcat WHERE DATE(NOW()) < DATE(expirydate) AND a.cardnum=?;`, [req.body.cardNumber], function(err, results, fields){
+  JOIN tbluser b ON a.usersid = b.userid  
+  LEFT JOIN tblbranch f ON f.branchID=b.branch 
+  JOIN tblmemrates e ON e.memrateid=a.membershiprateid 
+  JOIN tblmemclass c ON e.memclass=c.memclassid 
+  JOIN tblcat d ON d.membershipID=e.memcat
+  WHERE DATE(NOW()) < DATE(expirydate) AND a.cardnum=?;`, [req.body.cardNumber], function(err, results, fields){
     console.log('Card Value is: ' + req.body.cardNumber);
     if(err) throw(err)
     else{
