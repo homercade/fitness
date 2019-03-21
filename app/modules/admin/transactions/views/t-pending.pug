@@ -82,31 +82,7 @@ block main
 													br
 													b Amount(₱): 
 													span#f
-							//- 						b Interest: 
-							//- 						span Weight Loss
-							//- 						br
-							//- //- 						br
-							//- 						b Student?:  
-							//- 						span Yes
-							//- 						br
-							//- 						br
-							//- 			hr
-							//- 			.row
-							//- 				.col-md-12
-							//- 					b ID Given:
-							//- 					br
-							//- 					#is-not-student
-							//- 						| None
-							//- 					#is-student
-							//- 						img(src='../assets/img/id-sample.jpg', width='200x;', style='margin-left:30%;')
-							//- 					br
-							//- 					br
-								
-							//- .modal-footer
-								button.btn.btn-default(type='button', data-dismiss='modal') Close
-								button#accept.btn.btn-primary(type='button') Accept
-		
-
+				
 			// MODAL DELETE
 			#deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
 				.modal-dialog
@@ -157,7 +133,7 @@ block main
 					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 					h4.modal-title Payment Breakdown
 				form.toPrint(action='/pending/update', method='POST' id='pay-pend')
-					.modal-body
+					#toPrint.modal-body
 						.container-fluid
 							.row
 								.col-xs-12
