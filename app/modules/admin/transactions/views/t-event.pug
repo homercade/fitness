@@ -59,10 +59,10 @@ block main
                         td
                           button.view.btn.btn-info.btn-xs(value = ev.eventclassid)
                             i.fa.fa-search
-                          button.edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.edit-modal')
-                            i.fa.fa-edit
-                          button.del.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.del-modal')
-                            i.fa.fa-trash-alt
+                          //- button.edit.btn.btn-success.btn-xs(data-toggle='modal', data-target='.edit-modal')
+                          //-   i.fa.fa-edit
+                          //- button.del.btn.btn-danger.btn-xs(data-toggle='modal', data-target='.del-modal')
+                          //-   i.fa.fa-trash-alt
 
 //MODAL
 #add-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -88,11 +88,11 @@ block main
                 .col-md-6
                   .form-group
                     label.control-label Start Date
-                    input.form-control.datee(type='text' name='start')
+                    input.form-control.datee#start(type='text' name='start')
                 .col-md-6
                   .form-group
                     label.control-label End Date
-                    input.form-control.datee(type='text' name='end')
+                    input.form-control.datee#end(type='text' name='end')
               //- //.row
               //-   .col-md-12
               //-     .form-group
@@ -135,7 +135,7 @@ block main
 
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='submit') Add Event
+          button.btn.btn-primary#addevent(type='submit') Add Event
 
 //MODAL
 .view-modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -169,13 +169,23 @@ block main
                       
       .modal-footer
         button.btn.btn-default(type='button', data-dismiss='modal') Close
-        button.btn.btn-primary(type='button') Print
+        //- button.btn.btn-primary(type='button') Print
 
 
 include ../../../../templates/foot
 
 script.
   $(document).ready(function(){
+    $('#end').change(function() {
+      
+      if ($('#end').val() <= $('#start').val()) {
+        alert('End date should not be lower than start')
+          $('#addevent').attr('disabled', true)
+        }
+      else {
+         $('#addevent').attr('disabled', false)
+        }
+    })
     $('#transactionDrop').addClass('active');
     $('#event').addClass('active');
 

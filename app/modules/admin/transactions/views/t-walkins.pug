@@ -133,7 +133,7 @@ block main
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
         h4.modal-title Payment Breakdown
-      form(action='/payment/walkin', method='POST')
+      form.toPrint(action='/payment/walkin', method='POST')
         .modal-body
           .container-fluid
             .row
@@ -199,7 +199,7 @@ block main
                           strong Total
                       td.text-right
                         strong#fee
-                      input#id(type='text' name='uid' )
+                      input.hidden#id(type='text' name='uid' )
       .modal-footer
         button.btn.btn-default(type='button', data-dismiss='modal') Close
         button.btn.btn-primary(type='button' id='saveAsPDF') Save as PDF

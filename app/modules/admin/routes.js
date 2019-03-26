@@ -340,7 +340,7 @@ function addid(req, res, next) {
 
 //function oradd
 function oradd(req, res, next) {
-  db.query(`SELECT (orid+1)id FROM tblor ORDER BY orid DESC LIMIT 1`, function (err, results, fields) {
+  db.query(`SELECT (ornum+1)id FROM tblpayment ORDER BY ornum DESC LIMIT 1`, function (err, results, fields) {
     if (err) return res.send(err)
     req.oradd = results[0].id
     console.log(req.oradd)
@@ -1283,7 +1283,7 @@ router.post('/event',(req, res) => {
 
 //view of events
 function viewEve(req, res, next) {
-  db.query(`select * from tbleventclass where type=2`, function (err, results, fields) {
+  db.query(`select * from tbleventclass where type=2 and status IS NULL`, function (err, results, fields) {
     if (err) return res.send(err);
     results.forEach((results) => {
       results.starttime = moment(results.starttime,'HH:mm:ss').format('hh:mm A')
@@ -1297,6 +1297,32 @@ function viewEve(req, res, next) {
     return next();
   })
 }
+
+
+
+// //expire event
+function Expeve(req, res, next) {
+
+  let today=moment().format('YYYY/MM/DD')
+  console.log(today)
+  db.query('SELECT enddate,eventclassid from tbleventclass', (err, results) => {
+    results.forEach(result =>{
+      if (moment(result.enddate).format('YYYY/MM/DD') < today) {
+        db.query(`UPDATE tbleventclass Set status= 0  where eventclassid = ?`,[result.eventclassid], (err, results, fields) => {
+          if (err)
+            console.log(err);
+          else {
+            return next()
+          };
+        })
+      }
+    })
+      return next()
+  })
+
+ 
+};
+
 
 //view trainer assign
 function viewAss(req, res, next){
@@ -2558,7 +2584,7 @@ function rsales(req, res) {
 //A-TEAM FITNESS GETS
 
 //GENERAL
-router.get('/', viewSusp, viewUtils, viewAdmin, viewHie, viewClass2, countActiveMembers, countActiveTrainers, viewTopUser, dashboard);
+router.get('/',viewSusp, viewUtils, viewAdmin, viewHie, viewClass2, countActiveMembers, countActiveTrainers, viewTopUser, dashboard);
 router.get('/reports', viewUtils, viewAdmin, reports);
 router.get('/user', viewUtils, viewAdmin, userd);
 router.get('/utilities', viewUtils, viewAdmin, viewRates, utils);
@@ -2584,7 +2610,7 @@ router.get('/pending', viewUtils, viewAdmin, check,viewUpdate, viewPend, pending
 router.get('/personal', viewUtils, viewAdmin, viewPer,personal);
 router.get('/regular', viewUtils, viewAdmin, viewSusp,viewMemChangeOr,viewMemChange,regid,Nulling,viewSp,viewExcB,viewExc,viewAss, viewReg, regular);
 router.get('/interregular', viewUtils, viewAdmin, viewSusp,viewMemChangeOr,viewMemChange,Nulling,viewSp,viewExcB,viewExcc,viewAss,viewInt, Interregular);
-router.get('/events', viewUtils, viewAdmin, viewEve, Events);
+router.get('/events',viewUtils, viewAdmin, viewEve, Events);
 router.get('/walkins', viewUtils, viewAdmin, viewWal, walkins);
 router.get('/trainsessions', viewUtils, viewAdmin, sessionsToday, trainSessions);
 router.get('/t/classes', viewUtils, viewAdmin, viewClass2,viewGt,viewGcl, GClasses);

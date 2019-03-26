@@ -27,9 +27,9 @@ block main
 										th
 											i.fa.fa-user
 											|  Added by
-										th
-											i.fa.fa-user
-											|  Manager
+										//- th
+										//- 	i.fa.fa-user
+										//- 	|  Manager
 										th
 											i.fa.fa-edit
 											|  Action
@@ -40,17 +40,17 @@ block main
 											td #{br.branchstreetname} #{br.branchcity}
 											td #{br.Dateadded} 
 											td #{br.addedby}
+											//- td
+											//- 	if br.user==NULL
+											//- 		|	NONE YET
+											//- 	else if br.user!=NULL
+											//- 		| #{br.user}
 											td
-												if br.user==NULL
-													|	NONE YET
-												else if br.user!=NULL
-													| #{br.user}
-											td
-												button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Edit Account', data-target='#editmodal' data-id=br.branchID data-name=br.branchname data-sname=br.branchstreetname data-city=br.branchcity data-oldid=br.user)
-													i.fa.fa-edit
-												if br.user==NULL
-													button.btn.btn-danger.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Remove Account Permanently' data-target='#deletemodal' data-id=br.branchID)
-														i.fa.fa-trash-alt
+												//- button#edit.btn.btn-success.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Edit Account', data-target='#editmodal' data-id=br.branchID data-name=br.branchname data-sname=br.branchstreetname data-city=br.branchcity data-oldid=br.user)
+												//- 	i.fa.fa-edit
+												//- if br.user==NULL
+												button.btn.btn-danger.btn-xs(data-toggle='modal', data-trigger='hover', data-placement='top', data-content='Remove Account Permanently' data-target='#deletemodal' data-id=br.branchID)
+													i.fa.fa-trash-alt
 					// /content-panel
 					// MODAL ADD MEMBER
 					#add.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -209,7 +209,6 @@ script.
 			});
 			$('#add-branch').submit();                     
 		})
-	});
 
 		//sweet alert edit class
 	$(document).on('click', '#btn-edit-branch', function(e) {
