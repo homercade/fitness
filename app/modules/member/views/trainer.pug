@@ -39,7 +39,7 @@ block main
                                       data-special   = trainer.specialname,
                                       data-desc      = trainer.specialdesc,
                                       data-img       = trainer.trainerpic,
-                                      onMouseOver    = "this.style.backgroundColor=black"
+                                      onMouseOver    = "this.style.backgroundColor='black'"
                                     )
                 i.fa.fa-search(style="padding-right:10px;" )
                 | View
@@ -117,14 +117,14 @@ script.
         trainerId: $(this).val()
         }).done(
           swal({
-              title: 'Success!',
-              text: `Your application has been sent`,
-              type: 'success',
-              showConfirmButton: false,
-              timer: 1500
-            }).then(()=>{
-              location.reload();
-            })
+            title: 'Success!',
+            text: `Your application has been sent`,
+            type: 'success',
+            showConfirmButton: false,
+            timer: 1500
+          }).then(()=>{
+            location.reload();
+          })
         ) 
       }
     })
@@ -154,7 +154,7 @@ script.
       const workDaysToArray = workdays.split(',')
       const workDaysArray = workDaysToArray.map(day => {
         switch (day) {
-          case '1': return "Mon"
+          case '1': return "Mon" 
             break
           case '2': return "Tue"
             break
@@ -186,9 +186,17 @@ script.
     modal.find('.modal-body #img').attr('src', `/assets/images/${img}`)
     modal.find('.modal-body #time').text(time)
     modal.find('.modal-body #type').text(type)
-    modal.find('.modal-body #special').text(special)
     modal.find('.modal-body #desc').text(desc)
     modal.find('.modal-footer .apply').val(id)
 
+    $.post('/member/view/specialty', { id }).done(data =>{
+      let specialties = []
+      data.forEach(specialty => {
+        specialties.push(specialty.specialname)
+      })
+      specialties = specialties.join(', ')
+      modal.find('.modal-body #special').text(specialties)
+    })
   })
+
  

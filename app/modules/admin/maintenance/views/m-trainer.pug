@@ -9,6 +9,13 @@ style.
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075)!important;
     padding: 2px;
   }
+  .select2-search__field{
+    display: block;
+  }
+
+  label[for='specialid']{
+    margin-left: 15px;
+  }
 
 block main
 
@@ -74,11 +81,11 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name
-                      input.form-control.addDisable(type='text' name='fname' required)
+                      input.form-control(type='text' name='fname' required)
                   .col-md-6
                     .form-group
                       label.control-label Last Name
-                      input.form-control.addDisable(type='text' name='lname' required)
+                      input.form-control(type='text' name='lname' required)
                 .row
                   .col-md-6
                     .input-group
@@ -94,21 +101,21 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Date of Birth
-                      input.date.form-control.addDisable(type='text' name='bday' required)
+                      input.date.form-control(type='text' name='bday' required)
                 .row
                   .col-md-12
                     .form-group
                       label.control-label Address
-                      input.form-control.addDisable(type='text' name='addr' maxlength='105' required)
+                      input.form-control(type='text' name='addr' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number
-                      input.form-control.addDisable(type='number' name='mobile' maxlength='11' required)
+                      input.form-control(type='number' name='mobile' maxlength='11' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
-                      input.form-control.addDisable(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
+                      input.form-control(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
                 .row
                   .col-md-6
                     .form-group
@@ -120,8 +127,7 @@ block main
                   .col-md-6(style="position:relative!important; height:60px!important")
                     .form-group
                       label.control-label Specialization
-                      select.select.form-control(name='specialid' required)
-                        option.hidden(value='') Select Specialty... 
+                      select.select2.form-control(name='specialid' multiple required)
                         each sp in spes
                           option(value=''+sp.specialID) #{sp.specialname}
                 .row
@@ -178,7 +184,7 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Username
-                      input.form-control.addDisable(type='text' name='username' maxlength='25' required)
+                      input.form-control(type='text' name='username' maxlength='25' required)
                   .col-md-6
                     .form-group
                       label.control-label Password
@@ -241,13 +247,13 @@ block main
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
   // MODAL EDIT MEMBER
-  #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+  #editmodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true' )
     .modal-dialog.modal-lg
       .modal-content
         .modal-header
           button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
           h4#myModalLabel.modal-title Edit a Trainer
-        form(action='/trains/edit', method='POST' id='edit-trainer')
+        form.needs-validation-edit(action='/trains/edit', method='POST' id='edit-trainer' novalidate)
           .modal-body
             .container-fluid
               .row
@@ -259,12 +265,12 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label First Name
-                      input#fname.form-control.addDisable(type='text' name='fname' maxlength='35' required)
+                      input#fname.form-control(type='text' name='fname' maxlength='35' required)
                       input.hidden#id(type='text' name='id')
                   .col-md-6
                     .form-group
                       label.control-label Last Name
-                      input#lname.form-control.addDisable(type='text' name='lname' maxlength='35' required)
+                      input#lname.form-control(type='text' name='lname' maxlength='35' required)
                 .row
                   .col-md-6
                     .input-group
@@ -280,26 +286,26 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Date of Birth
-                      input#bday.date.form-control(type='text' name='bday')
+                      input#bday.date.form-control(type='text' name='bday' required)
                 .row
                   .col-md-12
                     .form-group
                       label.control-label Address
-                      input#addr.form-control.addDisable(type='text' name='addr' maxlength='105' required)
+                      input#addr.form-control(type='text' name='addr' maxlength='105' required)
                 .row
                   .col-md-6
                     .form-group
                       label.control-label Mobile Number
-                      input#mob.form-control.addDisable(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
+                      input#mob.form-control(type='text' placeholder='09xxxxxxxxx' name='mobile' onkeypress='return restrictCharacters(this, event, numOnly)' maxlength='13' required)
                   .col-md-6
                     .form-group
                       label.control-label Email
-                      input#email.form-control.addDisable(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
+                      input#email.form-control(type='email' name='email' onkeypress='return restrictCharacters(this, event, emailOnly)' required)
                 .row  
                   .col-md-12(style="position:relative!important; height:60px!important")
                     .form-group
                       label.control-label Specialization
-                      select.select.form-control.addDisable(name='specialid' multiple="multiple")
+                      select.select2.form-control(name='specialid' multiple required)
                         each sp in spes
                           option(value=''+sp.specialID) #{sp.specialname}
               .row
@@ -311,7 +317,7 @@ block main
                   .col-md-6
                     .form-group
                       label.control-label Username
-                      input.form-control.addDisable(type='text' name='username' required)#username
+                      input.form-control(type='text' name='username' required)#username
                   .col-md-6
                     .form-group
                       label.control-label Password
@@ -320,10 +326,10 @@ block main
                  
                   .col-md-4
                     label(for='file') Display Image
-                    input.inputfile(type='file')
+                    input.inputfile(type='file' required)
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal') Close
-            button.btn.btn-primary(id='btn-edit-trainer') Save
+            button.btn.btn-primary(id='btn-edit-trainer' type='submit') Save
 
   // MODAL DELETE
   #deletemodal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
@@ -351,10 +357,17 @@ block main
 
 include ../../../../templates/foot
 
+  
 
 script.
   $(document).ready(function(){
-     $(".date").datepicker({
+
+    $('.select2').select2({
+      placeholder: "Select a state"
+    })
+
+    
+    $(".date").datepicker({
       changeMonth: true,
       changeYear: true,
       todayHighlight: true,
@@ -407,7 +420,7 @@ script.
   $(document).ready(function(){
     $('#memdrop').addClass('active');
     $('#trainer').addClass('active');
-
+    $('.needs-validation-edit').validate()
     $('.needs-validation').validate({
       rules:{
         username: {
@@ -487,68 +500,68 @@ script.
 
 script.
 
-  $('#deletemodal').on('show.bs.modal', function(event){
-    var button = $(event.relatedTarget)      
+  $('#deletemodal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
     var id = button.data('id')
-    let modal = $(this)  
+    let modal = $(this)
     modal.find('.modal-body #id').val(` ${id}`)
-  }) 
+  })
 
-    $(document).on('submit', '#btn-add-trainer', function(e) {
+  $(document).on('submit', '#btn-add-trainer', function (e) {
     var form = $(this).parents('form');
     e.preventDefault();
 
     swal({
       title: 'Add this Trainer?',
       text: 'This trainer will be added to the table.',
-      type: 'info', 
+      type: 'info',
       showCancelButton: true,
       cancelButtonColor: '#d33',
       confirmButtonColor: '#3085d6',
       confirmButtonText: 'Yes'
     }).then((result) => {
-    if (result.value) {
-      swal({
-        title: 'Success!',
-        text: 'Trainer added successfully!',
-        type: 'success',
-        showConfirmButton: false,
-        timer: 1500
-      });
-      $('#add-trainer').submit();
-    }                        
+      if (result.value) {
+        swal({
+          title: 'Success!',
+          text: 'Trainer added successfully!',
+          type: 'success',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        $('#add-trainer').submit();
+      }
     })
-    });
+  });
 
-    //sweet alert edit class
-    $(document).on('click', '#btn-edit-trainer', function(e) {
+  //sweet alert edit class
+  $(document).on('submit', '#btn-edit-trainer', function (e) {
     var form = $(this).parents('form');
     e.preventDefault();
 
     swal({
-    title: 'Save Changes?',
-    text: 'Updating this record will overwrite the previous record.',
-    type: 'info',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes'
+      title: 'Save Changes?',
+      text: 'Updating this record will overwrite the previous record.',
+      type: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
     }).then((result) => {
-    if (result.value) {
-      swal({
-        title: 'Success!',
-        text: 'Trainer updated successfully!',
-        type: 'success',
-        showConfirmButton: false,
-        timer: 5000
-      });
-      $('#edit-trainer').submit();
-    }                        
+      if (result.value) {
+        swal({
+          title: 'Success!',
+          text: 'Trainer updated successfully!',
+          type: 'success',
+          showConfirmButton: false,
+          timer: 5000
+        });
+        $('#edit-trainer').submit();
+      }
     })
-    });
+  });
 
-    //sweet alert delete class
-    $(document).on('click', '#btn-del-trainer', function(e) {
+  //sweet alert delete class
+  $(document).on('click', '#btn-del-trainer', function (e) {
     var form = $(this).parents('form');
     e.preventDefault();
 
@@ -561,15 +574,15 @@ script.
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes'
     }).then((result) => {
-    if (result.value) {
-      swal({
-        title: 'Success!',
-        text: 'Trainer deleted successfully!',
-        type: 'success',
-        showConfirmButton: false,
-        timer: 5000
-      });
-      $('#del-trainer').submit();
-    }                        
+      if (result.value) {
+        swal({
+          title: 'Success!',
+          text: 'Trainer deleted successfully!',
+          type: 'success',
+          showConfirmButton: false,
+          timer: 5000
+        })
+        $('#del-trainer').submit();
+      }
     })
-    });
+  })

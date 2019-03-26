@@ -358,6 +358,23 @@ function viewTrainers(req, res, next) {
 	})
 }
 
+router.post('/view/specialty', (req, res) => {
+	const query = `
+		SELECT id, 
+			tbltrainer.trainerid, 
+			tblspecial.specialID, 
+			specialname 
+		FROM tbltrainer_specialty 
+		JOIN tbltrainer ON tbltrainer_specialty.trainerid = tbltrainer.trainerid
+		JOIN tblspecial ON tbltrainer_specialty.specialid = tblspecial.specialID
+		WHERE tbltrainer.trainerid = ?
+		`
+	db.query(query, [ req.body.id ], (err, out) => {
+		if (err) console.error(err)
+		res.send(out)
+	})
+})
+
 // Checking if member is accepted or pending
 function check(req, res, next) {
 	const query = `

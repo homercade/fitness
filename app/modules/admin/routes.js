@@ -487,27 +487,42 @@ function viewCategory(req, res, next) {
 //insert trainer
 router.post('/trains', (req, res) => {
   console.log(req.body)
-  pic=`${req.body.fname + req.body.lname}.jpg`
-  fullname= req.session.user.userfname + " " + req.session.user.userlname
-  req.files.img.mv('public/assets/images/'+pic, function(err){
-  db.query(`INSERT INTO tbltrainer
+  // return
+  pic = `${req.body.fname + req.body.lname}.jpg`
+  fullname = req.session.user.userfname + " " + req.session.user.userlname
+  specialties =  req.body.specialid 
+  req.files.img.mv('public/assets/images/' + pic, function (err) {
+    db.query(`INSERT INTO tbltrainer
    ( trainerfname, trainerlname, 
    trainerbday,trainergender,traineraddress,
-   trainermobile,traineremail,trainerschedule,trainerbranch,
-   trainerspecialization,trainerpassword,trainerusername,trainertimestart,trainertimeend,trainerpic) VALUES 
-   ( ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ? )`, 
-   [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, 
-   req.body.mobile, req.body.email, `${req.body['sched[]']}`, 
-   req.body.branchid, req.body.specialid, req.body.password, 
-   req.body.username, req.body.starttime, req.body.endtime,pic], (err, results, fields) => {
-    if (err)
-      console.log(err);
-    else {
-      res.redirect('/trains');
-    }
-});
-});
-  });
+   trainermobile,traineremail,trainerschedule,trainerbranch,trainerpassword,trainerusername,trainertimestart,trainertimeend,trainerpic) VALUES 
+   ( ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?)`,
+      [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr,
+        req.body.mobile, req.body.email, `${req.body['sched[]']}`,
+        req.body.branchid, req.body.password,
+        req.body.username, req.body.starttime, req.body.endtime, pic
+      ], (err, results, fields) => {
+        db.query('SELECT trainerid from tbltrainer ORDER BY trainerid DESC LIMIT 1', (err, results) => {
+          const trainerid = results[0].trainerid
+          if (err) console.log(err)
+          if (specialties.length != undefined) {
+            specialties.forEach(specialty => {
+              db.query('INSERT INTO tbltrainer_specialty (trainerid, specialid) VALUES (?, ?)', [trainerid, specialty] , (err, results) => {
+                if (err) console.log(err)
+              })
+            })
+          }
+          else {
+            db.query('INSERT INTO tbltrainer_specialty (trainerid, specialid) VALUES (?, ?)', [trainerid, specialty] , (err, results) => {
+              if (err) console.log(err)
+            })
+          }
+        })
+        if (err) console.log(err)
+        else res.redirect('/trains')
+      })
+  })
+})
 
 
 
@@ -531,17 +546,42 @@ function viewspecialdrop(req, res, next) {
 
 //edit trainer
 router.post('/trains/edit', (req, res) => {
+  specialties =  req.body.specialid 
   db.query(`UPDATE tbltrainer SET trainerfname=?, trainerlname=?,
     trainerbday=?,trainergender=?,traineraddress=?,trainermobile=?,
-    traineremail=?,trainerbranch=?,trainerspecialization=?,trainerpassword=?,
-    trainerusername=? WHERE trainerid=?`, [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.branchid, req.body.specialid, req.body.pass, req.body.username, req.body.id], (err, results, fields) => {
+    traineremail=?,trainerbranch=?,trainerpassword=?,
+    trainerusername=? WHERE trainerid=?`, [req.body.fname, req.body.lname, req.body.bday, req.body.gen, req.body.addr, req.body.mobile, req.body.email, req.body.branchid, req.body.pass, req.body.username, req.body.id], (err, results, fields) => {
+      // SELECT EXISTING SPECIALTY BY TRAINER
+      db.query('SELECT id from tbltrainer_specialty WHERE trainerid = ?', [req.body.id], (err, results) =>{
+      if (err) console.error(err)
+      results.forEach(result => {
+        // DELETE EXISTING SPECIALTY BY TRAINER
+        db.query('DELETE FROM tbltrainer_specialty WHERE (id = ?)', [result.id], (err, results) => {
+          if (err) console.error(err)
+        })
+      })
+      // INSERT NEW SPECIALTY BY TRAINER IF SELECTED 1
+      if (specialties.length == 1){
+        db.query('INSERT INTO tbltrainer_specialty (trainerid, specialid) VALUES (?, ?)', [req.body.id, specialties] , (err, results) => {
+          if (err) console.log(err)
+        })
+      }
+      // INSERT NEW SPECIALTY BY TRAINER IF MULTIPLE SELECT
+      else {
+        specialties.forEach(specialty => {
+          db.query('INSERT INTO tbltrainer_specialty (trainerid, specialid) VALUES (?, ?)', [req.body.id, specialty] , (err, results) => {
+            if (err) console.log(err)
+          })
+        })
+      }
+    })
     if (err)
       console.log(err);
     else {
       res.redirect('/trains');
     }
-  });
-});
+  })
+})
 
 //delete trainer
 router.post('/trains/delete', (req, res) => {
@@ -551,13 +591,12 @@ router.post('/trains/delete', (req, res) => {
     else {
       res.redirect('/trainer');
     }
-  });
-});
+  })
+})
 
 //view Trainers
 function viewTrainer(req, res, next) {
-  db.query(`SELECT u.*,s.* FROM tbltrainer u 
-JOIN tblspecial s ON s.specialID =u.trainerspecialization`, function (err, results, fields) {
+  db.query(`SELECT * FROM tbltrainer`, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewTrainer = results;
       results.forEach(result => {
