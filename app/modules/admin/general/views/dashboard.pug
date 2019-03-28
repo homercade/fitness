@@ -148,14 +148,16 @@ script.
         //- if(response[0].branchname) { const branchName = 'Exclusive';}
         //- else { const branchName = 'Interbranch';}
         //- console.log(branchName);
+        console.log(response[0].pic);
         swal({
           title: response[0].userfname + ' ' + response[0].userlname,
           html: 'Subscription: ' + response[0].memclassname + ' — ' + response[0].membershipname,// + '<br>Branch: </b>' + branchName,
-          type: 'success',
+          imageUrl: `/assets/images/${response[0].pic}`,
+          imageWidth: 100,
+          imageHeight: 100,
           footer: '<b>Expiration Date</b>:  ' + response[0].expiryDate,
           showCancelButton: false,
-          showConfirmButton: false,
-          timer: 6000
+          showConfirmButton: true,
         })
         $('#hiddenInput').val('');
       }

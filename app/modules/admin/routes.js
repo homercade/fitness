@@ -2490,7 +2490,7 @@ function card(req, res) {
 }
 
 router.post('/', (req, res) => {
-  db.query(`SELECT a.memberid, DATE_FORMAT(expirydate,'%M %e, %Y (%W)') AS expiryDate, b.userfname, b.userlname, c.memclassname, d.membershipname, e.memrateid, f.branchname 
+  db.query(`SELECT a.memberid, DATE_FORMAT(expirydate,'%M %e, %Y (%W)') AS expiryDate, b.userfname, b.userlname, b.pic, c.memclassname, d.membershipname, e.memrateid, f.branchname 
   FROM tblmembership a 
   JOIN tbluser b ON a.usersid = b.userid  
   LEFT JOIN tblbranch f ON f.branchID=b.branch 
