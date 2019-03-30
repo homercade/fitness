@@ -77,8 +77,16 @@ block main
                   .row
                     .col-md-12
                       .form-group
-                        label.control-label OR Number
-                        input.form-control(type='text' name='OR' onkeypress='return restrictCharacters(this, event, alphaNumOnlyD)' maxlength='50')
+                        label.control-label Code
+                        input.form-control(type='text' name='code' onkeypress='return restrictCharacters(this, event, alphaNumOnlyD)' maxlength='50')
+                  .row
+                    .col-md-6
+                        label.control-label Start
+                        input.form-control(type='text' name='start' onkeypress='return restrictCharacters(this, event, floatOnly)' maxlength='50') 
+                    .col-md-6
+                        label.control-label End
+                        input.form-control(type='text' name='end' onkeypress='return restrictCharacters(this, event, floatOnly)' maxlength='50')
+
             .modal-footer
               button.btn.btn-default(type='button', data-dismiss='modal') Close
               button.btn.btn-primary(id='btn-add-or') Save

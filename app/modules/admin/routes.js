@@ -7,7 +7,7 @@ var nodemailer = require('nodemailer');
 var hbs = require('nodemailer-express-handlebars');
 var multer = require('multer');
 const path = require('path');
-var fs=require('fs')
+var fs=require('fs') 
 
 router.use(authMiddleware.hasAuth);
 
@@ -2161,20 +2161,25 @@ function totalPayment (req, res, next) {
 //insert OR
 router.post('/OR', (req, res) => {
   fullname= req.session.user.userfname + " " + req.session.user.userlname
-  db.query(`INSERT INTO tblor 
-    ( ornum,dateadded,addedby) 
-    VALUES ( ?, CURDATE(), ?)`, [req.body.OR, fullname], (err, results, fields) => {
-    if (err)
-      console.log(err);
-    else {
-      res.redirect('/ORs');
-    }
-  });
+  start=req.body.start
+  end=req.body.end
+  code=req.body.code
+  for(var i=start; i <= end ; i++){
+    or= code + i
+    db.query(`INSERT INTO tblor 
+      ( ornum,dateadded,addedby) 
+      VALUES ( ?, CURDATE(), ?)`, [or, fullname], (err, results, fields) => {
+      if (err)
+        console.log(err)
+
+    });
+  }
+          res.redirect('/ORs');
 })
 
 //view OR
 function viewOR(req, res, next) {
-  db.query(`select * from tblor`, function (err, results, fields) {
+  db.query(`select * from tblor order by dateadded desc`, function (err, results, fields) {
     if (err) return res.send(err);
     req.viewOR = results;
        //moments dateadded
